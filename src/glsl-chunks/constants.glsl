@@ -1,0 +1,3 @@
+#define PI 3.14159265359
+#define TPI 6.28318530718
+#define HPI 1.57079632679

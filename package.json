@@ -1,0 +1,53 @@
+{
+  "name": "",
+  "version": "0.0.1",
+  "description": "",
+  "repository": {
+    "type": "git",
+    "url": ""
+  },
+  "scripts": {
+    "dev": "npx gulp",
+    "build": "npx gulp"
+  },
+  "author": "junni",
+  "bugs": {
+    "url": ""
+  },
+  "workspaces":[
+	"packages/*/packages/*"
+  ],
+  "devDependencies": {
+    "@babel/core": "^7.16.12",
+    "@babel/preset-env": "^7.16.11",
+    "@babel/register": "^7.16.9",
+    "@typescript-eslint/eslint-plugin": "^5.10.1",
+    "@typescript-eslint/parser": "^5.10.1",
+    "browser-sync": "^2.27.7",
+    "del": "^6.0.0",
+    "eslint": "^8.7.0",
+    "eslint-config-mdcs": "^5.0.0",
+    "fancy-log": "^2.0.0",
+    "glslify-hex": "^2.1.1",
+    "glslify-import": "^3.1.0",
+    "glslify-loader": "^2.0.0",
+    "gulp": "^4.0.2",
+    "gulp-autoprefixer": "^8.0.0",
+    "gulp-cssmin": "^0.2.0",
+    "gulp-eslint": "^6.0.0",
+    "gulp-if": "^3.0.0",
+    "gulp-plumber": "^1.2.1",
+    "gulp-sass": "^5.1.0",
+    "raw-loader": "^4.0.2",
+    "sass": "^1.49.0",
+    "supports-color": "8.1.1",
+    "ts-loader": "^9.2.6",
+    "typescript": "^4.5.5",
+    "webpack": "^5.67.0",
+    "webpack-stream": "^7.0.0"
+  },
+  "dependencies": {
+    "@types/three": "^0.142.0",
+    "three": "^0.142.0"
+  }
+}
