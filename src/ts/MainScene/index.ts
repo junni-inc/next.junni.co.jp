@@ -3,14 +3,15 @@ import * as ORE from 'ore-three';
 import { GlobalManager } from './GlobalManager';
 import { RenderPipeline } from './RenderPipeline';
 import { CameraController } from './CameraController';
-import { AssetManager } from './GlobalManager/AssetManager';
 import { World } from './World';
+import { Scroller } from './Scroller';
 
 export class MainScene extends ORE.BaseLayer {
 
 	private gManager?: GlobalManager;
 	private renderPipeline?: RenderPipeline;
 	private cameraController?: CameraController;
+	private scroller: Scroller;
 
 	private world?: World;
 
@@ -19,6 +20,13 @@ export class MainScene extends ORE.BaseLayer {
 		super();
 
 		this.commonUniforms = ORE.UniformsLib.mergeUniforms( this.commonUniforms, {} );
+
+		/*-------------------------------
+			Scroller
+		-------------------------------*/
+
+		this.scroller = new Scroller();
+		this.scroller.changeSectionNum( 2 );
 
 	}
 
@@ -29,18 +37,9 @@ export class MainScene extends ORE.BaseLayer {
 		this.gManager = new GlobalManager();
 
 		this.gManager.assetManager.load( { assets: [
-			{ name: 'scene', path: './assets/scene/scene.glb', type: 'gltf' }
 		] } );
 
 		this.gManager.assetManager.addEventListener( 'loadMustAssets', ( e ) => {
-
-			let gltf = ( e.target as AssetManager ).getGltf( 'scene' );
-
-			if ( gltf ) {
-
-				this.scene.add( gltf.scene );
-
-			}
 
 			this.initScene();
 			this.onResize();
@@ -65,17 +64,23 @@ export class MainScene extends ORE.BaseLayer {
 			CameraController
 		-------------------------------*/
 
-		this.cameraController = new CameraController( this.camera, this.scene.getObjectByName( 'CameraData' ) );
+		this.cameraController = new CameraController( this.camera );
 
 		/*-------------------------------
 			World
 		-------------------------------*/
 
 		this.world = new World( this.scene, this.commonUniforms );
+		this.scene.add( this.world );
+
+		this.world.addEventListener( 'loadProgress', ( e ) => {
+		} );
 
 	}
 
 	public animate( deltaTime: number ) {
+
+		this.scroller.update( deltaTime );
 
 		if ( this.gManager ) {
 
@@ -86,6 +91,17 @@ export class MainScene extends ORE.BaseLayer {
 		if ( this.cameraController ) {
 
 			this.cameraController.update( deltaTime );
+
+			if ( this.world ) {
+
+				let index = Math.max( 0.0, Math.min( this.world.sections.length - 1, Math.floor( this.scroller.value ) ) );
+
+				let from = this.world.sections[ index ];
+				let to = this.world.sections[ index + 1 ] || from;
+
+				this.cameraController.updateTransform( from.cameraTransform, to.cameraTransform, this.scroller.value % 1 );
+
+			}
 
 		}
 
@@ -131,15 +147,28 @@ export class MainScene extends ORE.BaseLayer {
 
 	}
 
+	public onWheel( event: WheelEvent, trackpadDelta: number ): void {
+
+		this.scroller.addVelocity( event.deltaY * 0.00005 );
+
+	}
+
 	public onTouchStart( args: ORE.TouchEventArgs ) {
+
+		this.scroller.catch();
 
 	}
 
 	public onTouchMove( args: ORE.TouchEventArgs ) {
 
+		this.scroller.drag( args.delta.y );
+
 	}
 
 	public onTouchEnd( args: ORE.TouchEventArgs ) {
+
+
+		this.scroller.release( args.delta.y );
 
 	}
 

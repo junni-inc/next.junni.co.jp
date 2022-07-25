@@ -9,8 +9,6 @@ uniform sampler2D noiseTex;
 uniform float brightness;
 uniform float time;
 
-#pragma glslify: random = require( './random.glsl' );
-
 void main(){
 
 	vec3 c = vec3( 0.0 );
@@ -48,8 +46,6 @@ void main(){
 
 	}
 	#pragma unroll_loop_end
-
-	c += random( uv ) * 0.1 * c;
 
 	c *= smoothstep( -1.5, 0.5, 1.0 - length( cuv ) );
 

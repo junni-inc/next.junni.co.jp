@@ -1,34 +1,71 @@
 import * as THREE from 'three';
 import * as ORE from 'ore-three';
 
+export type CameraTransform = {
+	position: THREE.Vector3;
+	targetPosition: THREE.Vector3;
+}
+
 export class CameraController {
 
-	private camera: THREE.PerspectiveCamera
-	private cameraBasePos: THREE.Vector3;
-	private cameraTargetPos: THREE.Vector3;
+	private animator: ORE.Animator;
+
+	// camera
+
+	private camera: THREE.PerspectiveCamera;
+	private baseCamera: THREE.PerspectiveCamera;
+
+	// cursor
 
 	private cursorPos: THREE.Vector2;
 	public cursorPosDelay: THREE.Vector2;
-	private cameraMoveWeight: THREE.Vector2;
+	private cursorPosDelayVel: THREE.Vector2;
 
-	private baseCamera: THREE.PerspectiveCamera;
+	// param
 
-	constructor( camera: THREE.PerspectiveCamera, data?: THREE.Object3D ) {
+	private moveRange: THREE.Vector2;
 
-		this.camera = camera;
+	private posData = {
+		base: {
+			pos: new THREE.Vector3( 0, 0, 3.49641 ),
+			target: new THREE.Vector3( 0, 0, 0 )
+		},
+	};
 
-		let cameraModel = data && data.getObjectByName( 'Camera' ) as THREE.PerspectiveCamera;
-		this.cameraBasePos = cameraModel ? cameraModel.getWorldPosition( new THREE.Vector3() ) : new THREE.Vector3( 0, 1, 5 );
+	constructor( obj: THREE.PerspectiveCamera ) {
 
-		let cameraTarget = data && data.getObjectByName( 'CameraTarget' );
-		this.cameraTargetPos = cameraTarget ? cameraTarget.getWorldPosition( new THREE.Vector3() ) : new THREE.Vector3( 0, 1, 0 );
+		this.camera = obj;
+		this.baseCamera = new THREE.PerspectiveCamera( 45, 1.0, 0.1, 1000 );
 
-		let baseCamera = data && data.getObjectByName( 'Camera' );
-		this.baseCamera = baseCamera ? ( baseCamera.children[ 0 ] as THREE.PerspectiveCamera ) : camera.clone() as THREE.PerspectiveCamera;
+		// param
+
+		this.moveRange = new THREE.Vector2( 0.1, 0.1 );
+
+		/*------------------------
+			Animator
+		------------------------*/
+		this.animator = window.gManager.animator;
+
+		this.animator.add( {
+			name: 'cameraPos',
+			initValue: this.posData.base.pos.clone(),
+		} );
+
+		this.animator.add( {
+			name: 'cameraTargetPos',
+			initValue: this.posData.base.target.clone(),
+		} );
 
 		this.cursorPos = new THREE.Vector2();
 		this.cursorPosDelay = new THREE.Vector2();
-		this.cameraMoveWeight = new THREE.Vector2( 1.0, 1.0 );
+		this.cursorPosDelayVel = new THREE.Vector2();
+
+	}
+
+	public updateTransform( a: CameraTransform, b:CameraTransform, t: number ) {
+
+		this.animator.setValue( 'cameraPos', a.position.clone().lerp( b.position, t ) );
+		this.animator.setValue( 'cameraTargetPos', a.targetPosition.clone().lerp( b.targetPosition, t ) );
 
 	}
 
@@ -42,25 +79,43 @@ export class CameraController {
 
 	public update( deltaTime: number ) {
 
-		deltaTime = Math.min( 0.3, deltaTime );
+		deltaTime = Math.min( 0.3, deltaTime ) * 0.3;
+
+		/*------------------------
+			update hover
+		------------------------*/
 
 		let diff = this.cursorPos.clone().sub( this.cursorPosDelay ).multiplyScalar( deltaTime * 1.0 );
 		diff.multiply( diff.clone().addScalar( 1.0 ) );
-		this.cursorPosDelay.add( diff );
 
-		this.camera.position.set( this.cameraBasePos.x + this.cursorPosDelay.x * this.cameraMoveWeight.x, this.cameraBasePos.y + this.cursorPosDelay.y * this.cameraMoveWeight.y, this.cameraBasePos.z );
+		this.cursorPosDelayVel.add( diff.multiplyScalar( 3.0 ) );
+		this.cursorPosDelayVel.multiplyScalar( 0.85 );
 
-		if ( this.cameraTargetPos ) {
+		this.cursorPosDelay.add( this.cursorPosDelayVel );
 
-			this.camera.lookAt( this.cameraTargetPos );
+		/*------------------------
+			Position
+		------------------------*/
 
-		}
+		let basePos = this.animator.get<THREE.Vector3>( 'cameraPos' ) || new THREE.Vector3();
+
+		this.camera.position.set(
+			basePos.x + this.cursorPosDelay.x * this.moveRange.x,
+			basePos.y + this.cursorPosDelay.y * this.moveRange.y,
+			basePos.z
+		);
+
+		/*------------------------
+			Target
+		------------------------*/
+
+		this.camera.lookAt( this.animator.get<THREE.Vector3>( 'cameraTargetPos' ) || new THREE.Vector3() );
 
 	}
 
-	public resize( layerInfo: ORE.LayerInfo ) {
+	public resize( info: ORE.LayerInfo ) {
 
-		this.camera.fov = this.baseCamera.fov + layerInfo.size.portraitWeight * 20.0;
+		this.camera.fov = this.baseCamera.fov * 1.0 + info.size.portraitWeight * 20.0;
 		this.camera.updateProjectionMatrix();
 
 	}
