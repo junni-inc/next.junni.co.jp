@@ -26,7 +26,16 @@ export class MainScene extends ORE.BaseLayer {
 		-------------------------------*/
 
 		this.scroller = new Scroller();
-		this.scroller.changeSectionNum( 2 );
+
+		this.scroller.addListener( 'changeSelectingSection', ( sectionNum: number ) => {
+
+			if ( this.world ) {
+
+				this.world.changeSection( sectionNum );
+
+			}
+
+		} );
 
 	}
 
@@ -75,6 +84,10 @@ export class MainScene extends ORE.BaseLayer {
 
 		this.world.addEventListener( 'loadProgress', ( e ) => {
 		} );
+
+		this.world.changeSection( 0 );
+
+		this.scroller.changeSectionNum( this.world.sections.length );
 
 	}
 

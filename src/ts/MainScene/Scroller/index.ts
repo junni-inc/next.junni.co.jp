@@ -13,7 +13,7 @@ export class Scroller extends EventEmitter {
 	private moveVelocity: number = 0;
 
 	public currentContent: number = - 1;
-	private contentNum: number = 0;
+	private sectionNum: number = 0;
 
 	private animator: ORE.Animator;
 	private wheelStop: boolean = false;
@@ -45,7 +45,7 @@ export class Scroller extends EventEmitter {
 
 	public changeSectionNum( contentNum: number ) {
 
-		this.contentNum = contentNum;
+		this.sectionNum = contentNum;
 		this.reset();
 
 	}
@@ -101,17 +101,7 @@ export class Scroller extends EventEmitter {
 
 		if ( this.selectingContentPos != selectingMem ) {
 
-			let selectingContent = 0;
-
-			selectingContent = this.selectingContentPos % ( this.contentNum - 1.0 );
-
-			if ( selectingContent < 0 ) {
-
-				selectingContent = selectingContent + this.contentNum - 1.0;
-
-			}
-
-			this.emitEvent( 'changeSelectingContent', [ selectingContent, selectingMem < this.selectingContentPos ] );
+			this.emitEvent( 'changeSelectingSection', [ this.selectingContentPos ] );
 
 		}
 
@@ -126,7 +116,7 @@ export class Scroller extends EventEmitter {
 			if ( Math.abs( diff ) > 0.1 ) {
 
 				this.selectingContentPos += Math.sign( diff );
-				this.selectingContentPos = Math.max( 0.0, Math.min( 1.0, this.selectingContentPos ) );
+				this.selectingContentPos = Math.max( 0.0, Math.min( this.sectionNum, this.selectingContentPos ) );
 				this.touchMoveDiff = 0.0;
 
 			}
@@ -255,13 +245,13 @@ export class Scroller extends EventEmitter {
 
 	public move( value: number, onFinished?: () => void ) {
 
-		let diff = value - ( this.currentContent % ( this.contentNum - 1.0 ) );
+		let diff = value - ( this.currentContent % ( this.sectionNum - 1.0 ) );
 		let n = diff;
 
 
-		if ( Math.abs( n ) > this.contentNum / 2 ) {
+		if ( Math.abs( n ) > this.sectionNum / 2 ) {
 
-			n -= ( this.contentNum - 1.0 ) * Math.sign( n );
+			n -= ( this.sectionNum - 1.0 ) * Math.sign( n );
 
 		}
 

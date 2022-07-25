@@ -6,9 +6,11 @@ import { CameraTransform } from '../../../CameraController';
 
 export class Section extends THREE.Object3D {
 
-	private sectionName: string;
+	protected sectionName: string;
 
-	private commonUniforms: ORE.Uniforms;
+	protected commonUniforms: ORE.Uniforms;
+
+	protected animator: ORE.Animator;
 
 	public cameraTransform: CameraTransform = {
 		position: new THREE.Vector3(),
@@ -23,6 +25,21 @@ export class Section extends THREE.Object3D {
 
 		this.commonUniforms = ORE.UniformsLib.mergeUniforms( parentUniforms, {
 		} );
+
+		/*-------------------------------
+			Animator
+		-------------------------------*/
+
+		this.animator = window.gManager.animator;
+
+		this.commonUniforms.visibility = this.animator.add( {
+			name: 'sectionVisibility' + this.sectionName,
+			initValue: 0,
+		} );
+
+		/*-------------------------------
+			Load
+		-------------------------------*/
 
 		this.loadGLTF( this.sectionName );
 
@@ -63,6 +80,29 @@ export class Section extends THREE.Object3D {
 	}
 
 	protected onLoadedGLTF( gltf: GLTF ) {
+	}
+
+	public switchViewingState( visibility: 'ready' | 'viewing' | 'passed' ) {
+
+		if ( visibility == 'ready' ) {
+
+			this.animator.animate( 'sectionVisibility' + this.sectionName, 0 );
+
+			this.visible = false;
+
+		} else if ( visibility == 'viewing' ) {
+
+			this.animator.animate( 'sectionVisibility' + this.sectionName, 1 );
+
+			this.visible = true;
+
+		} else if ( visibility == 'passed' ) {
+
+			this.animator.animate( 'sectionVisibility' + this.sectionName, 2 );
+
+			this.visible = false;
+
+		}
 
 	}
 

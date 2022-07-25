@@ -42,12 +42,10 @@ void main(){
 	#pragma unroll_loop_start
 	for ( int i = 0; i < RENDER_COUNT; i ++ ) {
 		
-		c += texture2D( bloomTexs[ UNROLLED_LOOP_INDEX ], vUv ).xyz * pow( 2.0, float( UNROLLED_LOOP_INDEX ) ) * brightness;
+		// c += texture2D( bloomTexs[ UNROLLED_LOOP_INDEX ], vUv ).xyz * pow( 2.0, float( UNROLLED_LOOP_INDEX ) ) * brightness;
 
 	}
 	#pragma unroll_loop_end
-
-	c *= smoothstep( -1.5, 0.5, 1.0 - length( cuv ) );
 
 	gl_FragColor = vec4( c, 1.0 );
 
