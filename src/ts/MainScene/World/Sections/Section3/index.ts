@@ -2,18 +2,28 @@ import * as THREE from 'three';
 import * as ORE from 'ore-three';
 import { Section } from '../Section';
 import { GLTF } from 'three/examples/jsm/loaders/GLTFLoader';
+import { BG } from './BG';
 
 export class Section3 extends Section {
 
-	constructor( parentUniforms: ORE.Uniforms ) {
+	constructor( manager: THREE.LoadingManager, parentUniforms: ORE.Uniforms ) {
 
-		super( 'section_3', parentUniforms );
+		super( manager, 'section_3', parentUniforms );
 
 	}
 
 	protected onLoadedGLTF( gltf: GLTF ): void {
 
-		this.add( gltf.scene );
+		let scene = gltf.scene;
+
+		this.add( scene );
+
+		/*-------------------------------
+			BG
+		-------------------------------*/
+
+		new BG( scene.getObjectByName( 'BG' ) as THREE.Mesh, this.commonUniforms );
+
 
 	}
 

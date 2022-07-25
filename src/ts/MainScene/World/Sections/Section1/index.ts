@@ -6,9 +6,9 @@ import { BG } from './BG';
 
 export class Section1 extends Section {
 
-	constructor( parentUniforms: ORE.Uniforms ) {
+	constructor( manager: THREE.LoadingManager, parentUniforms: ORE.Uniforms ) {
 
-		super( 'section_1', parentUniforms );
+		super( manager, 'section_1', parentUniforms );
 
 	}
 

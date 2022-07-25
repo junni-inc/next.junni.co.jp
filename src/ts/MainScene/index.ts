@@ -105,22 +105,20 @@ export class MainScene extends ORE.BaseLayer {
 
 			this.cameraController.update( deltaTime );
 
-			if ( this.world ) {
-
-				let index = Math.max( 0.0, Math.min( this.world.sections.length - 1, Math.floor( this.scroller.value ) ) );
-
-				let from = this.world.sections[ index ];
-				let to = this.world.sections[ index + 1 ] || from;
-
-				this.cameraController.updateTransform( from.cameraTransform, to.cameraTransform, this.scroller.value % 1 );
-
-			}
-
 		}
 
 		if ( this.world ) {
 
 			this.world.update( deltaTime );
+
+			let transform = this.world.updateTransform( this.scroller.value );
+
+
+			if ( this.cameraController ) {
+
+				this.cameraController.updateTransform( transform.cameraTransform );
+
+			}
 
 		}
 

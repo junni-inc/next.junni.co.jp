@@ -4,6 +4,14 @@ import { GLTF, GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
 import { CameraTransform } from '../../../CameraController';
 
 
+export type BakuTransform = {
+	position: THREE.Vector3;
+	rotation: THREE.Quaternion;
+	scale: THREE.Vector3;
+}
+
+export type ViewingState = 'ready' | 'viewing' | 'passed'
+
 export class Section extends THREE.Object3D {
 
 	protected sectionName: string;
@@ -12,12 +20,28 @@ export class Section extends THREE.Object3D {
 
 	protected animator: ORE.Animator;
 
+	// manager
+
+	protected manager: THREE.LoadingManager;
+
+	// transforms
+
 	public cameraTransform: CameraTransform = {
 		position: new THREE.Vector3(),
 		targetPosition: new THREE.Vector3()
 	};
 
-	constructor( sectionName: string, parentUniforms: ORE.Uniforms ) {
+	public bakuTransform: BakuTransform = {
+		position: new THREE.Vector3(),
+		rotation: new THREE.Quaternion(),
+		scale: new THREE.Vector3( 1, 1, 1 )
+	};
+
+	// state
+
+	protected viewing: ViewingState = 'ready';
+
+	constructor( manager: THREE.LoadingManager, sectionName: string, parentUniforms: ORE.Uniforms ) {
 
 		super();
 
@@ -41,13 +65,15 @@ export class Section extends THREE.Object3D {
 			Load
 		-------------------------------*/
 
+		this.manager = manager;
+
 		this.loadGLTF( this.sectionName );
 
 	}
 
 	private loadGLTF( gltfName: string ) {
 
-		let loader = new GLTFLoader();
+		let loader = new GLTFLoader( this.manager );
 
 		loader.load( './assets/scene/' + gltfName + '.glb', ( gltf ) => {
 
@@ -71,6 +97,18 @@ export class Section extends THREE.Object3D {
 
 			}
 
+			// baku transform
+
+			let baku = gltf.scene.getObjectByName( 'Baku' ) as THREE.Object3D;
+
+			if ( baku ) {
+
+				this.bakuTransform.position.copy( baku.position );
+				this.bakuTransform.rotation.copy( baku.quaternion );
+				this.bakuTransform.scale.copy( baku.scale );
+
+			}
+
 			// emitevent
 
 			this.dispatchEvent( { type: 'loaded' } );
@@ -82,27 +120,34 @@ export class Section extends THREE.Object3D {
 	protected onLoadedGLTF( gltf: GLTF ) {
 	}
 
-	public switchViewingState( visibility: 'ready' | 'viewing' | 'passed' ) {
+	public switchViewingState( viewing: ViewingState ) {
 
-		if ( visibility == 'ready' ) {
+		this.viewing = viewing;
+
+		if ( viewing == 'ready' ) {
 
 			this.animator.animate( 'sectionVisibility' + this.sectionName, 0 );
 
 			this.visible = false;
 
-		} else if ( visibility == 'viewing' ) {
+		} else if ( viewing == 'viewing' ) {
 
 			this.animator.animate( 'sectionVisibility' + this.sectionName, 1 );
 
 			this.visible = true;
 
-		} else if ( visibility == 'passed' ) {
+		} else if ( viewing == 'passed' ) {
 
 			this.animator.animate( 'sectionVisibility' + this.sectionName, 2 );
 
 			this.visible = false;
 
 		}
+
+	}
+
+	public update( deltaTime: number ) {
+
 
 	}
 

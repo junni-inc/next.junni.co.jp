@@ -62,10 +62,10 @@ export class CameraController {
 
 	}
 
-	public updateTransform( a: CameraTransform, b:CameraTransform, t: number ) {
+	public updateTransform( cameraTransform: CameraTransform ) {
 
-		this.animator.setValue( 'cameraPos', a.position.clone().lerp( b.position, t ) );
-		this.animator.setValue( 'cameraTargetPos', a.targetPosition.clone().lerp( b.targetPosition, t ) );
+		this.animator.setValue( 'cameraPos', cameraTransform.position );
+		this.animator.setValue( 'cameraTargetPos', cameraTransform.targetPosition );
 
 	}
 
@@ -88,7 +88,7 @@ export class CameraController {
 		let diff = this.cursorPos.clone().sub( this.cursorPosDelay ).multiplyScalar( deltaTime * 1.0 );
 		diff.multiply( diff.clone().addScalar( 1.0 ) );
 
-		this.cursorPosDelayVel.add( diff.multiplyScalar( 3.0 ) );
+		this.cursorPosDelayVel.add( diff.multiplyScalar( 5.0 ) );
 		this.cursorPosDelayVel.multiplyScalar( 0.85 );
 
 		this.cursorPosDelay.add( this.cursorPosDelayVel );
