@@ -42,7 +42,7 @@ void main(){
 	#pragma unroll_loop_start
 	for ( int i = 0; i < RENDER_COUNT; i ++ ) {
 		
-		// c += texture2D( bloomTexs[ UNROLLED_LOOP_INDEX ], vUv ).xyz * pow( 2.0, float( UNROLLED_LOOP_INDEX ) ) * brightness;
+		c += texture2D( bloomTexs[ UNROLLED_LOOP_INDEX ], vUv ).xyz * pow( 2.0, float( UNROLLED_LOOP_INDEX ) ) * brightness;
 
 	}
 	#pragma unroll_loop_end

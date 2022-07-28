@@ -1,3 +1,4 @@
+import * as THREE from 'three';
 import * as ORE from 'ore-three';
 
 import { GlobalManager } from './GlobalManager';
@@ -49,6 +50,12 @@ export class MainScene extends ORE.BaseLayer {
 		this.gManager = new GlobalManager();
 
 		this.gManager.assetManager.load( { assets: [
+			{ name: 'noise', path: './assets/noise.png', type: 'tex', timing: 'sub', onLoad( value: THREE.Texture ) {
+
+				value.wrapS = THREE.RepeatWrapping;
+				value.wrapT = THREE.RepeatWrapping;
+
+			}, }
 		] } );
 
 		this.gManager.assetManager.addEventListener( 'loadMustAssets', ( e ) => {
@@ -124,7 +131,7 @@ export class MainScene extends ORE.BaseLayer {
 
 					window.gManager.removeListener( 'sectionChange', onSectionChange );
 
-					this.scroller.move( i, 1, () => {
+					this.scroller.move( i, 0.1, () => {
 
 						window.gManager.addListener( 'sectionChange', onSectionChange );
 
