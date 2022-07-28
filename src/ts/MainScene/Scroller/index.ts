@@ -6,8 +6,6 @@ export class Scroller extends EventEmitter {
 	public enable: boolean = true;
 	public value: number = 0;
 
-	private showingContentPos: number = 0;
-
 	private selectingContentPos: number = 0;
 	private touchStartContentPos: number = 0;
 	private moveVelocity: number = 0;
@@ -60,11 +58,10 @@ export class Scroller extends EventEmitter {
 	private reset() {
 
 		this.value = 0;
-		this.showingContentPos = 0;
 		this.selectingContentPos = 0;
 		this.touchStartContentPos = 0;
 		this.moveVelocity = 0;
-		this.currentContent = - 1;
+		this.currentContent = 0;
 		this.wheelStop = false;
 		this.isAnimating = false;
 		this.isTouching = false;
@@ -243,26 +240,14 @@ export class Scroller extends EventEmitter {
 
 	}
 
-	public move( value: number, onFinished?: () => void ) {
+	public move( value: number, duration: number = 1, onFinished?: () => void ) {
 
-		let diff = value - ( this.currentContent % ( this.sectionNum - 1.0 ) );
-		let n = diff;
-
-
-		if ( Math.abs( n ) > this.sectionNum / 2 ) {
-
-			n -= ( this.sectionNum - 1.0 ) * Math.sign( n );
-
-		}
-
-		let g = this.currentContent + n;
-
-		let duration = 1.0;
 		this.touchStartContentPos = - 1;
 		this.isAnimating = true;
 
 		this.animator.setValue( 'contentSelectorValue', this.value );
-		this.animator.animate( 'contentSelectorValue', g, duration, () => {
+
+		this.animator.animate( 'contentSelectorValue', value, duration, () => {
 
 			this.isAnimating = false;
 			this.moveVelocity = 0;

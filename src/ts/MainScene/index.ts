@@ -15,6 +15,7 @@ export class MainScene extends ORE.BaseLayer {
 
 	private world?: World;
 
+
 	constructor() {
 
 		super();
@@ -31,7 +32,9 @@ export class MainScene extends ORE.BaseLayer {
 
 			if ( this.world ) {
 
-				this.world.changeSection( sectionNum );
+				let section = this.world.changeSection( sectionNum );
+
+				window.gManager.emitEvent( 'sectionChange', [ section.sectionName ] );
 
 			}
 
@@ -80,14 +83,65 @@ export class MainScene extends ORE.BaseLayer {
 		-------------------------------*/
 
 		this.world = new World( this.scene, this.commonUniforms );
+		this.world.changeSection( 0 );
 		this.scene.add( this.world );
 
-		this.world.addEventListener( 'loadProgress', ( e ) => {
-		} );
-
-		this.world.changeSection( 0 );
-
 		this.scroller.changeSectionNum( this.world.sections.length );
+
+		/*-------------------------------
+			HashChange
+		-------------------------------*/
+
+		const onSectionChange = ( secName: string ) => {
+
+			window.removeEventListener( 'hashchange', onChangeHash );
+
+			if ( secName ) {
+
+				window.location.hash = secName;
+
+			}
+
+			setTimeout( () => {
+
+				window.addEventListener( 'hashchange', onChangeHash );
+
+			}, 50 );
+
+		};
+
+		const onChangeHash = ( e?: Event ) => {
+
+			let hash = window.location.hash;
+
+			if ( ! this.world ) return;
+
+			for ( let i = 0; i < this.world.sections.length; i ++ ) {
+
+				let sec = this.world.sections[ i ];
+
+				if ( sec && "#" + sec.sectionName == hash ) {
+
+					window.gManager.removeListener( 'sectionChange', onSectionChange );
+
+					this.scroller.move( i, 1, () => {
+
+						window.gManager.addListener( 'sectionChange', onSectionChange );
+
+					} );
+
+					break;
+
+				}
+
+			}
+
+		};
+
+		window.gManager.addListener( 'sectionChange', onSectionChange );
+		window.addEventListener( 'hashchange', onChangeHash );
+
+		onChangeHash();
 
 	}
 

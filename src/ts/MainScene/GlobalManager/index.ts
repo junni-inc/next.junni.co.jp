@@ -1,17 +1,18 @@
-import * as THREE from 'three';
 import * as ORE from 'ore-three';
+import EventEmitter from 'wolfy87-eventemitter';
 
-import { AssetManager, AssetManagerParams } from './AssetManager';
+import { AssetManager } from './AssetManager';
 import { EasyRaycaster } from './EasyRaycaster';
-import { Uniform } from 'three';
 
-export class GlobalManager {
+export class GlobalManager extends EventEmitter {
 
-	public eRay: EasyRaycaster
+	public eRay: EasyRaycaster;
 	public assetManager: AssetManager;
 	public animator: ORE.Animator;
 
 	constructor( ) {
+
+		super();
 
 		window.gManager = this;
 

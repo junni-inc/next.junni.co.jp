@@ -92,6 +92,8 @@ export class World extends THREE.Object3D {
 
 	public changeSection( sectionNum: number ) {
 
+		let viewingIndex = 0;
+
 		this.sections.forEach( ( item, index ) => {
 
 			if ( index > sectionNum ) {
@@ -106,9 +108,13 @@ export class World extends THREE.Object3D {
 
 				item.switchViewingState( 'viewing' );
 
+				viewingIndex = index;
+
 			}
 
 		} );
+
+		return this.sections[ viewingIndex ];
 
 	}
 

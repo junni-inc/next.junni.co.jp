@@ -14,7 +14,7 @@ export type ViewingState = 'ready' | 'viewing' | 'passed'
 
 export class Section extends THREE.Object3D {
 
-	protected sectionName: string;
+	public sectionName: string;
 
 	protected commonUniforms: ORE.Uniforms;
 
