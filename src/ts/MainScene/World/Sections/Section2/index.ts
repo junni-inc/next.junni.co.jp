@@ -14,8 +14,14 @@ export class Section2 extends Section {
 
 		super( manager, 'section_2', parentUniforms );
 
+		this.ppParam.bloomBrightness = 0.1;
+
 		let light = new THREE.DirectionalLight();
-		light.position.set( 0.0, 0.3, - 1 );
+		light.position.set( 0.5, 0.0, - 0.9 );
+		this.add( light );
+
+		light = new THREE.DirectionalLight();
+		light.position.set( - 1.5, 0.3, - 1 );
 		this.add( light );
 
 	}
@@ -47,6 +53,12 @@ export class Section2 extends Section {
 			// this.bakuTransform.rotation.premultiply( new THREE.Quaternion().setFromEuler( new THREE.Euler( 0.0, 0.01, 0.0 ) ) );
 
 		}
+
+	}
+
+	public resize( info: ORE.LayerInfo ) {
+
+		super.resize( info );
 
 	}
 

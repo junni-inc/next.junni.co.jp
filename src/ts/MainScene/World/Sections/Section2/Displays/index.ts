@@ -22,7 +22,7 @@ export class Displays extends EventEmitter {
 
 		this.root.children.forEach( item => {
 
-			let mesh = item as THREE.Mesh;
+			let mesh = item.children[ 0 ] as THREE.Mesh;
 
 			mesh.material = new THREE.ShaderMaterial( {
 				vertexShader: displayVert,

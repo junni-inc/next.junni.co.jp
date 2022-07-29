@@ -4,12 +4,21 @@ import * as ORE from 'ore-three';
 import { Section } from '../Section';
 import { GLTF } from 'three/examples/jsm/loaders/GLTFLoader';
 import { BG } from './BG';
+import { Shadow } from './Shadow';
+import { Peoples } from './Peoples';
 
 export class Section4 extends Section {
 
-	constructor( manager: THREE.LoadingManager, parentUniforms: ORE.Uniforms ) {
+	private renderer: THREE.WebGLRenderer;
+	private peoples?: Peoples;
+
+	constructor( manager: THREE.LoadingManager, parentUniforms: ORE.Uniforms, renderer: THREE.WebGLRenderer ) {
 
 		super( manager, 'section_4', parentUniforms );
+
+		this.renderer = renderer;
+
+		this.bakuMaterialType = 'line';
 
 	}
 
@@ -24,6 +33,29 @@ export class Section4 extends Section {
 		-------------------------------*/
 
 		new BG( scene.getObjectByName( 'BG' ) as THREE.Mesh, this.commonUniforms );
+
+		/*-------------------------------
+			Shadow
+		-------------------------------*/
+
+		new Shadow( scene.getObjectByName( 'Shadow' ) as THREE.Mesh, this.commonUniforms );
+
+		/*-------------------------------
+			Peoples
+		-------------------------------*/
+
+		this.peoples = new Peoples( this.renderer, 100, this.commonUniforms );
+		this.add( this.peoples );
+
+	}
+
+	public update( deltaTime: number ): void {
+
+		if ( this.peoples ) {
+
+			this.peoples.update( deltaTime );
+
+		}
 
 	}
 

@@ -35,7 +35,7 @@ export class CameraController {
 	constructor( obj: THREE.PerspectiveCamera ) {
 
 		this.camera = obj;
-		this.baseCamera = new THREE.PerspectiveCamera( 45, 1.0, 0.1, 1000 );
+		this.baseCamera = new THREE.PerspectiveCamera( 40, 1.0, 0.1, 1000 );
 
 		// param
 

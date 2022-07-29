@@ -46,6 +46,8 @@ export class Scroller extends EventEmitter {
 		this.sectionNum = contentNum;
 		this.reset();
 
+		this.emitEvent( 'changeSelectingSection', [ this.selectingContentPos ] );
+
 	}
 
 	public setCurrentContent( contentNum: number ) {

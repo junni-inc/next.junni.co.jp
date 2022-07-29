@@ -16,12 +16,15 @@ export class MainScene extends ORE.BaseLayer {
 
 	private world?: World;
 
-
 	constructor() {
 
 		super();
 
-		this.commonUniforms = ORE.UniformsLib.mergeUniforms( this.commonUniforms, {} );
+		this.commonUniforms = ORE.UniformsLib.mergeUniforms( this.commonUniforms, {
+			uTimeMod: {
+				value: 0
+			}
+		} );
 
 		/*-------------------------------
 			Scroller
@@ -34,6 +37,12 @@ export class MainScene extends ORE.BaseLayer {
 			if ( this.world ) {
 
 				let section = this.world.changeSection( sectionNum );
+
+				if ( this.renderPipeline ) {
+
+					this.renderPipeline.updateParam( section.ppParam );
+
+				}
 
 				window.gManager.emitEvent( 'sectionChange', [ section.sectionName ] );
 
@@ -50,12 +59,14 @@ export class MainScene extends ORE.BaseLayer {
 		this.gManager = new GlobalManager();
 
 		this.gManager.assetManager.load( { assets: [
-			{ name: 'noise', path: './assets/noise.png', type: 'tex', timing: 'sub', onLoad( value: THREE.Texture ) {
+			{ name: 'noise', path: './assets/textures/noise.png', type: 'tex', timing: 'sub', onLoad( value: THREE.Texture ) {
 
 				value.wrapS = THREE.RepeatWrapping;
 				value.wrapT = THREE.RepeatWrapping;
 
-			}, }
+			}, },
+			{ name: 'people', path: './assets/textures/people1.png', type: 'tex', timing: 'sub' }
+
 		] } );
 
 		this.gManager.assetManager.addEventListener( 'loadMustAssets', ( e ) => {
@@ -89,11 +100,15 @@ export class MainScene extends ORE.BaseLayer {
 			World
 		-------------------------------*/
 
-		this.world = new World( this.scene, this.commonUniforms );
-		this.world.changeSection( 0 );
-		this.scene.add( this.world );
+		if ( this.renderer ) {
 
-		this.scroller.changeSectionNum( this.world.sections.length );
+			this.world = new World( this.renderer, this.scene, this.commonUniforms );
+			this.world.changeSection( 0 );
+			this.scene.add( this.world );
+
+			this.scroller.changeSectionNum( this.world.sections.length );
+
+		}
 
 		/*-------------------------------
 			HashChange
@@ -154,6 +169,8 @@ export class MainScene extends ORE.BaseLayer {
 
 	public animate( deltaTime: number ) {
 
+		this.commonUniforms.uTimeMod.value = this.time % 1;
+
 		this.scroller.update( deltaTime );
 
 		if ( this.gManager ) {
@@ -204,6 +221,12 @@ export class MainScene extends ORE.BaseLayer {
 		if ( this.renderPipeline ) {
 
 			this.renderPipeline.resize( this.info );
+
+		}
+
+		if ( this.world ) {
+
+			this.world.resize( this.info );
 
 		}
 

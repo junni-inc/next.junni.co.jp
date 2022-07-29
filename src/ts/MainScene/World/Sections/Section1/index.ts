@@ -10,6 +10,18 @@ export class Section1 extends Section {
 
 		super( manager, 'section_1', parentUniforms );
 
+		/*-------------------------------
+			Light
+		-------------------------------*/
+
+		let light = new THREE.DirectionalLight();
+		light.position.set( 1, 1, 1 );
+		this.add( light );
+
+		light = new THREE.DirectionalLight();
+		light.position.set( 3, - 1, 1 );
+		this.add( light );
+
 	}
 
 	protected onLoadedGLTF( gltf: GLTF ): void {

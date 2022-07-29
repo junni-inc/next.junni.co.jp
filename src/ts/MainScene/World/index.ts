@@ -28,7 +28,7 @@ export class World extends THREE.Object3D {
 
 	private baku: Baku;
 
-	constructor( scene: THREE.Scene, parentUniforms: ORE.Uniforms ) {
+	constructor( renderer: THREE.WebGLRenderer, scene: THREE.Scene, parentUniforms: ORE.Uniforms ) {
 
 		super();
 
@@ -80,9 +80,15 @@ export class World extends THREE.Object3D {
 		this.add( this.section3 );
 		this.sections.push( this.section3 );
 
-		this.section4 = new Section4( this.manager, this.commonUniforms );
+		this.section4 = new Section4( this.manager, this.commonUniforms, renderer );
 		this.add( this.section4 );
 		this.sections.push( this.section4 );
+
+		this.baku.onLoaded = () => {
+
+			this.section3.setSceneTex( this.baku.sceneRenderTarget.texture );
+
+		};
 
 	}
 
@@ -110,7 +116,11 @@ export class World extends THREE.Object3D {
 
 		} );
 
-		return this.sections[ viewingIndex ];
+		let section = this.sections[ viewingIndex ];
+
+		this.baku.changeMaterial( section.bakuMaterialType );
+
+		return section;
 
 	}
 
@@ -153,6 +163,18 @@ export class World extends THREE.Object3D {
 		this.sections.forEach( item => {
 
 			item.update( deltaTime );
+
+		} );
+
+	}
+
+	public resize( info: ORE.LayerInfo ) {
+
+		this.baku.resize( info );
+
+		this.sections.forEach( item => {
+
+			item.resize( info );
 
 		} );
 

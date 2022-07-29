@@ -2,6 +2,9 @@ import * as THREE from 'three';
 import * as ORE from 'ore-three';
 import { GLTF, GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
 import { CameraTransform } from '../../../CameraController';
+import { LayerInfo } from 'ore-three';
+import { PPParam } from '../../../RenderPipeline';
+import { BakuMaterialType } from '../../Baku';
 
 
 export type BakuTransform = {
@@ -40,6 +43,17 @@ export class Section extends THREE.Object3D {
 	// state
 
 	protected viewing: ViewingState = 'ready';
+
+	// pp param
+
+	public ppParam: PPParam = {
+		bloomBrightness: 0,
+		vignet: 0,
+	};
+
+	// baku material
+
+	public bakuMaterialType: BakuMaterialType = 'normal';
 
 	constructor( manager: THREE.LoadingManager, sectionName: string, parentUniforms: ORE.Uniforms ) {
 
@@ -148,6 +162,10 @@ export class Section extends THREE.Object3D {
 
 	public update( deltaTime: number ) {
 
+
+	}
+
+	public resize( info: LayerInfo ) {
 
 	}
 

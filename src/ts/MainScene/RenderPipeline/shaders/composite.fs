@@ -6,8 +6,9 @@ uniform sampler2D sceneTex;
 uniform sampler2D lensTex;
 uniform sampler2D bloomTexs[RENDER_COUNT];
 uniform sampler2D noiseTex;
-uniform float brightness;
 uniform float time;
+uniform float uBrightness;
+uniform float uVignet;
 
 void main(){
 
@@ -25,7 +26,7 @@ void main(){
 	#pragma unroll_loop_start
 	for ( int i = 0; i < 3; i ++ ) {
 		
-		slide = float( UNROLLED_LOOP_INDEX ) / 5.0;
+		slide = float( UNROLLED_LOOP_INDEX ) / 5.0 * 0.0;
 
 		rUV = uv + vec2( 0.0, 0.0 ) * slide;
 		gUV = uv + vec2( 0.0025, 0.0 ) * slide;
@@ -42,10 +43,13 @@ void main(){
 	#pragma unroll_loop_start
 	for ( int i = 0; i < RENDER_COUNT; i ++ ) {
 		
-		c += texture2D( bloomTexs[ UNROLLED_LOOP_INDEX ], vUv ).xyz * pow( 2.0, float( UNROLLED_LOOP_INDEX ) ) * brightness;
+		c += texture2D( bloomTexs[ UNROLLED_LOOP_INDEX ], vUv ).xyz * pow( 2.0, float( UNROLLED_LOOP_INDEX ) ) * uBrightness;
 
 	}
 	#pragma unroll_loop_end
+
+
+	c *= mix( 1.0, smoothstep( 2.0, 0.8, length( cuv ) ), uVignet );
 
 	gl_FragColor = vec4( c, 1.0 );
 

@@ -16,7 +16,14 @@ import neiborhoodBlendingFrag from './shaders/smaa_neiborhoodBlending.fs';
 //composite shader
 import compositeFrag from './shaders/composite.fs';
 
+export type PPParam = {
+	bloomBrightness?: number,
+	vignet?: number
+}
+
 export class RenderPipeline {
+
+	private animator: ORE.Animator;
 
 	private renderer: THREE.WebGLRenderer;
 
@@ -46,6 +53,7 @@ export class RenderPipeline {
 
 	constructor( renderer: THREE.WebGLRenderer, parentUniforms?: ORE.Uniforms ) {
 
+		this.animator = window.gManager.animator;
 		this.renderer = renderer;
 		this.bloomResolutionRatio = 0.5;
 		this.bloomRenderCount = 5;
@@ -59,7 +67,7 @@ export class RenderPipeline {
 		------------------------*/
 		this.renderTargets = {
 			rt1: new THREE.WebGLRenderTarget( 0, 0, {
-				stencilBuffer: false,
+				stencilBuffer: true,
 				generateMipmaps: false,
 				depthBuffer: true,
 				minFilter: THREE.LinearFilter,
@@ -104,6 +112,7 @@ export class RenderPipeline {
 		/*------------------------
 			InputTextures
 		------------------------*/
+
 		this.inputTextures = {
 			areaTex: {
 				value: null
@@ -246,13 +255,22 @@ export class RenderPipeline {
 		this.compositePP = new ORE.PostProcessing( this.renderer, {
 			fragmentShader: compo,
 			uniforms: ORE.UniformsLib.mergeUniforms( {
-				brightness: {
-					value: this.brightness
-				},
 			}, this.commonUniforms ),
 			defines: {
 				RENDER_COUNT: this.bloomRenderCount.toString()
 			}
+		} );
+
+		this.compositePP.effect.material.uniforms.uBrightness = this.animator.add( {
+			name: 'bloomBrightness',
+			initValue: this.brightness,
+			easing: ORE.Easings.easeOutCubic
+		} );
+
+		this.compositePP.effect.material.uniforms.uVignet = this.animator.add( {
+			name: 'vignet',
+			initValue: 1.0,
+			easing: ORE.Easings.easeOutCubic
 		} );
 
 	}
@@ -352,6 +370,22 @@ export class RenderPipeline {
 
 			this.renderTargets[ 'rtBlur' + i.toString() + '_0' ].setSize( bloomSize.x, bloomSize.y );
 			this.renderTargets[ 'rtBlur' + i.toString() + '_1' ].setSize( bloomSize.x, bloomSize.y );
+
+		}
+
+	}
+
+	public updateParam( param: PPParam ) {
+
+		if ( param.bloomBrightness !== undefined ) {
+
+			this.animator.animate( 'bloomBrightness', param.bloomBrightness );
+
+		}
+
+		if ( param.vignet !== undefined ) {
+
+			this.animator.animate( 'vignet', param.vignet );
 
 		}
 
