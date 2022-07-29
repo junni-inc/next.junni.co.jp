@@ -63,6 +63,7 @@ const setDevMode = ( cb ) => {
 const setPrdMode = ( cb ) => {
 
 	webpackConfig.mode = 'production';
+	webpackConfig.watch = false;
 	
 	cb();
 	
