@@ -3,4 +3,4 @@
 	url = https://github.com/ukonpower/ore-three
 [submodule "packages/power-mesh"]
 	path = packages/power-mesh
-	url = git@github.com:ukonpower/power-mesh.git
+	url = https://github.com/ukonpower/power-mesh.git
