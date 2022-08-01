@@ -37,8 +37,8 @@ module.exports = {
     resolve: {
         extensions: [".ts", ".js"],
 		alias: {
-            "ore-three": path.resolve(__dirname, 'packages/ore-three/packages/ore-three/build/ore-three.js'),
-            "power-mesh": path.resolve(__dirname, 'packages/power-mesh/packages/power-mesh/build/power-mesh.js'),
+            "ore-three": '/packages/ore-three/packages/ore-three/build/ore-three.js',
+            "power-mesh": '/packages/power-mesh/packages/power-mesh/build/power-mesh.js',
         }
 	},
 	cache: {
