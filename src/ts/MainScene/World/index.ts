@@ -6,6 +6,7 @@ import { BakuTransform, Section } from './Sections/Section';
 import { Section3 } from './Sections/Section3';
 import { Section4 } from './Sections/Section4';
 import { Baku } from './Baku';
+import { Section5 } from './Sections/Section5';
 
 export class World extends THREE.Object3D {
 
@@ -19,10 +20,11 @@ export class World extends THREE.Object3D {
 	// section
 
 	public sections: Section[] = [];
-	private section1: Section1;
-	private section2: Section2;
-	private section3: Section3;
-	private section4: Section4;
+	public section1: Section1;
+	public section2: Section2;
+	public section3: Section3;
+	public section4: Section4;
+	public section5: Section5;
 
 	// baku
 
@@ -83,6 +85,10 @@ export class World extends THREE.Object3D {
 		this.section4 = new Section4( this.manager, this.commonUniforms, renderer );
 		this.add( this.section4 );
 		this.sections.push( this.section4 );
+
+		this.section5 = new Section5( this.manager, this.commonUniforms );
+		this.add( this.section5 );
+		this.sections.push( this.section5 );
 
 		this.baku.onLoaded = () => {
 

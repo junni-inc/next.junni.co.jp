@@ -59,6 +59,7 @@ export class MainScene extends ORE.BaseLayer {
 		this.gManager = new GlobalManager();
 
 		this.gManager.assetManager.load( { assets: [
+			{ name: 'topLogo', path: './assets/textures/top_logo.png', type: 'tex', timing: 'must' },
 			{ name: 'noise', path: './assets/textures/noise.png', type: 'tex', timing: 'sub', onLoad( value: THREE.Texture ) {
 
 				value.wrapS = THREE.RepeatWrapping;
@@ -245,6 +246,12 @@ export class MainScene extends ORE.BaseLayer {
 	public onWheel( event: WheelEvent, trackpadDelta: number ): void {
 
 		this.scroller.addVelocity( event.deltaY * 0.00005 );
+
+		if ( this.world ) {
+
+			this.world.section1.splash();
+
+		}
 
 	}
 

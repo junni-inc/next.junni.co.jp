@@ -36,10 +36,6 @@ module.exports = {
     },
     resolve: {
         extensions: [".ts", ".js"],
-		alias: {
-            "ore-three": '/packages/ore-three/packages/ore-three/build/ore-three.js',
-            "power-mesh": '/packages/power-mesh/packages/power-mesh/build/power-mesh.js',
-        }
 	},
 	cache: {
 		type: 'filesystem',

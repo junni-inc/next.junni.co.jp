@@ -14,13 +14,14 @@
   "bugs": {
     "url": ""
   },
-  "workspaces":[
-	"packages/*/packages/*"
+  "workspaces": [
+    "packages/*/packages/*"
   ],
   "devDependencies": {
     "@babel/core": "^7.16.12",
     "@babel/preset-env": "^7.16.11",
     "@babel/register": "^7.16.9",
+    "@types/cannon": "^0.1.8",
     "@typescript-eslint/eslint-plugin": "^5.10.1",
     "@typescript-eslint/parser": "^5.10.1",
     "browser-sync": "^2.27.7",
@@ -48,6 +49,8 @@
   },
   "dependencies": {
     "@types/three": "^0.142.0",
-    "three": "^0.142.0"
+    "cannon": "^0.6.2",
+    "three": "^0.142.0",
+    "wolfy87-eventemitter": "^5.2.9"
   }
 }

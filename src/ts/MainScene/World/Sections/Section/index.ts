@@ -21,7 +21,12 @@ export class Section extends THREE.Object3D {
 
 	protected commonUniforms: ORE.Uniforms;
 
+	// animation
+
 	protected animator: ORE.Animator;
+	protected animationMixer?: THREE.AnimationMixer;
+	protected animationList?: THREE.AnimationClip[];
+	protected animationActionList: THREE.AnimationAction[] = [];
 
 	// manager
 
@@ -85,13 +90,11 @@ export class Section extends THREE.Object3D {
 
 	}
 
-	private loadGLTF( gltfName: string ) {
+	protected loadGLTF( gltfName: string ) {
 
 		let loader = new GLTFLoader( this.manager );
 
 		loader.load( './assets/scene/' + gltfName + '.glb', ( gltf ) => {
-
-			this.onLoadedGLTF( gltf );
 
 			// camera transform
 
@@ -122,6 +125,19 @@ export class Section extends THREE.Object3D {
 				this.bakuTransform.scale.copy( baku.scale );
 
 			}
+
+			// animations
+
+			this.animationMixer = new THREE.AnimationMixer( gltf.scene );
+			this.animations = gltf.animations;
+
+			for ( let i = 0; i < this.animations.length; i ++ ) {
+
+				this.animationActionList.push( this.animationMixer.clipAction( this.animations[ i ] ) );
+
+			}
+
+			this.onLoadedGLTF( gltf );
 
 			// emitevent
 
@@ -161,12 +177,9 @@ export class Section extends THREE.Object3D {
 	}
 
 	public update( deltaTime: number ) {
-
-
 	}
 
 	public resize( info: LayerInfo ) {
-
 	}
 
 }
