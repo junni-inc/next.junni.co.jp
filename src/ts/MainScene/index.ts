@@ -60,6 +60,7 @@ export class MainScene extends ORE.BaseLayer {
 
 		this.gManager.assetManager.load( { assets: [
 			{ name: 'topLogo', path: './assets/textures/top_logo.png', type: 'tex', timing: 'must' },
+			{ name: 'matCap', path: './assets/textures/matcap.png', type: 'tex', timing: 'must' },
 			{ name: 'noise', path: './assets/textures/noise.png', type: 'tex', timing: 'sub', onLoad( value: THREE.Texture ) {
 
 				value.wrapS = THREE.RepeatWrapping;

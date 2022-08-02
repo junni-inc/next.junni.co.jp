@@ -7,6 +7,8 @@ import { Section } from '../Section';
 import { BG } from './BG';
 import { Wall } from './Wall';
 import { BakuCollision } from './BakuCollision';
+import { Objects } from './Objects';
+import { Logo } from './Logo';
 
 export class Section1 extends Section {
 
@@ -17,7 +19,9 @@ export class Section1 extends Section {
 	private bakuCollision: BakuCollision;
 
 	private sceneRoot?: THREE.Object3D;
+
 	private wall: Wall;
+	private objects?: Objects;
 
 	constructor( manager: THREE.LoadingManager, parentUniforms: ORE.Uniforms ) {
 
@@ -90,6 +94,18 @@ export class Section1 extends Section {
 		-------------------------------*/
 
 		new BG( scene.getObjectByName( 'BG' ) as THREE.Mesh, this.commonUniforms );
+
+		/*-------------------------------
+			Logo
+		-------------------------------*/
+
+		new Logo( scene.getObjectByName( 'Logo' ) as THREE.Object3D, this.commonUniforms );
+
+		/*-------------------------------
+			Objects
+		-------------------------------*/
+
+		this.objects = new Objects( scene.getObjectByName( 'Objects' ) as THREE.Object3D, this.commonUniforms );
 
 		setTimeout( () => {
 
