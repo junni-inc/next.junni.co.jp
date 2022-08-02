@@ -41,7 +41,7 @@ export class BakuCollision extends THREE.Object3D {
 			Mesh
 		-------------------------------*/
 
-		let radius = 0.55;
+		let radius = 0.35;
 		this.mesh = new THREE.Mesh( new THREE.SphereBufferGeometry( radius ), new THREE.MeshNormalMaterial() );
 		this.mesh.visible = false;
 		this.add( this.mesh );
@@ -53,7 +53,7 @@ export class BakuCollision extends THREE.Object3D {
 		this.cannonWorld.addBody( this.body );
 
 		this.kinematicBody = new CANNON.Body( { type: CANNON.Body.KINEMATIC } );
-		this.kinematicBody.addShape( new CANNON.Sphere( radius ) );
+		this.kinematicBody.addShape( new CANNON.Sphere( radius * 1.7 ) );
 		this.kinematicBody.position.set( 0, 0, - 10 );
 		this.cannonWorld.addBody( this.kinematicBody );
 
@@ -71,7 +71,7 @@ export class BakuCollision extends THREE.Object3D {
 	public splash() {
 
 		this.body.wakeUp();
-		this.body.velocity.set( 0, 1, 5 );
+		this.body.velocity.set( - 0.5, 1, 5 );
 
 		setTimeout( () => {
 

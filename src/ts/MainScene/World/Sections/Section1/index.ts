@@ -91,6 +91,12 @@ export class Section1 extends Section {
 
 		new BG( scene.getObjectByName( 'BG' ) as THREE.Mesh, this.commonUniforms );
 
+		setTimeout( () => {
+
+			this.splash();
+
+		}, 10 );
+
 	}
 
 	public update( deltaTime: number ): void {

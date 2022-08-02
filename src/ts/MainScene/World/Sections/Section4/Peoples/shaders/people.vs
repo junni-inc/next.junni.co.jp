@@ -48,7 +48,7 @@ void main( void ) {
 	pos.xz = texture2D( dataPos, computeUV).xz;
 
 	vec3 vec = texture2D( dataVel, computeUV).xyz;
-	p *= makeRotationDir(vec3( vec.x, 0.0, vec.z ), vec3( 0.0, 1.0, 0.0 ) );
+	// p *= makeRotationDir(vec3( vec.x, 0.0, vec.z ), vec3( 0.0, 1.0, 0.0 ) );
 
 	vec4 worldPos = modelMatrix * vec4( p + pos, 1.0 );
 	vec4 mvPosition = viewMatrix * worldPos;
