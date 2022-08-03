@@ -11,8 +11,13 @@
       "dom"
     ],
     "typeRoots": ["node_modules/@types"],
-    "rootDir": "./src/ts",
-    "outDir": "./public"
+    "rootDir": "./",
+    "outDir": "./public",
+	"baseUrl": ".",
+    "paths": {
+      "ore-three" : ["./packages/ore-three/packages/ore-three/src"],
+      "power-mesh" : ["./packages/power-mesh/packages/power-mesh/src"],
+    }
   },
   "include": ["./src/"]
 } 

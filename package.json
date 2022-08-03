@@ -14,9 +14,6 @@
   "bugs": {
     "url": ""
   },
-  "workspaces": [
-    "packages/*/packages/*"
-  ],
   "devDependencies": {
     "@babel/core": "^7.16.12",
     "@babel/preset-env": "^7.16.11",

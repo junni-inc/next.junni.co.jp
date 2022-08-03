@@ -32,6 +32,7 @@ export class GlobalManager extends EventEmitter {
 		// pane
 
 		this.pane = new Pane();
+		this.pane.hidden = true;
 
 		this.animator.addEventListener( 'added', ( e ) => {
 
