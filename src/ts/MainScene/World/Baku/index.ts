@@ -35,9 +35,6 @@ export class Baku extends THREE.Object3D {
 			uSceneTex: {
 				value: null
 			},
-			uBackSideNormalTex: {
-				value: null
-			},
 			winResolution: {
 				value: new THREE.Vector2()
 			},
@@ -154,7 +151,6 @@ export class Baku extends THREE.Object3D {
 
 		this.animator.animate( 'bakuTransparent', type == 'grass' ? 1 : 0, 1 );
 		this.animator.animate( 'bakuLine', type == 'line' ? 1 : 0, 1 );
-
 
 	}
 

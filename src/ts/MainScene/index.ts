@@ -193,7 +193,6 @@ export class MainScene extends ORE.BaseLayer {
 
 			let transform = this.world.updateTransform( this.scroller.value );
 
-
 			if ( this.cameraController ) {
 
 				this.cameraController.updateTransform( transform.cameraTransform );

@@ -27,7 +27,6 @@ export class GlobalManager extends EventEmitter {
 			Animator
 		-------------------------------*/
 
-
 		this.animator = new ORE.Animator();
 
 		// pane
@@ -39,6 +38,16 @@ export class GlobalManager extends EventEmitter {
 			let opt = e.variable.userData && e.variable.userData.pane;
 
 			this.pane.addInput( this.animator.dataBase, e.varName, opt );
+
+		} );
+
+		window.addEventListener( 'keydown', ( e ) => {
+
+			if ( e.key == 'n' ) {
+
+				this.pane.hidden = ! this.pane.hidden;
+
+			}
 
 		} );
 

@@ -36,7 +36,8 @@ export class Section extends THREE.Object3D {
 
 	public cameraTransform: CameraTransform = {
 		position: new THREE.Vector3(),
-		targetPosition: new THREE.Vector3()
+		targetPosition: new THREE.Vector3(),
+		fov: 50,
 	};
 
 	public bakuTransform: BakuTransform = {
@@ -104,11 +105,12 @@ export class Section extends THREE.Object3D {
 
 			// camera transform
 
-			let camera = gltf.scene.getObjectByName( 'Camera' );
+			let camera = gltf.scene.getObjectByName( 'Camera' ) as THREE.PerspectiveCamera;
 
 			if ( camera ) {
 
 				this.cameraTransform.position.copy( camera.position );
+				this.cameraTransform.fov = camera.fov;
 
 			}
 
@@ -119,6 +121,7 @@ export class Section extends THREE.Object3D {
 				this.cameraTransform.targetPosition.copy( target.position );
 
 			}
+
 
 			// baku transform
 

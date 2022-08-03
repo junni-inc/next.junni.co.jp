@@ -1,8 +1,8 @@
 import * as THREE from 'three';
 import * as ORE from 'ore-three';
 
-import comPosition from './shaders/trailComputePosition.glsl';
-import comVelocity from './shaders/trailComputeVelocity.glsl';
+import comPosition from './shaders/computePosition.glsl';
+import comVelocity from './shaders/computeVelocity.glsl';
 
 import peopleVert from './shaders/people.vs';
 import peopleFrag from './shaders/people.fs';
@@ -31,7 +31,9 @@ export class Peoples extends THREE.Mesh {
 	private meshUniforms: ORE.Uniforms;
 	private commonUniforms: ORE.Uniforms;
 
-	constructor( renderer: THREE.WebGLRenderer, num: number, parentUniforms: ORE.Uniforms ) {
+	private avoidRoot: THREE.Object3D;
+
+	constructor( renderer: THREE.WebGLRenderer, num: number, parentUniforms: ORE.Uniforms, avoidRoot: THREE.Object3D ) {
 
 		let commonUniforms = ORE.UniformsLib.mergeUniforms( parentUniforms, {
 			deltaTime: {
@@ -49,12 +51,12 @@ export class Peoples extends THREE.Mesh {
 			CreateTrails
 		-------------------------------*/
 
-		let size = 0.5;
+		let size = 0.6;
 
 		let originGeo = new THREE.PlaneBufferGeometry( size, size );
 		originGeo.getAttribute( 'position' ).applyMatrix4( new THREE.Matrix4().makeTranslation( 0.0, size / 2, 0.0 ) );
-		let geo = new THREE.InstancedBufferGeometry();
 
+		let geo = new THREE.InstancedBufferGeometry();
 		geo.setAttribute( 'position', originGeo.getAttribute( 'position' ) );
 		geo.setAttribute( 'uv', originGeo.getAttribute( 'uv' ) );
 		geo.setAttribute( 'normal', originGeo.getAttribute( 'normal' ) );
@@ -84,9 +86,7 @@ export class Peoples extends THREE.Mesh {
 				value: null
 			},
 			tex: window.gManager.assetManager.getTex( 'people' )
-		},
-
-		);
+		} );
 
 		/*-------------------------------
 			Super
@@ -103,6 +103,7 @@ export class Peoples extends THREE.Mesh {
 		this.animator = animator;
 		this.renderer = renderer;
 		this.num = num;
+		this.avoidRoot = avoidRoot;
 
 		this.commonUniforms = commonUniforms;
 		this.meshUniforms = meshUniforms;
@@ -111,11 +112,26 @@ export class Peoples extends THREE.Mesh {
 			GPU Controller
 		-------------------------------*/
 
+		let gpuCommonUniforms = ORE.UniformsLib.mergeUniforms( this.commonUniforms, {
+			uAvoid: {
+				value: this.avoidRoot.children.map( item => {
+
+					item.visible = false;
+
+					return {
+						position: ( item.getWorldPosition( new THREE.Vector3() ) ),
+						scale: item.scale,
+					};
+
+				} )
+			}
+		} );
+
 		this.gCon = new ORE.GPUComputationController( this.renderer, new THREE.Vector2( num, num ) );
 
 		// create computing position kernel
 
-		let posUni = ORE.UniformsLib.mergeUniforms( this.commonUniforms, {
+		let posUni = ORE.UniformsLib.mergeUniforms( gpuCommonUniforms, {
 			dataPos: { value: null },
 			dataVel: { value: null },
 		} );
@@ -127,13 +143,13 @@ export class Peoples extends THREE.Mesh {
 
 		// create computing velocity kernel
 
-		let velUni = ORE.UniformsLib.mergeUniforms( this.commonUniforms, {
+		let velUni = ORE.UniformsLib.mergeUniforms( gpuCommonUniforms, {
 			dataPos: { value: null },
 			dataVel: { value: null },
 		} );
 
 		let velKernel = this.gCon.createKernel( {
-			fragmentShader: comVelocity,
+			fragmentShader: comVelocity.replace( /AVOID_COUNT/g, this.avoidRoot.children.length.toString() ),
 			uniforms: velUni
 		} );
 
@@ -163,7 +179,7 @@ export class Peoples extends THREE.Mesh {
 
 				let r = Math.random() * Math.PI * 2.0;
 
-				let radius = 2.0 + Math.random() * 10.0;
+				let radius = 6.0 + Math.random() * 10.0;
 
 				let pos = [
 					Math.sin( r ) * radius,

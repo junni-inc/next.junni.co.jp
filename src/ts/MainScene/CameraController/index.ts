@@ -4,6 +4,7 @@ import * as ORE from 'ore-three';
 export type CameraTransform = {
 	position: THREE.Vector3;
 	targetPosition: THREE.Vector3;
+	fov: number
 }
 
 export class CameraController {
@@ -56,6 +57,11 @@ export class CameraController {
 			initValue: this.posData.base.target.clone(),
 		} );
 
+		this.animator.add( {
+			name: 'cameraFov',
+			initValue: 0
+		} );
+
 		this.cursorPos = new THREE.Vector2();
 		this.cursorPosDelay = new THREE.Vector2();
 		this.cursorPosDelayVel = new THREE.Vector2();
@@ -66,6 +72,10 @@ export class CameraController {
 
 		this.animator.setValue( 'cameraPos', cameraTransform.position );
 		this.animator.setValue( 'cameraTargetPos', cameraTransform.targetPosition );
+		this.animator.setValue( 'cameraFov', cameraTransform.fov );
+
+		this.camera.fov = cameraTransform.fov;
+		this.camera.updateProjectionMatrix();
 
 	}
 

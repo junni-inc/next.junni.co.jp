@@ -143,6 +143,7 @@ export class World extends THREE.Object3D {
 		let cameraTransform = {
 			position: from.cameraTransform.position.clone().lerp( to.cameraTransform.position, t ),
 			targetPosition: from.cameraTransform.targetPosition.clone().lerp( to.cameraTransform.targetPosition, t ),
+			fov: from.cameraTransform.fov + ( to.cameraTransform.fov - from.cameraTransform.fov ) * t
 		};
 
 		// bakuTransform

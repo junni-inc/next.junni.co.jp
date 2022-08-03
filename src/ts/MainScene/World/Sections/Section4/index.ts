@@ -44,7 +44,7 @@ export class Section4 extends Section {
 			Peoples
 		-------------------------------*/
 
-		this.peoples = new Peoples( this.renderer, 100, this.commonUniforms );
+		this.peoples = new Peoples( this.renderer, 40, this.commonUniforms, scene.getObjectByName( 'Avoids' ) as THREE.Object3D );
 		this.add( this.peoples );
 
 	}
