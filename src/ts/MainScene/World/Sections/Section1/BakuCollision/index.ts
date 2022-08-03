@@ -48,7 +48,7 @@ export class BakuCollision extends THREE.Object3D {
 
 		this.body = new CANNON.Body( { type: CANNON.Body.DYNAMIC, mass: 1000 } );
 		this.body.addShape( new CANNON.Sphere( radius ) );
-		this.body.position.copy( this.animator.get( 'bakuCollisionPosition' ) as CANNON.Vec3 );
+		this.body.position.copy( this.animator.get( 'bakuCollisionPosition' ) as unknown as CANNON.Vec3 );
 		this.body.sleep();
 		this.cannonWorld.addBody( this.body );
 

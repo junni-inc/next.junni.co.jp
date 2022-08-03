@@ -52,13 +52,23 @@ export class Baku extends THREE.Object3D {
 		this.commonUniforms.uTransparent = this.animator.add( {
 			name: 'bakuTransparent',
 			initValue: 0,
-			easing: ORE.Easings.easeOutCubic
+			easing: ORE.Easings.easeOutCubic,
+			userData: {
+				pane: {
+					min: 0, max: 1
+				}
+			}
 		} );
 
 		this.commonUniforms.uLine = this.animator.add( {
 			name: 'bakuLine',
 			initValue: 0,
-			easing: ORE.Easings.easeOutCubic
+			easing: ORE.Easings.easeOutCubic,
+			userData: {
+				pane: {
+					min: 0, max: 1
+				}
+			}
 		} );
 
 		/*-------------------------------

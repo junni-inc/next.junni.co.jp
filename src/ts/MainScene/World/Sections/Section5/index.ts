@@ -12,6 +12,7 @@ export class Section5 extends Section {
 		super( manager, 'section_5', parentUniforms );
 
 		this.bakuMaterialType = 'normal';
+		this.ppParam.bloomBrightness = 1.0;
 
 	}
 
@@ -39,6 +40,8 @@ export class Section5 extends Section {
 
 	public update( deltaTime: number ): void {
 
+
+		this.bakuTransform.rotation.multiply( new THREE.Quaternion().setFromAxisAngle( new THREE.Vector3( 0.0, 0.0, 1.0 ), deltaTime * 0.5 ) );
 
 	}
 

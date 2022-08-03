@@ -15,6 +15,7 @@ import neiborhoodBlendingFrag from './shaders/smaa_neiborhoodBlending.fs';
 
 //composite shader
 import compositeFrag from './shaders/composite.fs';
+import { MipmapGeometry } from './MipMapGeometry';
 
 export type PPParam = {
 	bloomBrightness?: number,
@@ -30,7 +31,6 @@ export class RenderPipeline {
 	//parameters
 	private bloomResolutionRatio: number;
 	private bloomRenderCount: number;
-	private brightness: number;
 
 	//uniforms
 	private commonUniforms: ORE.Uniforms;
@@ -56,15 +56,18 @@ export class RenderPipeline {
 		this.animator = window.gManager.animator;
 		this.renderer = renderer;
 		this.bloomResolutionRatio = 0.5;
-		this.bloomRenderCount = 5;
-		this.brightness = 0.08;
+		this.bloomRenderCount = 7;
 
 		this.commonUniforms = ORE.UniformsLib.mergeUniforms( {
+			uBloomMipmapResolution: {
+				value: new THREE.Vector2()
+			}
 		}, parentUniforms );
 
 		/*------------------------
 			RenderTargets
 		------------------------*/
+
 		this.renderTargets = {
 			rt1: new THREE.WebGLRenderTarget( 0, 0, {
 				stencilBuffer: true,
@@ -87,27 +90,21 @@ export class RenderPipeline {
 				minFilter: THREE.LinearFilter,
 				magFilter: THREE.LinearFilter
 			} ),
+			bloomRT1: new THREE.WebGLRenderTarget( 0, 0, {
+				depthBuffer: false,
+				stencilBuffer: false,
+				generateMipmaps: false,
+				minFilter: THREE.LinearFilter,
+				magFilter: THREE.LinearFilter
+			} ),
+			bloomRT2: new THREE.WebGLRenderTarget( 0, 0, {
+				depthBuffer: false,
+				stencilBuffer: false,
+				generateMipmaps: false,
+				minFilter: THREE.LinearFilter,
+				magFilter: THREE.LinearFilter
+			} ),
 		};
-
-		for ( let i = 0; i < this.bloomRenderCount; i ++ ) {
-
-			this.renderTargets[ 'rtBlur' + i.toString() + '_0' ] = new THREE.WebGLRenderTarget( 0, 0, {
-				depthBuffer: false,
-				stencilBuffer: false,
-				generateMipmaps: false,
-				minFilter: THREE.LinearFilter,
-				magFilter: THREE.LinearFilter
-			} );
-
-			this.renderTargets[ 'rtBlur' + i.toString() + '_1' ] = new THREE.WebGLRenderTarget( 0, 0, {
-				depthBuffer: false,
-				stencilBuffer: false,
-				generateMipmaps: false,
-				minFilter: THREE.LinearFilter,
-				magFilter: THREE.LinearFilter
-			} );
-
-		}
 
 		/*------------------------
 			InputTextures
@@ -160,36 +157,40 @@ export class RenderPipeline {
 
 		};
 
-
 		/*------------------------
 			Bloom
 		------------------------*/
+
+		this.bloomRenderCount = 5;
+
 		this.bloomBrightPP = new ORE.PostProcessing( this.renderer, {
 			fragmentShader: bloomBrightFrag,
-			uniforms: ORE.UniformsLib.mergeUniforms( {
+			uniforms: ORE.UniformsLib.mergeUniforms( this.commonUniforms, {
 				threshold: {
 					value: 0.5,
 				},
-			}, this.commonUniforms ),
-		} );
+			} ),
+		}, new MipmapGeometry( this.bloomRenderCount ) );
 
 		this.bloomBlurPP = new ORE.PostProcessing( this.renderer, {
 			fragmentShader: bloomBlurFrag,
-			uniforms: ORE.UniformsLib.mergeUniforms( {
+			uniforms: ORE.UniformsLib.mergeUniforms( this.commonUniforms, {
 				backbuffer: {
 					value: null
 				},
-				blurRange: {
-					value: 1.0
-				},
-				renderCount: {
-					value: this.bloomRenderCount
-				},
-				count: {
-					value: 0
-				},
+				blurRange: window.gManager.animator.add( {
+					name: 'blurRange',
+					initValue: 1,
+					easing: ORE.Easings.easeOutCubic,
+					userData: {
+						pane: {
+							min: 0,
+							max: 5
+						}
+					}
+				} ),
 				direction: { value: false },
-			}, this.commonUniforms ),
+			} ),
 		} );
 
 		/*------------------------
@@ -263,14 +264,26 @@ export class RenderPipeline {
 
 		this.compositePP.effect.material.uniforms.uBrightness = this.animator.add( {
 			name: 'bloomBrightness',
-			initValue: this.brightness,
-			easing: ORE.Easings.easeOutCubic
+			initValue: 0.0,
+			easing: ORE.Easings.easeOutCubic,
+			userData: {
+				pane: {
+					min: 0,
+					max: 5
+				}
+			}
 		} );
 
 		this.compositePP.effect.material.uniforms.uVignet = this.animator.add( {
 			name: 'vignet',
 			initValue: 1.0,
-			easing: ORE.Easings.easeOutCubic
+			easing: ORE.Easings.easeOutCubic,
+			userData: {
+				pane: {
+					min: 0,
+					max: 1
+				}
+			}
 		} );
 
 	}
@@ -291,30 +304,20 @@ export class RenderPipeline {
 		/*------------------------
 			Bloom
 		------------------------*/
+
 		this.bloomBrightPP.render( {
 			sceneTex: this.renderTargets.rt1.texture
-		}, this.renderTargets.rt2 );
+		}, this.renderTargets.bloomRT1 );
 
-		let target: THREE.WebGLRenderTarget;
 		let uni = this.bloomBlurPP.effect.material.uniforms;
-		uni.backbuffer.value = this.renderTargets.rt2.texture;
 
-		for ( let i = 0; i < this.bloomRenderCount; i ++ ) {
+		uni.direction.value = false;
+		uni.backbuffer.value = this.renderTargets.bloomRT1.texture;
+		this.bloomBlurPP.render( null, this.renderTargets.bloomRT2 );
 
-			uni.count.value = i;
-
-			uni.direction.value = false;
-			target = this.renderTargets[ 'rtBlur' + i.toString() + '_0' ];
-			this.bloomBlurPP.render( null, target );
-
-			uni.direction.value = true;
-			uni.backbuffer.value = target.texture;
-			target = this.renderTargets[ 'rtBlur' + i.toString() + '_1' ];
-			this.bloomBlurPP.render( null, target );
-
-			uni.backbuffer.value = target.texture;
-
-		}
+		uni.direction.value = true;
+		uni.backbuffer.value = this.renderTargets.bloomRT2.texture;
+		this.bloomBlurPP.render( null, this.renderTargets.bloomRT1 );
 
 		/*------------------------
 			SMAA
@@ -337,15 +340,9 @@ export class RenderPipeline {
 			Composite
 		------------------------*/
 		let compositeInputRenderTargets = {
-			sceneTex: this.renderTargets.rt2.texture,
-			bloomTexs: [] as THREE.Texture[]
+			uSceneTex: this.renderTargets.rt2.texture,
+			uBloomTex: this.renderTargets.bloomRT1.texture
 		};
-
-		for ( let i = 0; i < this.bloomRenderCount; i ++ ) {
-
-			compositeInputRenderTargets.bloomTexs.push( this.renderTargets[ 'rtBlur' + i.toString() + '_1' ].texture );
-
-		}
 
 		this.compositePP.render( compositeInputRenderTargets, renderTarget );
 
@@ -355,23 +352,20 @@ export class RenderPipeline {
 
 	public resize( layerInfo: ORE.LayerInfo ) {
 
-		let size = layerInfo.size.canvasPixelSize;
+		let pixelWindowSize = layerInfo.size.canvasPixelSize;
 
-		this.smaaCommonUni.SMAA_RT_METRICS.value.set( 1 / size.x, 1 / size.y, size.x, size.y );
+		this.smaaCommonUni.SMAA_RT_METRICS.value.set( 1 / pixelWindowSize.x, 1 / pixelWindowSize.y, pixelWindowSize.x, pixelWindowSize.y );
 
-		this.renderTargets.rt1.setSize( size.x, size.y );
-		this.renderTargets.rt2.setSize( size.x, size.y );
-		this.renderTargets.rt3.setSize( size.x, size.y );
+		this.renderTargets.rt1.setSize( pixelWindowSize.x, pixelWindowSize.y );
+		this.renderTargets.rt2.setSize( pixelWindowSize.x, pixelWindowSize.y );
+		this.renderTargets.rt3.setSize( pixelWindowSize.x, pixelWindowSize.y );
 
-		for ( let i = 0; i < this.bloomRenderCount; i ++ ) {
+		let bloomRTSize = new THREE.Vector2( pixelWindowSize.x * 1.5, pixelWindowSize.y );
 
-			let bloomSize = size.clone().multiplyScalar( this.bloomResolutionRatio );
-			bloomSize.divideScalar( ( i + 1 ) * 2 );
+		this.renderTargets.bloomRT1.setSize( bloomRTSize.x, bloomRTSize.y );
+		this.renderTargets.bloomRT2.setSize( bloomRTSize.x, bloomRTSize.y );
 
-			this.renderTargets[ 'rtBlur' + i.toString() + '_0' ].setSize( bloomSize.x, bloomSize.y );
-			this.renderTargets[ 'rtBlur' + i.toString() + '_1' ].setSize( bloomSize.x, bloomSize.y );
-
-		}
+		this.commonUniforms.uBloomMipmapResolution.value.copy( bloomRTSize );
 
 	}
 

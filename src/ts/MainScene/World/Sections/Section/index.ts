@@ -78,6 +78,12 @@ export class Section extends THREE.Object3D {
 		this.commonUniforms.visibility = this.animator.add( {
 			name: 'sectionVisibility' + this.sectionName,
 			initValue: 0,
+			userData: {
+				pane: {
+					min: 0,
+					max: 2
+				}
+			}
 		} );
 
 		/*-------------------------------

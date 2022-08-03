@@ -21,6 +21,7 @@
     "@babel/core": "^7.16.12",
     "@babel/preset-env": "^7.16.11",
     "@babel/register": "^7.16.9",
+    "@tweakpane/core": "^1.1.0",
     "@types/cannon": "^0.1.8",
     "@typescript-eslint/eslint-plugin": "^5.10.1",
     "@typescript-eslint/parser": "^5.10.1",
@@ -51,6 +52,7 @@
     "@types/three": "^0.142.0",
     "cannon": "^0.6.2",
     "three": "^0.142.0",
+    "tweakpane": "^3.1.0",
     "wolfy87-eventemitter": "^5.2.9"
   }
 }

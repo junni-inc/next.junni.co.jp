@@ -393,8 +393,6 @@ void main( void ) {
 
 	#endif
 	
-	// if( mat.opacity < 0.5 ) discard;
-
 	mat.diffuseColor = mix( mat.albedo, vec3( 0.0, 0.0, 0.0 ), mat.metalness );
 	mat.specularColor = mix( vec3( 1.0, 1.0, 1.0 ), mat.albedo, mat.metalness );
 
@@ -414,19 +412,19 @@ void main( void ) {
 	geo.viewDir = normalize( vViewPos );
 	geo.viewDirWorld = normalize( geo.posWorld - cameraPosition );
 	geo.normal = normalize( vNormal ) * faceDirection;
-
 	geo.normalWorld = normalize( ( vec4( geo.normal, 0.0 ) * viewMatrix ).xyz );
+
+	// refract
 
 	vec3 refractCol = vec3( 0.0 );
 	vec2 screenUv = gl_FragCoord.xy / winResolution.xy;
 	vec2 refractUv = screenUv;
+
 	float slide;
+	float refractPower = 0.2;
 	vec2 refractUvR;
 	vec2 refractUvG;
 	vec2 refractUvB;
-	float refractPower = 0.2;
-	
-	vec3 backSideNormal = texture2D( uBackSideNormalTex, refractUv ).xyz;
 
 	#pragma unroll_loop_start
 	for ( int i = 0; i < 16; i ++ ) {
@@ -476,6 +474,14 @@ void main( void ) {
 		#pragma unroll_loop_end
 
 	#endif
+
+	/*-------------------------------
+		EnvMap
+	-------------------------------*/
+
+	float dNV = clamp( dot( geo.normal, geo.viewDir ), 0.0, 1.0 );
+	float EF = mix( fresnel( dNV ), 1.0, mat.metalness );
+	outColor += EF;
 	
 	/*-------------------------------
 		Emission

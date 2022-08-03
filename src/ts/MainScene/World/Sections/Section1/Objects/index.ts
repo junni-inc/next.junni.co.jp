@@ -29,7 +29,7 @@ export class Objects {
 					fragmentShader: objectFrag,
 					uniforms: ORE.UniformsLib.mergeUniforms( this.commonUniforms, {
 						uColor: {
-							value: baseMaterial.emissive.
+							value: baseMaterial.emissive
 						}
 					} ),
 					side: THREE.DoubleSide

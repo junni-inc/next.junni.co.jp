@@ -14,7 +14,7 @@ export class Section2 extends Section {
 
 		super( manager, 'section_2', parentUniforms );
 
-		this.ppParam.bloomBrightness = 0.1;
+		this.ppParam.bloomBrightness = 1.0;
 
 		let light = new THREE.DirectionalLight();
 		light.position.set( 0.5, 0.0, - 0.9 );
