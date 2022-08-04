@@ -4,15 +4,22 @@ import { Section } from '../Section';
 import { GLTF } from 'three/examples/jsm/loaders/GLTFLoader';
 import { Ground } from './Ground';
 import { Displays } from './Displays';
+import { Lights } from './Lights';
+import { CubeTextureLoader } from 'three';
 
 export class Section2 extends Section {
 
 	private ground?: Ground;
 	private displays?: Displays;
+	private lights?: Lights;
 
 	constructor( manager: THREE.LoadingManager, parentUniforms: ORE.Uniforms ) {
 
-		super( manager, 'section_2', parentUniforms );
+		super( manager, 'section_2', ORE.UniformsLib.mergeUniforms( parentUniforms, {
+			uEnvMap: {
+				value: null
+			}
+		} ) );
 
 		this.ppParam.bloomBrightness = 1.0;
 
@@ -23,6 +30,24 @@ export class Section2 extends Section {
 		light = new THREE.DirectionalLight();
 		light.position.set( - 1.5, 0.3, - 1 );
 		this.add( light );
+
+		/*-------------------------------
+			EnvMap
+		-------------------------------*/
+
+		let cubemapLoader = new THREE.CubeTextureLoader();
+		cubemapLoader.load( [
+			'/assets/envmap/sec2/px.png',
+			'/assets/envmap/sec2/nx.png',
+			'/assets/envmap/sec2/py.png',
+			'/assets/envmap/sec2/ny.png',
+			'/assets/envmap/sec2/pz.png',
+			'/assets/envmap/sec2/nz.png',
+		], ( tex ) => {
+
+			this.commonUniforms.uEnvMap.value = tex;
+
+		} );
 
 	}
 
@@ -41,6 +66,12 @@ export class Section2 extends Section {
 		-------------------------------*/
 
 		this.displays = new Displays( this.getObjectByName( 'Displays' ) as THREE.Object3D, this.commonUniforms );
+
+		/*-------------------------------
+			Lights
+		-------------------------------*/
+
+		this.lights = new Lights( this.getObjectByName( 'Lights' ) as THREE.Object3D, this.commonUniforms );
 
 	}
 

@@ -171,6 +171,8 @@ export class MainScene extends ORE.BaseLayer {
 
 	public animate( deltaTime: number ) {
 
+		deltaTime = Math.min( 0.1, deltaTime );
+
 		this.commonUniforms.uTimeMod.value = this.time % 1;
 
 		this.scroller.update( deltaTime );

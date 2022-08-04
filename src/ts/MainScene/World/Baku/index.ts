@@ -11,18 +11,22 @@ export type BakuMaterialType = 'normal' | 'grass' | 'line'
 
 export class Baku extends THREE.Object3D {
 
+	// animation
+
 	private animator: ORE.Animator;
+	private animationMixer?: THREE.AnimationMixer;
+	private currentAnimationSection: string | null = null;
+	private animationClipNameList: string[] = [];
+	private animationActions: { [name:string]: THREE.AnimationAction} = {};
 
 	private manager: THREE.LoadingManager;
 	private commonUniforms: ORE.Uniforms;
 
 	private mesh?: PowerMesh;
-	protected meshLine?: THREE.Mesh<THREE.BufferGeometry, THREE.ShaderMaterial>;
+	protected meshLine?: THREE.SkinnedMesh<THREE.BufferGeometry, THREE.ShaderMaterial>;
 
 	private passThrough?: ORE.PostProcessing;
-
 	public sceneRenderTarget: THREE.WebGLRenderTarget;
-
 	public onLoaded?: () => void;
 
 	constructor( manager: THREE.LoadingManager, parentUniforms: ORE.Uniforms ) {
@@ -134,8 +138,51 @@ export class Baku extends THREE.Object3D {
 				},
 			} );
 
-			this.meshLine = new THREE.Mesh( this.mesh.geometry, lineMat );
+			this.meshLine = new THREE.SkinnedMesh( this.mesh.geometry, lineMat );
+			this.meshLine.skeleton = this.mesh.skeleton;
 			this.add( this.meshLine );
+
+			/*-------------------------------
+				animation
+			-------------------------------*/
+
+			this.animationMixer = new THREE.AnimationMixer( this );
+			this.animations = gltf.animations;
+
+			for ( let i = 0; i < this.animations.length; i ++ ) {
+
+				let clip = this.animations[ i ];
+
+				this.animator.add( {
+					name: "BakuWeight/" + clip.name,
+					initValue: 1,
+					userData: {
+						pane: {
+							min: 0,
+							max: 1
+						}
+					},
+					easing: ORE.Easings.easeOutCubic
+				} );
+
+				this.animationClipNameList.push( clip.name );
+
+				let action = this.animationMixer.clipAction( this.animations[ i ] );
+				this.animationActions[ clip.name ] = action;
+
+				if ( action ) {
+
+					action.play();
+
+				}
+
+			}
+
+			if ( this.currentAnimationSection ) {
+
+				this.changeAction( this.currentAnimationSection );
+
+			}
 
 			if ( this.onLoaded ) {
 
@@ -151,6 +198,43 @@ export class Baku extends THREE.Object3D {
 
 		this.animator.animate( 'bakuTransparent', type == 'grass' ? 1 : 0, 1 );
 		this.animator.animate( 'bakuLine', type == 'line' ? 1 : 0, 1 );
+
+	}
+
+	public changeAction( actionName: string ) {
+
+		for ( let i = 0; i < this.animationClipNameList.length; i ++ ) {
+
+			let name = this.animationClipNameList[ i ];
+			this.animator.animate( 'BakuWeight/' + name, name == actionName ? 1 : 0 );
+
+		}
+
+		this.currentAnimationSection = actionName;
+
+	}
+
+	public update( deltaTime: number ) {
+
+		if ( this.animationMixer ) {
+
+			this.animationMixer.update( deltaTime );
+
+			for ( let i = 0; i < this.animationClipNameList.length; i ++ ) {
+
+				let name = this.animationClipNameList[ i ];
+
+				let action = this.animationActions[ name ];
+
+				if ( action ) {
+
+					action.weight = this.animator.get( 'BakuWeight/' + name ) || 0;
+
+				}
+
+			}
+
+		}
 
 	}
 

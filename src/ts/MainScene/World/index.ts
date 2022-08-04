@@ -125,6 +125,7 @@ export class World extends THREE.Object3D {
 		let section = this.sections[ viewingIndex ];
 
 		this.baku.changeMaterial( section.bakuMaterialType );
+		this.baku.changeAction( section.sectionName );
 
 		return section;
 
@@ -172,6 +173,8 @@ export class World extends THREE.Object3D {
 			item.update( deltaTime );
 
 		} );
+
+		this.baku.update( deltaTime );
 
 	}
 
