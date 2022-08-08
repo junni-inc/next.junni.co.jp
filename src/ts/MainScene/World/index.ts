@@ -92,7 +92,7 @@ export class World extends THREE.Object3D {
 
 		this.baku.onLoaded = () => {
 
-			this.section3.setSceneTex( this.baku.sceneRenderTarget.texture );
+			this.section2.setSceneTex( this.baku.sceneRenderTarget.texture );
 
 		};
 

@@ -237,9 +237,17 @@ export class MainScene extends ORE.BaseLayer {
 
 	public onHover( args: ORE.TouchEventArgs ) {
 
+		if ( args.position.x != args.position.x ) return;
+
 		if ( this.cameraController ) {
 
 			this.cameraController.updateCursor( args.screenPosition );
+
+		}
+
+		if ( this.world ) {
+
+			this.world.section1.hover( args, this.camera );
 
 		}
 

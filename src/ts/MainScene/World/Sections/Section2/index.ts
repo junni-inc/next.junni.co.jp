@@ -2,94 +2,82 @@ import * as THREE from 'three';
 import * as ORE from 'ore-three';
 import { Section } from '../Section';
 import { GLTF } from 'three/examples/jsm/loaders/GLTFLoader';
-import { Ground } from './Ground';
-import { Displays } from './Displays';
-import { Lights } from './Lights';
-import { CubeTextureLoader } from 'three';
+import { BG } from './BG';
+import { Slides } from './Slides';
+import { Transparents } from './Transparents';
 
 export class Section2 extends Section {
 
-	private ground?: Ground;
-	private displays?: Displays;
-	private lights?: Lights;
+	private slides?: Slides;
+	private transparents?: Transparents;
 
 	constructor( manager: THREE.LoadingManager, parentUniforms: ORE.Uniforms ) {
 
 		super( manager, 'section_2', ORE.UniformsLib.mergeUniforms( parentUniforms, {
-			uEnvMap: {
+			uSceneTex: {
 				value: null
+			},
+			winResolution: {
+				value: new THREE.Vector2()
 			}
 		} ) );
 
-		this.ppParam.bloomBrightness = 1.0;
+		this.ppParam.bloomBrightness = 0;
+		this.ppParam.vignet = 1.0;
 
-		let light = new THREE.DirectionalLight();
-		light.position.set( 0.5, 0.0, - 0.9 );
-		this.add( light );
-
-		light = new THREE.DirectionalLight();
-		light.position.set( - 1.5, 0.3, - 1 );
-		this.add( light );
+		this.bakuMaterialType = 'grass';
 
 		/*-------------------------------
-			EnvMap
+			Light
 		-------------------------------*/
 
-		let cubemapLoader = new THREE.CubeTextureLoader();
-		cubemapLoader.load( [
-			'/assets/envmap/sec2/px.png',
-			'/assets/envmap/sec2/nx.png',
-			'/assets/envmap/sec2/py.png',
-			'/assets/envmap/sec2/ny.png',
-			'/assets/envmap/sec2/pz.png',
-			'/assets/envmap/sec2/nz.png',
-		], ( tex ) => {
-
-			this.commonUniforms.uEnvMap.value = tex;
-
-		} );
+		let light = new THREE.DirectionalLight();
+		light.position.set( - 1, 1, 1 );
+		this.add( light );
 
 	}
 
 	protected onLoadedGLTF( gltf: GLTF ): void {
 
-		this.add( gltf.scene );
+		let scene = gltf.scene;
+
+		this.add( scene );
 
 		/*-------------------------------
-			Ground
+			BG
 		-------------------------------*/
 
-		this.ground = new Ground( this.getObjectByName( 'Ground' ) as THREE.Mesh, this.commonUniforms );
+		new BG( scene.getObjectByName( 'BG' ) as THREE.Mesh, this.commonUniforms );
 
 		/*-------------------------------
-			Displays
+			Slide
 		-------------------------------*/
 
-		this.displays = new Displays( this.getObjectByName( 'Displays' ) as THREE.Object3D, this.commonUniforms );
+		this.slides = new Slides( scene.getObjectByName( 'Slides' ) as THREE.Object3D, this.commonUniforms );
 
 		/*-------------------------------
-			Lights
+			Transparent
 		-------------------------------*/
 
-		this.lights = new Lights( this.getObjectByName( 'Lights' ) as THREE.Object3D, this.commonUniforms );
+		this.transparents = new Transparents( scene.getObjectByName( 'Transparents' ) as THREE.Object3D, this.commonUniforms );
+
+	}
+
+	public setSceneTex( tex: THREE.Texture ) {
+
+		this.commonUniforms.uSceneTex.value = tex;
 
 	}
 
 	public update( deltaTime: number ) {
 
-		super.update( deltaTime );
-
-		if ( this.viewing == 'viewing' ) {
-
-			// this.bakuTransform.rotation.premultiply( new THREE.Quaternion().setFromEuler( new THREE.Euler( 0.0, 0.01, 0.0 ) ) );
-
-		}
-
 	}
 
-	public resize( info: ORE.LayerInfo ) {
+	public resize( info: ORE.LayerInfo ): void {
 
 		super.resize( info );
+
+		this.commonUniforms.winResolution.value.copy( info.size.canvasPixelSize );
 
 	}
 

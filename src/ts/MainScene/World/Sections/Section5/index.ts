@@ -43,7 +43,7 @@ export class Section5 extends Section {
 			Objects
 		-------------------------------*/
 
-		this.objects = new Objects( scene.getObjectByName( 'Objects' ) as THREE.Object3D, this.commonUniforms );
+		// this.objects = new Objects( scene.getObjectByName( 'Objects' ) as THREE.Object3D, this.commonUniforms );
 
 	}
 

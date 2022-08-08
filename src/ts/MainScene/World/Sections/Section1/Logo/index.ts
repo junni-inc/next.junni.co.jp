@@ -1,14 +1,13 @@
 import * as ORE from 'ore-three';
 import * as THREE from 'three';
 
-import logoVert from './shaders/logo.vs';
-import logoFrag from './shaders/logo.fs';
+import { LogoPart } from './LogoPart';
 
 export class Logo {
 
 	private commonUniforms: ORE.Uniforms;
 	private root: THREE.Object3D;
-	private meshList: THREE.Mesh[] = [];
+	private meshList: LogoPart[] = [];
 
 	constructor( root: THREE.Object3D, parentUniforms: ORE.Uniforms ) {
 
@@ -22,24 +21,30 @@ export class Logo {
 
 			if ( mesh.isMesh ) {
 
-				let baseMaterial = mesh.material as THREE.MeshStandardMaterial;
-
-				let mat = new THREE.ShaderMaterial( {
-					vertexShader: logoVert,
-					fragmentShader: logoFrag,
-					uniforms: ORE.UniformsLib.mergeUniforms( this.commonUniforms, {
-						uColor: {
-							value: baseMaterial.emissive.convertLinearToSRGB()
-						},
-						uMatCapTex: window.gManager.assetManager.getTex( 'matCap' )
-					} ),
-					side: THREE.DoubleSide
-				} );
-
-
-				mesh.material = mat;
+				let part = new LogoPart( mesh, this.commonUniforms );
+				this.meshList.push( part );
 
 			}
+
+		} );
+
+	}
+
+	public update( deltaTime: number ) {
+
+		this.meshList.forEach( item => {
+
+			item.update( deltaTime );
+
+		} );
+
+	}
+
+	public hover( args: ORE.TouchEventArgs, camera: THREE.PerspectiveCamera ) {
+
+		this.meshList.forEach( item => {
+
+			item.hover( args, camera );
 
 		} );
 

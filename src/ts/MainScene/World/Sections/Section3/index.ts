@@ -2,96 +2,93 @@ import * as THREE from 'three';
 import * as ORE from 'ore-three';
 import { Section } from '../Section';
 import { GLTF } from 'three/examples/jsm/loaders/GLTFLoader';
-import { BG } from './BG';
-import { DNA } from './DNA';
-import { Slides } from './Slides';
-import { Transparents } from './Transparents';
+import { Ground } from './Ground';
+import { Displays } from './Displays';
+import { Lights } from './Lights';
 
 export class Section3 extends Section {
 
-	private dna?: DNA;
-	private slides?: Slides;
-	private transparents?: Transparents;
+	private ground?: Ground;
+	private displays?: Displays;
+	private lights?: Lights;
 
 	constructor( manager: THREE.LoadingManager, parentUniforms: ORE.Uniforms ) {
 
 		super( manager, 'section_3', ORE.UniformsLib.mergeUniforms( parentUniforms, {
-			uSceneTex: {
+			uEnvMap: {
 				value: null
-			},
-			winResolution: {
-				value: new THREE.Vector2()
 			}
 		} ) );
 
-		this.ppParam.bloomBrightness = 0;
-		this.ppParam.vignet = 1.0;
-
-		this.bakuMaterialType = 'grass';
-
-		/*-------------------------------
-			Light
-		-------------------------------*/
+		this.ppParam.bloomBrightness = 1.0;
 
 		let light = new THREE.DirectionalLight();
-		light.position.set( - 1, 1, 1 );
+		light.position.set( 0.5, 0.0, - 0.9 );
 		this.add( light );
+
+		light = new THREE.DirectionalLight();
+		light.position.set( - 1.5, 0.3, - 1 );
+		this.add( light );
+
+		/*-------------------------------
+			EnvMap
+		-------------------------------*/
+
+		let cubemapLoader = new THREE.CubeTextureLoader();
+		cubemapLoader.load( [
+			'/assets/envmap/sec2/px.png',
+			'/assets/envmap/sec2/nx.png',
+			'/assets/envmap/sec2/py.png',
+			'/assets/envmap/sec2/ny.png',
+			'/assets/envmap/sec2/pz.png',
+			'/assets/envmap/sec2/nz.png',
+		], ( tex ) => {
+
+			this.commonUniforms.uEnvMap.value = tex;
+
+		} );
 
 	}
 
 	protected onLoadedGLTF( gltf: GLTF ): void {
 
-		let scene = gltf.scene;
-
-		this.add( scene );
+		this.add( gltf.scene );
 
 		/*-------------------------------
-			BG
+			Ground
 		-------------------------------*/
 
-		new BG( scene.getObjectByName( 'BG' ) as THREE.Mesh, this.commonUniforms );
+		this.ground = new Ground( this.getObjectByName( 'Ground' ) as THREE.Mesh, this.commonUniforms );
 
 		/*-------------------------------
-			DNA
+			Displays
 		-------------------------------*/
 
-		this.dna = new DNA( scene.getObjectByName( 'DNA' ) as THREE.Mesh, this.commonUniforms );
+		this.displays = new Displays( this.getObjectByName( 'Displays' ) as THREE.Object3D, this.commonUniforms );
 
 		/*-------------------------------
-			Slide
+			Lights
 		-------------------------------*/
 
-		this.slides = new Slides( scene.getObjectByName( 'Slides' ) as THREE.Object3D, this.commonUniforms );
-
-		/*-------------------------------
-			Transparent
-		-------------------------------*/
-
-		this.transparents = new Transparents( scene.getObjectByName( 'Transparents' ) as THREE.Object3D, this.commonUniforms );
-
-	}
-
-	public setSceneTex( tex: THREE.Texture ) {
-
-		this.commonUniforms.uSceneTex.value = tex;
+		this.lights = new Lights( this.getObjectByName( 'Lights' ) as THREE.Object3D, this.commonUniforms );
 
 	}
 
 	public update( deltaTime: number ) {
 
-		if ( this.dna ) {
+		super.update( deltaTime );
 
-			this.dna.rotateY( deltaTime );
+		if ( this.viewing == 'viewing' ) {
+
+			// this.bakuTransform.rotation.premultiply( new THREE.Quaternion().setFromEuler( new THREE.Euler( 0.0, 0.01, 0.0 ) ) );
 
 		}
 
 	}
 
-	public resize( info: ORE.LayerInfo ): void {
+	public resize( info: ORE.LayerInfo ) {
 
 		super.resize( info );
-
-		this.commonUniforms.winResolution.value.copy( info.size.canvasPixelSize );
 
 	}
 

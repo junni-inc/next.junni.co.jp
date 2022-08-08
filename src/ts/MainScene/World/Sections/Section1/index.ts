@@ -22,6 +22,7 @@ export class Section1 extends Section {
 
 	private wall: Wall;
 	private objects?: Objects;
+	private logo?: Logo;
 
 	constructor( manager: THREE.LoadingManager, parentUniforms: ORE.Uniforms ) {
 
@@ -99,7 +100,7 @@ export class Section1 extends Section {
 			Logo
 		-------------------------------*/
 
-		new Logo( scene.getObjectByName( 'Logo' ) as THREE.Object3D, this.commonUniforms );
+		this.logo = new Logo( scene.getObjectByName( 'Logo' ) as THREE.Object3D, this.commonUniforms );
 
 		/*-------------------------------
 			Objects
@@ -133,6 +134,12 @@ export class Section1 extends Section {
 
 		}
 
+		if ( this.logo ) {
+
+			this.logo.update( deltaTime );
+
+		}
+
 	}
 
 	public splash() {
@@ -152,6 +159,16 @@ export class Section1 extends Section {
 			this.bakuCollision.splash();
 
 		}, 200 );
+
+	}
+
+	public hover( args: ORE.TouchEventArgs, camera: THREE.PerspectiveCamera ) {
+
+		if ( this.logo ) {
+
+			this.logo.hover( args, camera );
+
+		}
 
 	}
 
