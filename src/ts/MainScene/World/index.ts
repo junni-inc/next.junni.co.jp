@@ -7,6 +7,7 @@ import { Section3 } from './Sections/Section3';
 import { Section4 } from './Sections/Section4';
 import { Baku } from './Baku';
 import { Section5 } from './Sections/Section5';
+import { Intro } from './Intro';
 
 export class World extends THREE.Object3D {
 
@@ -16,6 +17,10 @@ export class World extends THREE.Object3D {
 	// manager
 
 	private manager: THREE.LoadingManager;
+
+	// intro
+
+	public intro: Intro;
 
 	// section
 
@@ -51,6 +56,8 @@ export class World extends THREE.Object3D {
 
 				let percentage = loaded / total;
 
+				this.intro.updateLoadState( percentage );
+
 				this.dispatchEvent( {
 					type: 'loadProgress',
 					percentage
@@ -58,6 +65,12 @@ export class World extends THREE.Object3D {
 
 			}
 		);
+
+		/*-------------------------------
+			Intro
+		-------------------------------*/
+
+		this.intro = new Intro( renderer, this.commonUniforms );
 
 		/*-------------------------------
 			Baku
@@ -72,6 +85,7 @@ export class World extends THREE.Object3D {
 
 		this.section1 = new Section1( this.manager, this.commonUniforms );
 		this.add( this.section1 );
+		this.section1.wall.setTex( this.intro.renderTarget.texture );
 		this.sections.push( this.section1 );
 
 		this.section2 = new Section2( this.manager, this.commonUniforms );
@@ -168,6 +182,8 @@ export class World extends THREE.Object3D {
 
 	public update( deltaTime: number ) {
 
+		this.intro.update( deltaTime );
+
 		this.sections.forEach( item => {
 
 			item.update( deltaTime );
@@ -179,6 +195,8 @@ export class World extends THREE.Object3D {
 	}
 
 	public resize( info: ORE.LayerInfo ) {
+
+		this.intro.resize( info );
 
 		this.baku.resize( info );
 

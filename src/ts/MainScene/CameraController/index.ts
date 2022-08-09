@@ -22,10 +22,6 @@ export class CameraController {
 	public cursorPosDelay: THREE.Vector2;
 	private cursorPosDelayVel: THREE.Vector2;
 
-	// param
-
-	private moveRange: THREE.Vector2;
-
 	private posData = {
 		base: {
 			pos: new THREE.Vector3( 0, 0, 3.49641 ),
@@ -38,13 +34,10 @@ export class CameraController {
 		this.camera = obj;
 		this.baseCamera = new THREE.PerspectiveCamera( 40, 1.0, 0.1, 1000 );
 
-		// param
-
-		this.moveRange = new THREE.Vector2( 0.1, 0.1 );
-
 		/*------------------------
 			Animator
 		------------------------*/
+
 		this.animator = window.gManager.animator;
 
 		this.animator.add( {
@@ -60,6 +53,11 @@ export class CameraController {
 		this.animator.add( {
 			name: 'cameraFov',
 			initValue: 0
+		} );
+
+		this.animator.add( {
+			name: 'cameraMoveRange',
+			initValue: new THREE.Vector2( 0.1, 0.1 )
 		} );
 
 		this.cursorPos = new THREE.Vector2();
@@ -109,9 +107,11 @@ export class CameraController {
 
 		let basePos = this.animator.get<THREE.Vector3>( 'cameraPos' ) || new THREE.Vector3();
 
+		let moveRange = this.animator.get( 'cameraMoveRange' ) as THREE.Vector2;
+
 		this.camera.position.set(
-			basePos.x + this.cursorPosDelay.x * this.moveRange.x,
-			basePos.y + this.cursorPosDelay.y * this.moveRange.y,
+			basePos.x + this.cursorPosDelay.x * moveRange.x,
+			basePos.y + this.cursorPosDelay.y * moveRange.y,
 			basePos.z
 		);
 
@@ -127,6 +127,12 @@ export class CameraController {
 
 		this.camera.fov = this.baseCamera.fov * 1.0 + info.size.portraitWeight * 20.0;
 		this.camera.updateProjectionMatrix();
+
+	}
+
+	public changeRange( range: THREE.Vector2 ) {
+
+		this.animator.animate( 'cameraMoveRange', range );
 
 	}
 

@@ -25,14 +25,16 @@ export class Wall extends THREE.Object3D {
 		this.cannonWorld = cannonWorld;
 
 		this.commonUniforms = ORE.UniformsLib.mergeUniforms( parentUniforms, {
-			tex: window.gManager.assetManager.getTex( 'topLogo' )
+			tex: {
+				value: null
+			}
 		} );
 
 		/*-------------------------------
 			Mesh
 		-------------------------------*/
 
-		let globalSize = new THREE.Vector3( 4.5, 0.0, 0.2 );
+		let globalSize = new THREE.Vector3( 3.3, 0.0, 0.2 );
 		globalSize.y = globalSize.x * 9 / 16;
 		let res = new THREE.Vector2( globalSize.x, globalSize.y ).multiplyScalar( 4 );
 		let size = new THREE.Vector2( globalSize.x / res.x, globalSize.y / res.y );
@@ -46,6 +48,7 @@ export class Wall extends THREE.Object3D {
 				let uv = geo.getAttribute( 'uv' );
 				uv.applyMatrix4( new THREE.Matrix4().makeScale( 1.0 / res.x, 1.0 / res.y, 1 ) );
 				uv.applyMatrix4( new THREE.Matrix4().makeTranslation( 1.0 / res.x * i, 1.0 / res.y * j, 0.0 ) );
+
 				let boxBody = new CANNON.Body( {
 					mass: 1,
 					allowSleep: true,
@@ -72,7 +75,7 @@ export class Wall extends THREE.Object3D {
 
 				// @ts-ignore
 				boxBody.name = i + '-' + j;
-				boxBody.position.set( i * size.x - globalSize.x / 2, j * size.y - globalSize.y / 2 + 1.15, globalSize.z );
+				boxBody.position.set( i * size.x - ( globalSize.x - size.x ) / 2, j * size.y - globalSize.y / 2 + 1.2, globalSize.z );
 				boxBody.addShape( new CANNON.Box( new CANNON.Vec3( size.x / 2, size.y / 2, globalSize.z ) ) );
 
 				this.cannonWorld.addBody( boxBody );
@@ -86,6 +89,12 @@ export class Wall extends THREE.Object3D {
 			}
 
 		}
+
+	}
+
+	public setTex( texture: THREE.Texture ) {
+
+		this.commonUniforms.tex.value = texture;
 
 	}
 

@@ -75,27 +75,7 @@ void main(){
 	vec2 cuv = vUv * 2.0 - 1.0;
 	float w = max( .0, length( cuv ) ) * 0.02;
 
-	float slide;
-	vec2 rUV;
-	vec2 gUV;
-	vec2 bUV;
-
-	#pragma unroll_loop_start
-	for ( int i = 0; i < 3; i ++ ) {
-		
-		slide = float( UNROLLED_LOOP_INDEX ) / 5.0;
-
-		rUV = uv + vec2( 0.0, 0.0 ) * slide;
-		gUV = uv + vec2( 0.0025, 0.0 ) * slide;
-		bUV = uv + vec2( 0.005, 0.0 ) * slide;
-
-		c.x += texture2D(uSceneTex, rUV ).x;
-		c.y += texture2D(uSceneTex, gUV ).y;
-		c.z += texture2D(uSceneTex, bUV ).z;
-
-	}
-	#pragma unroll_loop_end
-	c /= float( 3 );
+	c = texture2D( uSceneTex, vUv ).xyz;
 
 	vec2 mipUV;
 

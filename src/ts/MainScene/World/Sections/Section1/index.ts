@@ -20,13 +20,15 @@ export class Section1 extends Section {
 
 	private sceneRoot?: THREE.Object3D;
 
-	private wall: Wall;
+	public wall: Wall;
 	private objects?: Objects;
 	private logo?: Logo;
 
 	constructor( manager: THREE.LoadingManager, parentUniforms: ORE.Uniforms ) {
 
 		super( manager, 'section_1', parentUniforms );
+
+		this.cameraRange.set( 0.01, 0.01 );
 
 		this.bakuStartPos = new THREE.Vector3();
 		this.bakuGoalPos = new THREE.Vector3();
@@ -107,12 +109,6 @@ export class Section1 extends Section {
 		-------------------------------*/
 
 		this.objects = new Objects( scene.getObjectByName( 'Objects' ) as THREE.Object3D, this.commonUniforms );
-
-		setTimeout( () => {
-
-			this.splash();
-
-		}, 10 );
 
 	}
 

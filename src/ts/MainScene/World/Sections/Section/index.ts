@@ -61,6 +61,10 @@ export class Section extends THREE.Object3D {
 
 	public bakuMaterialType: BakuMaterialType = 'normal';
 
+	// camera weight
+
+	public cameraRange: THREE.Vector2 = new THREE.Vector2( 0.1, 0.1 );
+
 	constructor( manager: THREE.LoadingManager, sectionName: string, parentUniforms: ORE.Uniforms ) {
 
 		super();

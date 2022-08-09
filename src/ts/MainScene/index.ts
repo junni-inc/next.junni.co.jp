@@ -38,6 +38,12 @@ export class MainScene extends ORE.BaseLayer {
 
 				let section = this.world.changeSection( sectionNum );
 
+				if ( this.cameraController ) {
+
+					this.cameraController.changeRange( section.cameraRange );
+
+				}
+
 				if ( this.renderPipeline ) {
 
 					this.renderPipeline.updateParam( section.ppParam );
@@ -59,6 +65,8 @@ export class MainScene extends ORE.BaseLayer {
 		this.gManager = new GlobalManager();
 
 		this.gManager.assetManager.load( { assets: [
+			{ name: 'logo', path: './assets/textures/junni_logo.png', type: 'tex', timing: 'must' },
+			{ name: 'introText', path: './assets/textures/intro-text.png', type: 'tex', timing: 'must' },
 			{ name: 'topLogo', path: './assets/textures/top_logo.png', type: 'tex', timing: 'must' },
 			{ name: 'matCap', path: './assets/textures/matcap.png', type: 'tex', timing: 'must' },
 			{ name: 'noise', path: './assets/textures/noise.png', type: 'tex', timing: 'sub', onLoad( value: THREE.Texture ) {
@@ -247,6 +255,7 @@ export class MainScene extends ORE.BaseLayer {
 
 		if ( this.world ) {
 
+			this.world.intro.hover( args );
 			this.world.section1.hover( args, this.camera );
 
 		}
@@ -259,6 +268,7 @@ export class MainScene extends ORE.BaseLayer {
 
 		if ( this.world ) {
 
+			this.world.intro.paused = true;
 			this.world.section1.splash();
 
 		}
