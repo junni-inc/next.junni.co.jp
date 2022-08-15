@@ -34,10 +34,19 @@ class APP {
 		------------------------*/
 		this.canvas = document.querySelector( "#canvas" );
 
+		let wrap: HTMLElement | null = null;
+
+		if ( this.canvas ) {
+
+			wrap = this.canvas.parentElement;
+
+		}
+
 		this.controller = new ORE.Controller();
 		this.controller.addLayer( new MainScene(), {
 			 name: 'Main',
-			 canvas: this.canvas || undefined
+			 canvas: this.canvas || undefined,
+			 wrapperElement: wrap || undefined
 		} );
 
 	}

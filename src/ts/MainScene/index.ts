@@ -50,6 +50,10 @@ export class MainScene extends ORE.BaseLayer {
 
 				}
 
+				this.world.bg.changeSection( sectionNum );
+
+				document.body.setAttribute( 'data-section', ( sectionNum + 1 ).toString() );
+
 				window.gManager.emitEvent( 'sectionChange', [ section.sectionName ] );
 
 			}

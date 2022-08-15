@@ -21,6 +21,8 @@ export class Section extends THREE.Object3D {
 
 	protected commonUniforms: ORE.Uniforms;
 
+	protected elm: HTMLElement | null = null;
+
 	// animation
 
 	protected animator: ORE.Animator;
@@ -80,13 +82,24 @@ export class Section extends THREE.Object3D {
 
 		this.animator = window.gManager.animator;
 
-		this.commonUniforms.visibility = this.animator.add( {
-			name: 'sectionVisibility' + this.sectionName,
+		this.commonUniforms.uSectionViewing = this.animator.add( {
+			name: 'sectionViewing' + this.sectionName,
 			initValue: 0,
 			userData: {
 				pane: {
 					min: 0,
 					max: 2
+				}
+			}
+		} );
+
+		this.commonUniforms.uSectionVisibility = this.animator.add( {
+			name: 'sectionVisibility' + this.sectionName,
+			initValue: 0,
+			userData: {
+				pane: {
+					min: 0,
+					max: 1
 				}
 			}
 		} );
@@ -169,21 +182,29 @@ export class Section extends THREE.Object3D {
 
 		if ( viewing == 'ready' ) {
 
-			this.animator.animate( 'sectionVisibility' + this.sectionName, 0 );
-
-			this.visible = false;
+			this.animator.animate( 'sectionViewing' + this.sectionName, 0 );
 
 		} else if ( viewing == 'viewing' ) {
 
-			this.animator.animate( 'sectionVisibility' + this.sectionName, 1 );
-
-			this.visible = true;
+			this.animator.animate( 'sectionViewing' + this.sectionName, 1 );
 
 		} else if ( viewing == 'passed' ) {
 
-			this.animator.animate( 'sectionVisibility' + this.sectionName, 2 );
+			this.animator.animate( 'sectionViewing' + this.sectionName, 2 );
 
-			this.visible = false;
+		}
+
+		if ( this.viewing == 'viewing' ) this.visible = true;
+
+		this.animator.animate( 'sectionVisibility' + this.sectionName, this.viewing == 'viewing' ? 1 : 0, 1, () => {
+
+			if ( this.viewing != "viewing" ) this.visible = false;
+
+		} );
+
+		if ( this.elm ) {
+
+			this.elm.setAttribute( 'data-visible', viewing == 'viewing' ? 'true' : 'false' );
 
 		}
 

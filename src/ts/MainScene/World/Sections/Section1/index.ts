@@ -3,8 +3,7 @@ import * as ORE from 'ore-three';
 import * as CANNON from 'cannon';
 
 import { GLTF } from 'three/examples/jsm/loaders/GLTFLoader';
-import { Section } from '../Section';
-import { BG } from './BG';
+import { Section, ViewingState } from '../Section';
 import { Wall } from './Wall';
 import { BakuCollision } from './BakuCollision';
 import { Objects } from './Objects';
@@ -28,7 +27,13 @@ export class Section1 extends Section {
 
 		super( manager, 'section_1', parentUniforms );
 
+
+		// params
+
 		this.cameraRange.set( 0.01, 0.01 );
+		this.elm = document.querySelector( '.section1' ) as HTMLElement;
+
+		// baku
 
 		this.bakuStartPos = new THREE.Vector3();
 		this.bakuGoalPos = new THREE.Vector3();
@@ -91,12 +96,6 @@ export class Section1 extends Section {
 		this.bakuStartPos.set( 0, 1, - 2 );
 		this.bakuGoalPos.copy( this.bakuTransform.position );
 		this.bakuTransform.position.copy( this.bakuStartPos );
-
-		/*-------------------------------
-			BG
-		-------------------------------*/
-
-		new BG( scene.getObjectByName( 'BG' ) as THREE.Mesh, this.commonUniforms );
 
 		/*-------------------------------
 			Logo
@@ -165,6 +164,12 @@ export class Section1 extends Section {
 			this.logo.hover( args, camera );
 
 		}
+
+	}
+
+	public switchViewingState( viewing: ViewingState ): void {
+
+		super.switchViewingState( viewing );
 
 	}
 

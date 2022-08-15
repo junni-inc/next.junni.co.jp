@@ -4,7 +4,6 @@ import * as CANNON from 'cannon';
 
 import { Section } from '../Section';
 import { GLTF } from 'three/examples/jsm/loaders/GLTFLoader';
-import { BG } from './BG';
 import { Shadow } from './Shadow';
 import { Peoples } from './Peoples';
 import { Text } from './Text';
@@ -31,6 +30,10 @@ export class Section4 extends Section {
 
 		this.bakuMaterialType = 'line';
 
+		// params
+
+		this.elm = document.querySelector( '.section4' ) as HTMLElement;
+
 		/*-------------------------------
 			Cannon
 		-------------------------------*/
@@ -52,13 +55,8 @@ export class Section4 extends Section {
 
 		let light = new THREE.DirectionalLight();
 		light.position.set( 1, 1, 1 );
+		light.intensity = 1.5;
 		this.add( light );
-
-		/*-------------------------------
-			BG
-		-------------------------------*/
-
-		new BG( scene.getObjectByName( 'BG' ) as THREE.Mesh, this.commonUniforms );
 
 		/*-------------------------------
 			Shadow

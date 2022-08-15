@@ -20,7 +20,13 @@ export class Section3 extends Section {
 			}
 		} ) );
 
+		// params
+
+		this.elm = document.querySelector( '.section3' ) as HTMLElement;
+
 		this.ppParam.bloomBrightness = 1.0;
+
+		// light
 
 		let light = new THREE.DirectionalLight();
 		light.position.set( 0.5, 0.0, - 0.9 );

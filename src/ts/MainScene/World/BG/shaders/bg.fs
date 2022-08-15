@@ -1,0 +1,28 @@
+uniform vec3 uColor;
+uniform float time;
+uniform float uSection[6];
+varying vec2 vUv;
+
+#pragma glslify: hsv2rgb = require('./hsv2rgb.glsl' )
+#pragma glslify: random = require('./random.glsl' )
+
+void main( void ) {
+
+	vec3 sec1 = hsv2rgb( vec3( vUv.y * 0.3 + time * 0.1 + random( gl_FragCoord.xy * 0.01 ) * 0.05, 1.0 * 0.6, 1.0  ) );
+	vec3 sec2 = vec3( 1.0 );
+	vec3 sec3 = vec3( 0.0 );
+	vec3 sec4 = vec3( 1.0 );
+	vec3 sec5 = vec3( 0.0 );
+	vec3 sec6 = vec3( 0.0 );
+
+	vec3 col = vec3( 0.0 );
+	col += sec1 * uSection[0];
+	col += sec2 * uSection[1];
+	col += sec3 * uSection[2];
+	col += sec4 * uSection[3];
+	col += sec5 * uSection[4];
+	col += sec6 * uSection[5];
+
+	gl_FragColor = vec4( col, 1.0 );
+
+}

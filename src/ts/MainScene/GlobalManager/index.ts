@@ -38,6 +38,8 @@ export class GlobalManager extends EventEmitter {
 
 			let opt = e.variable.userData && e.variable.userData.pane;
 
+			if ( Array.isArray( this.animator.dataBase[ e.varName ] ) ) return;
+
 			this.pane.addInput( this.animator.dataBase, e.varName, opt );
 
 		} );

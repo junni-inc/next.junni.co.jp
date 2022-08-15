@@ -1,21 +1,23 @@
+@import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Noto+Sans&family=Noto+Sans+JP&display=swap');
+
+$notosans: 'Noto Sans JP', 'Noto Sans', sans-serif;
+$bebas: 'Bebas Neue', cursive;
+
 body {
 	height: 100%;
 	overflow: hidden;
 }
 
-canvas {
-	position: fixed;
-	width: 100%;
-	height: 100%;
-	z-index: -1;
+.tp-dfwv {
+	z-index: 1;
 }
 
 .content {
-	position: relative;
+	display: flex;
 	width: 100%;
 	height: 100%;
 	z-index: 1;
-	pointer-events: none;
+	flex-direction: column;
 }
 
 .section {
@@ -28,14 +30,173 @@ canvas {
 }
 
 .header {
-	position: absolute;
-	left: 0;
-	top: 0;
+	position: relative;
+	display: flex;
 	width: 100%;
-	height: 100%;
-	z-index: 1;
+	height: 70px;
+	align-items: center;
+	justify-content: center;
+	z-index: 10;
+
+	&-logo {
+		svg {
+			width: 180px;
+		}
+	}
 }
 
-.tp-dfwv {
-	z-index: 1;
+.footer {
+	position: relative;
+	width: 100%;
+	height: 60px;
+	background-color: #000;
+	color: #fff;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	z-index: 10;
+
+	&-copyright {
+		font-family: $notosans;	
+	}
+}
+
+.section {
+	&-wrap {
+		position: relative;
+		flex: 1;
+		canvas {
+			position: absolute;
+			width: 100%;
+			height: 100%;
+			left: 0;
+			top: 0;
+			z-index: 0;
+		}
+	}
+}
+
+.section2 {
+	
+	pointer-events: none;
+	
+	&[data-visible="true"] {
+		pointer-events: auto;		
+	}
+	
+	&-head {
+		position: absolute;
+		width: 40%;
+		transform: translateX(-100%) rotate(0);
+		left: -2%;
+		top: -15vw;
+
+		transition: transform .5s cubic-bezier(.74,-0.02,.94,-0.32);
+		
+		[data-visible="true"] &{
+			opacity: 1;
+			transform: rotate(45deg) translateX(0%);
+			transition: transform .7s cubic-bezier(0,1.33,.37,.99);
+		}
+
+	}
+
+	&-message {
+		position: absolute;
+		width: 25vw;
+		height: 25vw;
+		right: 0;
+		bottom: -3.5vw;
+		display: flex;
+		flex-direction: column;
+		justify-content: center;
+		align-items: center;
+		z-index: 0;
+
+		transform: translateX(150%) rotate(0);
+		transition: transform .5s cubic-bezier(.74,-0.02,.94,-0.32);
+		
+		[data-visible="true"] &{
+			opacity: 1;
+			transform: rotate(0deg) translateX(0%);
+			transition: transform .7s cubic-bezier(0,1.33,.37,.99);
+		}
+
+		transition-delay: .1s;
+		
+		&::before {
+			position: absolute;
+			content: "";
+			display: block;
+			width: 100%;
+			height: 100%;
+			background-color: rgba($color: #000000, $alpha: 0.95);
+			border-radius: 20px 20px;
+			z-index: -1;
+
+			transform: rotate(0deg);
+			transition: transform .5s cubic-bezier(.74,-0.02,.94,-0.32);
+			
+			[data-visible="true"] &{
+				opacity: 1;
+				transform: rotate(-20deg) rotate(-90deg);
+				transition: transform .7s cubic-bezier(0,1.33,.37,.99);
+			}
+
+			transition-delay: .1s;
+		}
+		
+		&-text {
+			color: #fff;
+			font-family: $notosans;
+			font-size: 18px;
+			padding: 20px;
+			text-align: center;
+			line-height: 2.5em;
+			font-size: 1.0vw;
+			
+			&-rb {
+				color: #fff;
+			}
+		}
+
+	}
+}
+
+
+.section5 {
+	&-message {
+		position: absolute;
+		width: 100%;
+		height: 100%;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		background: rgba($color: #000000, $alpha: 0.6);
+
+		opacity: 0;
+		transition: opacity 1.0s;
+		
+		[data-visible="true"] &{
+			opacity: 1;
+		}
+
+		&-text {
+			color: #fff;
+			text-align: center;
+			line-height: 2em;
+			font-size: 18px;
+			font-family: $notosans;
+			font-weight: bold;
+
+			opacity: 0;
+			transition: opacity 1.0s;
+			
+			[data-visible="true"] &{
+				opacity: 1;
+				transition: opacity 1.5s;
+				transition-delay: .5s;
+			}
+		}
+	}
 }

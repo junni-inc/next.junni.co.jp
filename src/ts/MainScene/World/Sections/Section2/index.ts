@@ -2,7 +2,6 @@ import * as THREE from 'three';
 import * as ORE from 'ore-three';
 import { Section } from '../Section';
 import { GLTF } from 'three/examples/jsm/loaders/GLTFLoader';
-import { BG } from './BG';
 import { Slides } from './Slides';
 import { Transparents } from './Transparents';
 
@@ -21,6 +20,10 @@ export class Section2 extends Section {
 				value: new THREE.Vector2()
 			}
 		} ) );
+
+		// params
+
+		this.elm = document.querySelector( '.section2' ) as HTMLElement;
 
 		this.ppParam.bloomBrightness = 0;
 		this.ppParam.vignet = 1.0;
@@ -42,12 +45,6 @@ export class Section2 extends Section {
 		let scene = gltf.scene;
 
 		this.add( scene );
-
-		/*-------------------------------
-			BG
-		-------------------------------*/
-
-		new BG( scene.getObjectByName( 'BG' ) as THREE.Mesh, this.commonUniforms );
 
 		/*-------------------------------
 			Slide

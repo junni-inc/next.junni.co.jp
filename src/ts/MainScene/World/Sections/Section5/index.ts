@@ -3,7 +3,6 @@ import * as ORE from 'ore-three';
 
 import { Section } from '../Section';
 import { GLTF } from 'three/examples/jsm/loaders/GLTFLoader';
-import { BG } from './BG';
 import { Objects } from './Objects';
 
 export class Section5 extends Section {
@@ -14,8 +13,13 @@ export class Section5 extends Section {
 
 		super( manager, 'section_5', parentUniforms );
 
+		// params
+
+		this.elm = document.querySelector( '.section5' ) as HTMLElement;
+
 		this.bakuMaterialType = 'normal';
 		this.ppParam.bloomBrightness = 1.0;
+		this.cameraRange.set( 0.0, 0.0 );
 
 	}
 
@@ -34,12 +38,6 @@ export class Section5 extends Section {
 		this.add( light );
 
 		/*-------------------------------
-			BG
-		-------------------------------*/
-
-		new BG( scene.getObjectByName( 'BG' ) as THREE.Mesh, this.commonUniforms );
-
-		/*-------------------------------
 			Objects
 		-------------------------------*/
 
@@ -49,7 +47,7 @@ export class Section5 extends Section {
 
 	public update( deltaTime: number ): void {
 
-		this.bakuTransform.rotation.multiply( new THREE.Quaternion().setFromAxisAngle( new THREE.Vector3( 0.0, 0.0, 1.0 ), deltaTime * 0.5 ) );
+		this.bakuTransform.rotation.multiply( new THREE.Quaternion().setFromAxisAngle( new THREE.Vector3( 0.0, 0.0, 1.0 ), deltaTime * 0.1 ) );
 
 	}
 

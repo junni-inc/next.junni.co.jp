@@ -42,6 +42,7 @@ export class Text {
 		this.boxShape = new CANNON.Box( this.baseSize.clone() );
 		this.body.addShape( this.boxShape );
 		this.body.position.set( this.mesh.position.x, this.mesh.position.y, this.mesh.position.z );
+		this.body.quaternion.set( this.mesh.quaternion.x, this.mesh.quaternion.y, this.mesh.quaternion.z, this.mesh.quaternion.w );
 
 	}
 

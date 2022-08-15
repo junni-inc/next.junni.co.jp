@@ -38,6 +38,8 @@ export class Objects {
 
 				mesh.material = mat;
 
+				this.objects.push( mesh );
+
 			}
 
 		} );
