@@ -3,7 +3,6 @@ import * as ORE from 'ore-three';
 
 import { Section } from '../Section';
 import { GLTF } from 'three/examples/jsm/loaders/GLTFLoader';
-import { BG } from './BG';
 import { Objects } from './Objects';
 
 export class Section5 extends Section {
@@ -32,12 +31,6 @@ export class Section5 extends Section {
 		let light = new THREE.DirectionalLight();
 		light.position.set( 1, 1, 1 );
 		this.add( light );
-
-		/*-------------------------------
-			BG
-		-------------------------------*/
-
-		new BG( scene.getObjectByName( 'BG' ) as THREE.Mesh, this.commonUniforms );
 
 		/*-------------------------------
 			Objects

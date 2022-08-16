@@ -8,6 +8,8 @@ import { Section4 } from './Sections/Section4';
 import { Baku } from './Baku';
 import { Section5 } from './Sections/Section5';
 import { Intro } from './Intro';
+import { BG } from './BG';
+import { Section6 } from './Sections/Section6';
 
 export class World extends THREE.Object3D {
 
@@ -17,6 +19,10 @@ export class World extends THREE.Object3D {
 	// manager
 
 	private manager: THREE.LoadingManager;
+
+	// bg
+
+	public bg: BG;
 
 	// intro
 
@@ -30,6 +36,7 @@ export class World extends THREE.Object3D {
 	public section3: Section3;
 	public section4: Section4;
 	public section5: Section5;
+	public section6: Section6;
 
 	// baku
 
@@ -65,6 +72,13 @@ export class World extends THREE.Object3D {
 
 			}
 		);
+
+		/*-------------------------------
+			BG
+		-------------------------------*/
+
+		this.bg = new BG( this.commonUniforms );
+		this.scene.add( this.bg );
 
 		/*-------------------------------
 			Intro
@@ -104,6 +118,10 @@ export class World extends THREE.Object3D {
 		this.add( this.section5 );
 		this.sections.push( this.section5 );
 
+		this.section6 = new Section6( this.manager, this.commonUniforms );
+		this.add( this.section6 );
+		this.sections.push( this.section6 );
+
 		this.baku.onLoaded = () => {
 
 			this.section2.setSceneTex( this.baku.sceneRenderTarget.texture );
@@ -112,17 +130,17 @@ export class World extends THREE.Object3D {
 
 	}
 
-	public changeSection( sectionNum: number ) {
+	public changeSection( sectionIndex: number ) {
 
 		let viewingIndex = 0;
 
 		this.sections.forEach( ( item, index ) => {
 
-			if ( index > sectionNum ) {
+			if ( index > sectionIndex ) {
 
 				item.switchViewingState( 'ready' );
 
-			} else if ( index < sectionNum ) {
+			} else if ( index < sectionIndex ) {
 
 				item.switchViewingState( 'passed' );
 
@@ -140,6 +158,8 @@ export class World extends THREE.Object3D {
 
 		this.baku.changeMaterial( section.bakuMaterialType );
 		this.baku.changeAction( section.sectionName );
+
+		this.bg.changeSection( sectionIndex );
 
 		return section;
 

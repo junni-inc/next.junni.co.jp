@@ -32,11 +32,11 @@ export class MainScene extends ORE.BaseLayer {
 
 		this.scroller = new Scroller();
 
-		this.scroller.addListener( 'changeSelectingSection', ( sectionNum: number ) => {
+		this.scroller.addListener( 'changeSelectingSection', ( sectionIndex: number ) => {
 
 			if ( this.world ) {
 
-				let section = this.world.changeSection( sectionNum );
+				let section = this.world.changeSection( sectionIndex );
 
 				if ( this.cameraController ) {
 
@@ -95,6 +95,8 @@ export class MainScene extends ORE.BaseLayer {
 		-------------------------------*/
 
 		if ( this.renderer ) {
+
+			this.renderer.shadowMap.enabled = true;
 
 			this.renderPipeline = new RenderPipeline( this.renderer, this.commonUniforms );
 

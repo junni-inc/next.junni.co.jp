@@ -47,6 +47,12 @@ export class Peoples extends THREE.Mesh {
 
 		let animator = window.gManager.animator;
 
+		commonUniforms.uVisibility = animator.add( {
+			name: 'peopleVisibility',
+			initValue: 0,
+			easing: ORE.Easings.linear
+		} );
+
 		/*-------------------------------
 			CreateTrails
 		-------------------------------*/
@@ -97,9 +103,10 @@ export class Peoples extends THREE.Mesh {
 			fragmentShader: peopleFrag,
 			uniforms: meshUniforms,
 			transparent: true,
-			side: THREE.DoubleSide
+			side: THREE.DoubleSide,
 		} ) );
 
+		this.castShadow = true;
 		this.animator = animator;
 		this.renderer = renderer;
 		this.num = num;
@@ -107,6 +114,16 @@ export class Peoples extends THREE.Mesh {
 
 		this.commonUniforms = commonUniforms;
 		this.meshUniforms = meshUniforms;
+
+		this.customDepthMaterial = new THREE.ShaderMaterial( {
+			vertexShader: peopleVert,
+			fragmentShader: peopleFrag,
+			uniforms: meshUniforms,
+			side: THREE.DoubleSide,
+			defines: {
+				DEPTH: ''
+			}
+		} );
 
 		/*-------------------------------
 			GPU Controller
@@ -119,7 +136,7 @@ export class Peoples extends THREE.Mesh {
 					item.visible = false;
 
 					return {
-						position: ( item.getWorldPosition( new THREE.Vector3() ) ),
+						position: item.position,
 						scale: item.scale,
 					};
 
@@ -218,6 +235,12 @@ export class Peoples extends THREE.Mesh {
 
 		this.meshUniforms.dataPos.value = this.datas.position.buffer.texture;
 		this.meshUniforms.dataVel.value = this.datas.velocity.buffer.texture;
+
+	}
+
+	public switchVisibility( visible: boolean ) {
+
+		this.animator.animate( 'peopleVisibility', visible ? 1 : 0, visible ? 3 : 3 );
 
 	}
 

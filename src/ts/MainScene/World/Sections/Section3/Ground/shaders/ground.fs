@@ -1,3 +1,4 @@
+uniform float uSectionVisibility;
 varying vec2 vUv;
 varying vec3 vTangent;
 varying vec3 vBitangent;
@@ -487,7 +488,13 @@ void main( void ) {
 
 	// output
 	vec3 outColor = vec3( 0.0 );
-	float outOpacity = mat.opacity;
+	float outOpacity = mat.opacity * uSectionVisibility;
+
+	if( uSectionVisibility == 0.0 ) {
+		
+		discard;
+		
+	}
 
 	/*-------------------------------
 		Depth

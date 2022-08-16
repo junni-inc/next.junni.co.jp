@@ -401,6 +401,18 @@ void main( void ) {
 	float outOpacity = mat.opacity;
 
 	/*-------------------------------
+		Depth
+	-------------------------------*/
+
+	#ifdef DEPTH
+
+		float fragCoordZ = 0.5 * vHighPrecisionZW.x / vHighPrecisionZW.y + 0.5;
+		gl_FragColor = packDepthToRGBA( fragCoordZ );
+		return;
+	
+	#endif
+
+	/*-------------------------------
 		Geometry
 	-------------------------------*/
 
@@ -462,7 +474,7 @@ void main( void ) {
 				light.color = directionalLights[ i ].color;
 				shadow = 1.0;
 
-				#if defined( USE_SHADOWMAP ) && NUM_DIR_LIGHT_SHADOWS > 0
+				#if defined( USE_SHADOWMAP ) && UNROLLED_LOOP_INDEX < NUM_DIR_LIGHT_SHADOWS
 
 					shadow = getShadow( directionalShadowMap[ i ], directionalLightShadows[ i ].shadowMapSize, directionalLightShadows[ i ].shadowBias, vDirectionalShadowCoord[ i ] );
 

@@ -4,7 +4,6 @@ import * as CANNON from 'cannon';
 
 import { GLTF } from 'three/examples/jsm/loaders/GLTFLoader';
 import { Section } from '../Section';
-import { BG } from './BG';
 import { Wall } from './Wall';
 import { BakuCollision } from './BakuCollision';
 import { Objects } from './Objects';
@@ -91,12 +90,6 @@ export class Section1 extends Section {
 		this.bakuStartPos.set( 0, 1, - 2 );
 		this.bakuGoalPos.copy( this.bakuTransform.position );
 		this.bakuTransform.position.copy( this.bakuStartPos );
-
-		/*-------------------------------
-			BG
-		-------------------------------*/
-
-		new BG( scene.getObjectByName( 'BG' ) as THREE.Mesh, this.commonUniforms );
 
 		/*-------------------------------
 			Logo

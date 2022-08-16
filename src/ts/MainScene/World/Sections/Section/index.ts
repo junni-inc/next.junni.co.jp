@@ -48,6 +48,7 @@ export class Section extends THREE.Object3D {
 
 	// state
 
+	protected sectionVisibility: boolean = false;
 	protected viewing: ViewingState = 'ready';
 
 	// pp param
@@ -74,19 +75,33 @@ export class Section extends THREE.Object3D {
 		this.commonUniforms = ORE.UniformsLib.mergeUniforms( parentUniforms, {
 		} );
 
+		this.sectionVisibility = false;
+		this.visible = false;
+
 		/*-------------------------------
 			Animator
 		-------------------------------*/
 
 		this.animator = window.gManager.animator;
 
-		this.commonUniforms.visibility = this.animator.add( {
-			name: 'sectionVisibility' + this.sectionName,
+		this.commonUniforms.uSectionViewing = this.animator.add( {
+			name: 'sectionViewing' + this.sectionName,
 			initValue: 0,
 			userData: {
 				pane: {
 					min: 0,
 					max: 2
+				}
+			}
+		} );
+
+		this.commonUniforms.uSectionVisibility = this.animator.add( {
+			name: 'sectionVisibility' + this.sectionName,
+			initValue: 0,
+			userData: {
+				pane: {
+					min: 0,
+					max: 1
 				}
 			}
 		} );
@@ -166,26 +181,38 @@ export class Section extends THREE.Object3D {
 	public switchViewingState( viewing: ViewingState ) {
 
 		this.viewing = viewing;
+		this.sectionVisibility = viewing == 'viewing';
 
 		if ( viewing == 'ready' ) {
 
-			this.animator.animate( 'sectionVisibility' + this.sectionName, 0 );
-
-			this.visible = false;
+			this.animator.animate( 'sectionViewing' + this.sectionName, 0 );
 
 		} else if ( viewing == 'viewing' ) {
 
-			this.animator.animate( 'sectionVisibility' + this.sectionName, 1 );
-
-			this.visible = true;
+			this.animator.animate( 'sectionViewing' + this.sectionName, 1 );
 
 		} else if ( viewing == 'passed' ) {
 
-			this.animator.animate( 'sectionVisibility' + this.sectionName, 2 );
-
-			this.visible = false;
+			this.animator.animate( 'sectionViewing' + this.sectionName, 2 );
 
 		}
+
+		if ( this.sectionVisibility ) {
+
+			this.visible = true;
+
+		}
+
+		this.animator.animate( 'sectionVisibility' + this.sectionName, this.sectionVisibility ? 1 : 0, 1, () => {
+
+			if ( ! this.sectionVisibility ) {
+
+				this.visible = false;
+
+			}
+
+		} );
+
 
 	}
 
