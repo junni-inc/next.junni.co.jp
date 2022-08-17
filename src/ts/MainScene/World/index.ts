@@ -10,6 +10,7 @@ import { Section5 } from './Sections/Section5';
 import { Intro } from './Intro';
 import { Section6 } from './Sections/Section6';
 import { BG } from './BG';
+import { Ground } from './Ground';
 
 export class World extends THREE.Object3D {
 
@@ -23,6 +24,10 @@ export class World extends THREE.Object3D {
 	// bg
 
 	public bg: BG;
+
+	// ground
+
+	public ground: Ground;
 
 	// intro
 
@@ -79,6 +84,12 @@ export class World extends THREE.Object3D {
 
 		this.bg = new BG( this.commonUniforms );
 		this.scene.add( this.bg );
+
+		/*-------------------------------
+			Ground
+		-------------------------------*/
+
+		this.ground = new Ground( this.scene.getObjectByName( 'CommonGround' ) as THREE.Mesh, this.commonUniforms );
 
 		/*-------------------------------
 			Intro
@@ -160,6 +171,7 @@ export class World extends THREE.Object3D {
 		this.baku.changeAction( section.sectionName );
 
 		this.bg.changeSection( sectionIndex );
+		this.ground.changeSection( sectionIndex );
 
 		return section;
 

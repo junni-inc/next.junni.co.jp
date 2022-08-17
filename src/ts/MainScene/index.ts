@@ -69,6 +69,7 @@ export class MainScene extends ORE.BaseLayer {
 		this.gManager = new GlobalManager();
 
 		this.gManager.assetManager.load( { assets: [
+			{ name: 'commonScene', path: './assets/scene/common.glb', type: "gltf", timing: 'must' },
 			{ name: 'logo', path: './assets/textures/junni_logo.png', type: 'tex', timing: 'must' },
 			{ name: 'introText', path: './assets/textures/intro-text.png', type: 'tex', timing: 'must' },
 			{ name: 'topLogo', path: './assets/textures/top_logo.png', type: 'tex', timing: 'must' },
@@ -80,10 +81,17 @@ export class MainScene extends ORE.BaseLayer {
 
 			}, },
 			{ name: 'people', path: './assets/textures/people1.png', type: 'tex', timing: 'sub' }
-
 		] } );
 
 		this.gManager.assetManager.addEventListener( 'loadMustAssets', ( e ) => {
+
+			let gltf = window.gManager.assetManager.getGltf( 'commonScene' );
+
+			if ( gltf ) {
+
+				this.scene.add( gltf.scene );
+
+			}
 
 			this.initScene();
 			this.onResize();

@@ -30,14 +30,6 @@ export class Section5 extends Section {
 		this.add( scene );
 
 		/*-------------------------------
-			light
-		-------------------------------*/
-
-		let light = new THREE.DirectionalLight();
-		light.position.set( 1, 1, 1 );
-		this.add( light );
-
-		/*-------------------------------
 			Objects
 		-------------------------------*/
 

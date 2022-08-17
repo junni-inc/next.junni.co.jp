@@ -240,7 +240,7 @@ export class Peoples extends THREE.Mesh {
 
 	public switchVisibility( visible: boolean ) {
 
-		this.animator.animate( 'peopleVisibility', visible ? 1 : 0, visible ? 3 : 3 );
+		this.animator.animate( 'peopleVisibility', visible ? 1 : 0, visible ? 3 : 2 );
 
 	}
 

@@ -1,14 +1,12 @@
 import * as THREE from 'three';
 import * as ORE from 'ore-three';
-import { Section, ViewingState } from '../Section';
+import { Section } from '../Section';
 import { GLTF } from 'three/examples/jsm/loaders/GLTFLoader';
-import { Ground } from './Ground';
 import { Displays } from './Displays';
 import { Lights } from './Lights';
 
 export class Section3 extends Section {
 
-	private ground?: Ground;
 	private displays?: Displays;
 	private lights?: Lights;
 	private directionLightList: THREE.DirectionalLight[] = [];
@@ -64,12 +62,6 @@ export class Section3 extends Section {
 	protected onLoadedGLTF( gltf: GLTF ): void {
 
 		this.add( gltf.scene );
-
-		/*-------------------------------
-			Ground
-		-------------------------------*/
-
-		this.ground = new Ground( this.getObjectByName( 'Ground' ) as THREE.Mesh, this.commonUniforms );
 
 		/*-------------------------------
 			Displays
