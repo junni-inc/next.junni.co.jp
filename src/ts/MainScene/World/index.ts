@@ -68,6 +68,31 @@ export class World extends THREE.Object3D {
 
 				let percentage = loaded / total;
 
+				if ( percentage == 1.0 ) {
+
+					let camera = new THREE.OrthographicCamera( - 100, 100, 100, - 100, 0.01, 1000.0 );
+					camera.position.set( 0, 0, 500 );
+
+					let visibility: boolean[] = [];
+
+					this.sections.forEach( section => {
+
+						visibility.push( section.visible );
+						section.visible = true;
+
+					} );
+
+					renderer.render( this.scene, camera );
+
+					this.sections.forEach( section => {
+
+						visibility.push( section.visible );
+						section.visible = visibility.shift() || false;
+
+					} );
+
+				}
+
 				this.intro.updateLoadState( percentage );
 
 				this.dispatchEvent( {

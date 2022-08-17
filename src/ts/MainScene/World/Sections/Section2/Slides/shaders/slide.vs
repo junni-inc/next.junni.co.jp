@@ -1,4 +1,5 @@
 uniform float uSectionViewing;
+uniform float uSectionVisibility;
 uniform float time;
 uniform float speed;
 
@@ -13,7 +14,7 @@ void main( void ) {
 	vec4 mvPosition = modelViewMatrix * vec4( pos, 1.0 );
 	gl_Position = projectionMatrix * mvPosition;
 
-	vAlpha = uSectionViewing;
+	vAlpha = uSectionVisibility;
 
 	vUv = uv;
 	vUv.x += time * 0.1 * speed;

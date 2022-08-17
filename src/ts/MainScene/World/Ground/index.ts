@@ -54,12 +54,13 @@ export class Ground extends PowerReflectionMesh {
 
 		}
 
-
 		if ( sectionIndex == 3.0 ) {
 
 			color.set( 1.0, 1.0, 1.0 );
 
 		}
+
+		this.visible = sectionIndex >= 2.0;
 
 		this.animator.animate( 'groundReflection', reflection );
 		this.animator.animate( 'groundColor', color );

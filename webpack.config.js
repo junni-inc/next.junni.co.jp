@@ -5,6 +5,7 @@ module.exports = {
 		aggregateTimeout: 100,
 	},
     mode: 'development',
+	devtool: 'source-map',
     entry: {
     },
     output: {

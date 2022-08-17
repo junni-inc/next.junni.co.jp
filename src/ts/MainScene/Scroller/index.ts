@@ -192,19 +192,13 @@ export class Scroller extends EventEmitter {
 
 		let currentTime = new Date().getTime();
 		let deltaTime = currentTime - this.wheelTime;
-		let wheelDeltaDelta = Math.abs( delta - this.wheelDeltaMem );
+		let wheelDeltaDelta = Math.abs( delta ) - Math.abs( this.wheelDeltaMem );
 		this.wheelTime = currentTime;
 		this.wheelDeltaMem = delta;
 
-		if ( this.wheelStop ) {
+		if ( deltaTime < 100 && wheelDeltaDelta < 0.0 ) {
 
-			if ( deltaTime < 100 && wheelDeltaDelta < 0.001 ) {
-
-				return;
-
-			}
-
-			this.wheelStop = false;
+			return;
 
 		}
 
