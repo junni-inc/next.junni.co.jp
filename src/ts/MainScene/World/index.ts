@@ -130,17 +130,17 @@ export class World extends THREE.Object3D {
 
 	}
 
-	public changeSection( sectionNum: number ) {
+	public changeSection( sectionIndex: number ) {
 
 		let viewingIndex = 0;
 
 		this.sections.forEach( ( item, index ) => {
 
-			if ( index > sectionNum ) {
+			if ( index > sectionIndex ) {
 
 				item.switchViewingState( 'ready' );
 
-			} else if ( index < sectionNum ) {
+			} else if ( index < sectionIndex ) {
 
 				item.switchViewingState( 'passed' );
 
@@ -158,6 +158,8 @@ export class World extends THREE.Object3D {
 
 		this.baku.changeMaterial( section.bakuMaterialType );
 		this.baku.changeAction( section.sectionName );
+
+		this.bg.changeSection( sectionIndex );
 
 		return section;
 

@@ -50,6 +50,7 @@ export class Section extends THREE.Object3D {
 
 	// state
 
+	protected sectionVisibility: boolean = false;
 	protected viewing: ViewingState = 'ready';
 
 	// pp param
@@ -75,6 +76,9 @@ export class Section extends THREE.Object3D {
 
 		this.commonUniforms = ORE.UniformsLib.mergeUniforms( parentUniforms, {
 		} );
+
+		this.sectionVisibility = false;
+		this.visible = false;
 
 		/*-------------------------------
 			Animator
@@ -179,6 +183,7 @@ export class Section extends THREE.Object3D {
 	public switchViewingState( viewing: ViewingState ) {
 
 		this.viewing = viewing;
+		this.sectionVisibility = viewing == 'viewing';
 
 		if ( viewing == 'ready' ) {
 
@@ -194,11 +199,19 @@ export class Section extends THREE.Object3D {
 
 		}
 
-		if ( this.viewing == 'viewing' ) this.visible = true;
+		if ( this.sectionVisibility ) {
 
-		this.animator.animate( 'sectionVisibility' + this.sectionName, this.viewing == 'viewing' ? 1 : 0, 1, () => {
+			this.visible = true;
 
-			if ( this.viewing != "viewing" ) this.visible = false;
+		}
+
+		this.animator.animate( 'sectionVisibility' + this.sectionName, this.sectionVisibility ? 1 : 0, 1, () => {
+
+			if ( ! this.sectionVisibility ) {
+
+				this.visible = false;
+
+			}
 
 		} );
 

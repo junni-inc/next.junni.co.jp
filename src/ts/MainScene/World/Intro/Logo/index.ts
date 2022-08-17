@@ -12,7 +12,6 @@ export class Logo extends THREE.Mesh {
 
 	constructor( parentUniforms: ORE.Uniforms ) {
 
-
 		let uni = ORE.UniformsLib.mergeUniforms( parentUniforms, {
 			tex: window.gManager.assetManager.getTex( 'logo' )
 		} );

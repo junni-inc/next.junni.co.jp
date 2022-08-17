@@ -13,9 +13,6 @@ export class Section6 extends Section {
 
 		super( manager, 'section_6', parentUniforms );
 
-		// params
-
-		this.elm = document.querySelector( '.section6' ) as HTMLElement;
 		this.bakuMaterialType = 'normal';
 		this.ppParam.bloomBrightness = 1.0;
 
@@ -34,12 +31,6 @@ export class Section6 extends Section {
 		let light = new THREE.DirectionalLight();
 		light.position.set( 1, 1, 1 );
 		this.add( light );
-
-		/*-------------------------------
-			Objects
-		-------------------------------*/
-
-		// this.objects = new Objects( scene.getObjectByName( 'Objects' ) as THREE.Object3D, this.commonUniforms );
 
 	}
 

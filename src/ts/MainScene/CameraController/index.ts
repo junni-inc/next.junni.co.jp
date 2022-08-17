@@ -10,6 +10,7 @@ export type CameraTransform = {
 export class CameraController {
 
 	private animator: ORE.Animator;
+	private portraitWeight: number = 0;
 
 	// camera
 
@@ -72,7 +73,7 @@ export class CameraController {
 		this.animator.setValue( 'cameraTargetPos', cameraTransform.targetPosition );
 		this.animator.setValue( 'cameraFov', cameraTransform.fov );
 
-		this.camera.fov = cameraTransform.fov;
+		this.camera.fov = cameraTransform.fov + this.portraitWeight * 20.0;
 		this.camera.updateProjectionMatrix();
 
 	}
@@ -125,8 +126,7 @@ export class CameraController {
 
 	public resize( info: ORE.LayerInfo ) {
 
-		this.camera.fov = this.baseCamera.fov * 1.0 + info.size.portraitWeight * 20.0;
-		this.camera.updateProjectionMatrix();
+		this.portraitWeight = info.size.portraitWeight;
 
 	}
 

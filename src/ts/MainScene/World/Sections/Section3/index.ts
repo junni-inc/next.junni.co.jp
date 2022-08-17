@@ -1,6 +1,6 @@
 import * as THREE from 'three';
 import * as ORE from 'ore-three';
-import { Section } from '../Section';
+import { Section, ViewingState } from '../Section';
 import { GLTF } from 'three/examples/jsm/loaders/GLTFLoader';
 import { Ground } from './Ground';
 import { Displays } from './Displays';
@@ -11,6 +11,7 @@ export class Section3 extends Section {
 	private ground?: Ground;
 	private displays?: Displays;
 	private lights?: Lights;
+	private directionLightList: THREE.DirectionalLight[] = [];
 
 	constructor( manager: THREE.LoadingManager, parentUniforms: ORE.Uniforms ) {
 
@@ -32,9 +33,13 @@ export class Section3 extends Section {
 		light.position.set( 0.5, 0.0, - 0.9 );
 		this.add( light );
 
+		this.directionLightList.push( light );
+
 		light = new THREE.DirectionalLight();
 		light.position.set( - 1.5, 0.3, - 1 );
 		this.add( light );
+
+		this.directionLightList.push( light );
 
 		/*-------------------------------
 			EnvMap
@@ -84,9 +89,21 @@ export class Section3 extends Section {
 
 		super.update( deltaTime );
 
-		if ( this.viewing == 'viewing' ) {
+		if ( this.animator.isAnimatingVariable( 'sectionVisibility' + this.sectionName ) ) {
 
-			// this.bakuTransform.rotation.premultiply( new THREE.Quaternion().setFromEuler( new THREE.Euler( 0.0, 0.01, 0.0 ) ) );
+			let intensity = this.animator.get<number>( 'sectionVisibility' + this.sectionName ) || 0;
+
+			for ( let i = 0; i < this.directionLightList.length; i ++ ) {
+
+				this.directionLightList[ i ].intensity = 0;
+
+			}
+
+			if ( this.lights ) {
+
+				this.lights.setIntensity( intensity );
+
+			}
 
 		}
 

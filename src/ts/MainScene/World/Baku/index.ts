@@ -100,6 +100,8 @@ export class Baku extends THREE.Object3D {
 				uniforms: this.commonUniforms,
 			}, true );
 
+			this.mesh.castShadow = true;
+
 			this.mesh.onBeforeRender = ( renderer ) => {
 
 				if ( ! this.passThrough ) {

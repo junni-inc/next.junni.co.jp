@@ -1,4 +1,3 @@
-uniform float uSectionVisibility;
 varying vec2 vUv;
 varying vec3 vTangent;
 varying vec3 vBitangent;
@@ -319,7 +318,7 @@ struct Material {
 		
 		for( int i = 0; i < SHADOW_SAMPLE_COUNT; i ++  ) {
 			
-			vec2 offset = poissonDisk[ i ] * shadowSize; 
+			vec2 offset = poissonDisk[ i ] * shadowSize * 3.0; 
 
 			shadow += compairShadowMapDepth( shadowMap, shadowMapCoord.xy + offset, shadowMapCoord.z ).x;
 			
@@ -488,13 +487,7 @@ void main( void ) {
 
 	// output
 	vec3 outColor = vec3( 0.0 );
-	float outOpacity = mat.opacity * uSectionVisibility;
-
-	if( uSectionVisibility == 0.0 ) {
-		
-		discard;
-		
-	}
+	float outOpacity = mat.opacity;
 
 	/*-------------------------------
 		Depth
@@ -543,6 +536,69 @@ void main( void ) {
 	
 	geo.normalWorld = normalize( ( vec4( geo.normal, 0.0 ) * viewMatrix ).xyz );
 
+	/*-------------------------------
+		Lighting
+	-------------------------------*/
+	
+	Light light;
+
+	#if NUM_DIR_LIGHTS > 0
+
+		float shadow;
+
+		#pragma unroll_loop_start
+			for ( int i = 0; i < NUM_DIR_LIGHTS; i ++ ) {
+
+				light.direction = directionalLights[ i ].direction;
+				light.color = directionalLights[ i ].color;
+				shadow = 1.0;
+
+				#if defined( USE_SHADOWMAP ) && UNROLLED_LOOP_INDEX < NUM_DIR_LIGHT_SHADOWS
+
+					shadow = getShadow( directionalShadowMap[ i ], directionalLightShadows[ i ].shadowMapSize, directionalLightShadows[ i ].shadowBias, vDirectionalShadowCoord[ i ] ) * 0.2 + 0.8;
+
+				#endif
+
+				outColor += RE( geo, mat, light ) * shadow;
+				
+			}
+		#pragma unroll_loop_end
+
+	#endif
+
+	#if NUM_POINT_LIGHTS > 0
+
+		PointLight pLight;
+		vec3 v;
+		float d;
+		float attenuation;
+		#pragma unroll_loop_start
+
+			for ( int i = 0; i < NUM_POINT_LIGHTS; i ++ ) {
+
+				pLight = pointLights[ i ];
+
+				v = pLight.position - geo.pos;
+				d = length( v );
+				light.direction = normalize( v );
+		
+				light.color = pLight.color;
+
+				if( pLight.distance > 0.0 && pLight.decay > 0.0 ) {
+
+					attenuation = pow( clamp( -d / pLight.distance + 1.0, 0.0, 1.0 ), pLight.decay );
+					light.color *= attenuation;
+
+				}
+
+				outColor += RE( geo, mat, light );
+				
+			}
+			
+		#pragma unroll_loop_end
+
+	#endif
+
 	#if defined( USE_ENV_MAP ) || defined( IS_REFLECTIONPLANE )
 
 		float dNV = clamp( dot( geo.normal, geo.viewDir ), 0.0, 1.0 );
@@ -574,7 +630,7 @@ void main( void ) {
 
 		refUV.x += geo.normal.x * 0.5;
 
-		float l = (mat.roughness ) * REF_MIPMAP_LEVEL;
+		float l = (mat.roughness ) * 1.6 * REF_MIPMAP_LEVEL;
 
 		float offset1 = floor( l );
 		float offset2 = offset1 + 1.0;
