@@ -46,7 +46,8 @@ class APP {
 		this.controller.addLayer( new MainScene(), {
 			name: 'Main',
 			canvas: this.canvas || undefined,
-			pixelRatio: Math.max( 1.0, window.devicePixelRatio * 0.8 )
+			pixelRatio: Math.max( 1.0, window.devicePixelRatio * 0.8 ),
+			wrapperElement: wrap
 		} );
 
 	}

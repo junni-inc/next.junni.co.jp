@@ -51,7 +51,7 @@ void main() {
 	#pragma unroll_loop_end
 
 	vel += baseVel;
-	vel += ( gravity ) * length(gravity) * 0.00005;
+	vel += ( gravity ) * length(gravity) * 0.00009;
     vel.xyz *= 0.95 - uv.y * 0.02;
 
 	

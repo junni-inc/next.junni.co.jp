@@ -265,7 +265,7 @@ struct Material {
 
 	#endif
 
-	#define SHADOW_SAMPLE_COUNT 4
+	#define SHADOW_SAMPLE_COUNT 8
 
 	vec2 poissonDisk[ SHADOW_SAMPLE_COUNT ];
 
@@ -274,7 +274,7 @@ struct Material {
 		float r = 0.1;
 		float rStep = (1.0 - r) / float( SHADOW_SAMPLE_COUNT );
 
-		float ang = random( gl_FragCoord.xy * 0.01 + sin( time ) ) * PI2 * 1.0;
+		float ang = random( gl_FragCoord.xy * 0.01 ) * PI2 * 1.0;
 		float angStep = ( ( PI2 * 11.0 ) / float( SHADOW_SAMPLE_COUNT ) );
 		
 		for( int i = 0; i < SHADOW_SAMPLE_COUNT; i++ ) {
@@ -318,7 +318,7 @@ struct Material {
 		
 		for( int i = 0; i < SHADOW_SAMPLE_COUNT; i ++  ) {
 			
-			vec2 offset = poissonDisk[ i ] * shadowSize * 4.0; 
+			vec2 offset = poissonDisk[ i ] * shadowSize * 2.5; 
 
 			shadow += compairShadowMapDepth( shadowMap, shadowMapCoord.xy + offset, shadowMapCoord.z ).x;
 			
@@ -563,7 +563,7 @@ void main( void ) {
 
 				#endif
 
-				outColor += RE( geo, mat, light ) * (shadow * 0.2 + 0.8);
+				outColor += RE( geo, mat, light ) * (shadow * 1.0 + 0.0);
 				
 			}
 		#pragma unroll_loop_end

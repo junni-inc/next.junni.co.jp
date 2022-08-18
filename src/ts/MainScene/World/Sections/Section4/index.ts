@@ -97,8 +97,8 @@ export class Section4 extends Section {
 			Peoples
 		-------------------------------*/
 
-		this.peoples = new Peoples( this.renderer, 40, this.commonUniforms, ground.getObjectByName( 'Avoids' ) as THREE.Object3D );
-		this.peoples.switchVisibility( this.sectionVisibility );
+		this.peoples = new Peoples( this.renderer, 30, this.commonUniforms, ground.getObjectByName( 'Avoids' ) as THREE.Object3D );
+		this.peoples.switchVisibility( this.sectionVisibility, 2 );
 		this.peoples.position.y = 0.5;
 		ground.add( this.peoples );
 
@@ -121,7 +121,7 @@ export class Section4 extends Section {
 		this.light.shadow.camera.bottom = - shadowSize;
 		this.light.shadow.camera.far = 35.0;
 		this.light.shadow.bias = - 0.002;
-		this.light.shadow.mapSize.set( 512, 512 );
+		this.light.shadow.mapSize.set( 1024, 1024 );
 
 		this.light.intensity = 1;
 		this.add( this.light );
@@ -187,7 +187,10 @@ export class Section4 extends Section {
 
 		if ( this.peoples ) {
 
-			this.peoples.switchVisibility( this.sectionVisibility );
+			let passed = viewing == 'passed';
+
+			this.peoples.switchVisibility( this.sectionVisibility, passed ? 4 : 1.5 );
+			this.peoples.switchJump( passed, passed ? 4 : 1.5 );
 
 		}
 

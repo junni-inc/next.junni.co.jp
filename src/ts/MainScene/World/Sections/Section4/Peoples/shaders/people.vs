@@ -11,6 +11,8 @@ varying float vAlpha;
 uniform float time;
 
 uniform float uVisibility;
+uniform float uJump;
+uniform float uSectionViewing;
 uniform sampler2D dataPos;
 uniform sampler2D dataVel;
 uniform float aboutOffset;
@@ -30,7 +32,7 @@ uniform vec2 dataSize;
 
 float easeOutQuart( float t ) {
 
-	return 1.0 - ( --t ) * t * t * t ;
+	return t < 0.5 ? 2.0 * t * t : -1.0 + ( 4.0 - 2.0 * t ) * t;
 
 }
 
@@ -55,6 +57,7 @@ mat3 makeRotationDir( vec3 direction, vec3 up ) {
 void main( void ) {
 
 	vAlpha = easeOutQuart( smoothstep( 0.0, 0.6, -computeUV.x + uVisibility * 1.6 ) );
+	float posYOffset = 1.0 - easeOutQuart( smoothstep( 0.0, 0.6, -computeUV.x + (1.0 - uJump) * 1.6 ) );
 
 	/*-------------------------------
 		Position
@@ -65,7 +68,8 @@ void main( void ) {
 
     vec3 pos = vec3( 0.0 );
 	pos.xz = texture2D( dataPos, computeUV).xz;
-	pos.y = (1.0 - vAlpha) * 10.0;
+	pos.y += (posYOffset) * 12.0;
+	pos.xz *= rotate( sin(computeUV.y * 20.0 + time * 0.6 + posYOffset ) * posYOffset * 0.2 );
 
 	// vec3 vec = texture2D( dataVel, computeUV).xyz;
 	// p *= makeRotationDir(vec3( vec.x, 0.0, vec.z ), vec3( 0.0, 1.0, 0.0 ) );

@@ -50,17 +50,33 @@ export class Peoples extends THREE.Mesh {
 		commonUniforms.uVisibility = animator.add( {
 			name: 'peopleVisibility',
 			initValue: 0,
-			easing: ORE.Easings.linear
+			easing: ORE.Easings.linear,
+			userData: {
+				pane: {}
+			}
+		} );
+
+		commonUniforms.uJump = animator.add( {
+			name: 'peopleJump',
+			initValue: 0,
+			easing: ORE.Easings.linear,
+			userData: {
+				pane: {}
+			}
 		} );
 
 		/*-------------------------------
 			CreateTrails
 		-------------------------------*/
 
-		let size = 0.6;
+		// let size = 0.8;
+		// let size = 0.7;
+		// let size = 0.7;
+		let size = 0.95;
 
 		let originGeo = new THREE.PlaneBufferGeometry( size, size );
 		originGeo.getAttribute( 'position' ).applyMatrix4( new THREE.Matrix4().makeTranslation( 0.0, size / 2, 0.0 ) );
+		originGeo.getAttribute( 'position' ).applyMatrix4( new THREE.Matrix4().makeScale( 1.0 * 0.8, 1.5 * 0.8, 1.0 ) );
 
 		let geo = new THREE.InstancedBufferGeometry();
 		geo.setAttribute( 'position', originGeo.getAttribute( 'position' ) );
@@ -91,7 +107,7 @@ export class Peoples extends THREE.Mesh {
 			dataVel: {
 				value: null
 			},
-			tex: window.gManager.assetManager.getTex( 'people' )
+			tex: window.gManager.assetManager.getTex( 'human' )
 		} );
 
 		/*-------------------------------
@@ -196,7 +212,7 @@ export class Peoples extends THREE.Mesh {
 
 				let r = Math.random() * Math.PI * 2.0;
 
-				let radius = 6.0 + Math.random() * 10.0;
+				let radius = 4.0 + Math.random() * 9.0;
 
 				let pos = [
 					Math.sin( r ) * radius,
@@ -217,6 +233,7 @@ export class Peoples extends THREE.Mesh {
 
     	let tex = new THREE.DataTexture( new Float32Array( dataArray ), this.num, this.num, THREE.RGBAFormat, THREE.FloatType );
 		tex.needsUpdate = true;
+
 		return tex;
 
 	}
@@ -238,9 +255,28 @@ export class Peoples extends THREE.Mesh {
 
 	}
 
-	public switchVisibility( visible: boolean ) {
+	private visibility: boolean = false;
+	private jump: boolean = false;
 
-		this.animator.animate( 'peopleVisibility', visible ? 1 : 0, visible ? 3 : 2 );
+	public switchVisibility( visible: boolean, duration: number ) {
+
+		if ( this.visibility == visible ) return;
+
+		this.animator.animate( 'peopleVisibility', visible ? 1 : 0, duration );
+
+		this.visibility = visible;
+
+
+	}
+
+	public switchJump( jump: boolean, duration: number ) {
+
+		if ( this.jump == jump ) return;
+
+		this.animator.animate( 'peopleJump', jump ? 1 : 0, duration );
+
+		this.jump = jump;
+
 
 	}
 
