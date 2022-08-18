@@ -48,14 +48,20 @@ export class Text {
 			Mesh
 		-------------------------------*/
 
-		let size = new THREE.Box3().setFromObject( this.mesh ).getSize( new THREE.Vector3() );
+		let rot = new THREE.Euler().copy( this.mesh.rotation );
+		this.mesh.rotation.set( 0, 0, 0 );
+		let size = new THREE.Box3().setFromObject( this.mesh, true ).getSize( new THREE.Vector3() ).multiply( new THREE.Vector3( 0.8, 1.0, 0.8 ) );
+		this.mesh.rotation.copy( rot );
 		let worldPos = this.mesh.getWorldPosition( new THREE.Vector3() );
+		let worldQua = this.mesh.getWorldQuaternion( new THREE.Quaternion() );
 
-		this.body = new CANNON.Body( { mass: 1 } );
+
+		this.body = new CANNON.Body( { mass: 65 } );
 		this.baseSize = new CANNON.Vec3( size.x / 2, size.y / 2, size.z / 2 );
 		this.boxShape = new CANNON.Box( this.baseSize.clone() );
 		this.body.addShape( this.boxShape );
 		this.body.position.set( worldPos.x, worldPos.y, worldPos.z );
+		this.body.quaternion.set( worldQua.x, worldQua.y, worldQua.z, worldQua.w );
 
 	}
 

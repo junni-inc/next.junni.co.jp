@@ -80,6 +80,14 @@ void main( void ) {
 	gl_Position = projectionMatrix * mvPosition;
 	
 	vUv = uv;
+	vUv.x *= 0.5;
+
+	if( computeUV.x + computeUV.y == 0.0 ) {
+
+		vUv.x += 0.5;
+		
+	}
+	
 	vNormal = normal;
 	vViewPos = -mvPosition.xyz;
 	vWorldPos = worldPos.xyz;

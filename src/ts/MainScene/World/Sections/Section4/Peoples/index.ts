@@ -76,7 +76,7 @@ export class Peoples extends THREE.Mesh {
 
 		let originGeo = new THREE.PlaneBufferGeometry( size, size );
 		originGeo.getAttribute( 'position' ).applyMatrix4( new THREE.Matrix4().makeTranslation( 0.0, size / 2, 0.0 ) );
-		originGeo.getAttribute( 'position' ).applyMatrix4( new THREE.Matrix4().makeScale( 1.0 * 0.8, 1.5 * 0.8, 1.0 ) );
+		originGeo.getAttribute( 'position' ).applyMatrix4( new THREE.Matrix4().makeScale( 1.0 * 0.5, 1.0, 1.0 ) );
 
 		let geo = new THREE.InstancedBufferGeometry();
 		geo.setAttribute( 'position', originGeo.getAttribute( 'position' ) );
@@ -212,7 +212,7 @@ export class Peoples extends THREE.Mesh {
 
 				let r = Math.random() * Math.PI * 2.0;
 
-				let radius = 4.0 + Math.random() * 9.0;
+				let radius = 0.0 + Math.random() * 15.0;
 
 				let pos = [
 					Math.sin( r ) * radius,

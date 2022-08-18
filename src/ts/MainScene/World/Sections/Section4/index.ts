@@ -41,6 +41,7 @@ export class Section4 extends Section {
 		-------------------------------*/
 
 		this.cannonWorld = new CANNON.World();
+		this.cannonWorld.iterations = 50;
 		this.cannonWorld.gravity = new CANNON.Vec3( 0.0, - 9.8, 0.0 );
 
 	}
@@ -55,7 +56,7 @@ export class Section4 extends Section {
 			Shadow
 		-------------------------------*/
 
-		new Shadow( scene.getObjectByName( 'Shadow' ) as THREE.Mesh, this.commonUniforms );
+		// new Shadow( scene.getObjectByName( 'Shadow' ) as THREE.Mesh, this.commonUniforms );
 
 		/*-------------------------------
 			Text
@@ -74,7 +75,7 @@ export class Section4 extends Section {
 
 				setTimeout( () => {
 
-					text.small();
+					// text.small();
 
 				}, 2000 );
 
