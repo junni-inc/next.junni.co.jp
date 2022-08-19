@@ -31,9 +31,15 @@ export class Ground extends PowerReflectionMesh {
 			easing: ORE.Easings.easeOutCubic
 		} );
 
+		uni.uVisibility = animator.add( {
+			name: 'groundVisibility',
+			initValue: 1.0,
+		} );
+
 		super( mesh, {
 			uniforms: uni,
 			fragmentShader: groundFrag,
+			transparent: true,
 		}, true );
 
 		this.resize( new THREE.Vector2( 1024, 1024 ) );
@@ -47,6 +53,7 @@ export class Ground extends PowerReflectionMesh {
 
 		let reflection = 0.0;
 		let color = new THREE.Vector3();
+		let visibility = 1.0;
 
 		if ( sectionIndex == 2.0 ) {
 
@@ -60,10 +67,17 @@ export class Ground extends PowerReflectionMesh {
 
 		}
 
+		if ( sectionIndex >= 4.0 ) {
+
+			visibility = 0;
+
+		}
+
 		this.visible = sectionIndex >= 2.0;
 
 		this.animator.animate( 'groundReflection', reflection );
 		this.animator.animate( 'groundColor', color );
+		this.animator.animate( 'groundVisibility', visibility );
 
 	}
 

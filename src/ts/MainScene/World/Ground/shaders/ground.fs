@@ -20,7 +20,6 @@ vec2 packing16( float value ) {
 
 }
 
-
 /*-------------------------------
 	Requiers
 -------------------------------*/
@@ -35,6 +34,7 @@ vec2 packing16( float value ) {
 uniform float time;
 uniform vec3 uColor;
 uniform float uReflection;
+uniform float uVisibility;
 
 /*-------------------------------
 	Textures
@@ -484,7 +484,7 @@ void main( void ) {
 
 	#endif
 	
-	// if( mat.opacity < 0.5 ) discard;
+	mat.opacity *= uVisibility;
 
 	mat.diffuseColor = mix( mat.albedo, vec3( 0.0, 0.0, 0.0 ), mat.metalness );
 	mat.specularColor = mix( vec3( 1.0, 1.0, 1.0 ), mat.albedo, mat.metalness );

@@ -36,7 +36,7 @@ export class BG extends THREE.Mesh {
 			vertexShader: bgVert,
 			fragmentShader: bgFrag,
 			uniforms: uni,
-			side: THREE.BackSide
+			side: THREE.BackSide,
 		} );
 
 		super( geo, mat );
@@ -49,6 +49,9 @@ export class BG extends THREE.Mesh {
 	public changeSection( sectionIndex: number ) {
 
 		let sec = [ 0, 0, 0, 0, 0, 0 ];
+
+		if ( sectionIndex >= sec.length ) return;
+
 		sec[ sectionIndex ] = 1;
 
 		this.animator.animate( 'bgSection', sec, 1 );
