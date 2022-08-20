@@ -42,6 +42,7 @@ void main( void ) {
 	vAlpha *= visibility;
 
 	pos += oPos;
+	pos.y += texture2D( noiseTex, vec2(pos.x * 0.01 + oPos.y) ).x * 1.0;
 
 	vec4 mvPosition = modelViewMatrix * vec4( pos, 1.0 );
 	gl_Position = projectionMatrix * mvPosition;

@@ -8,6 +8,7 @@ varying vec2 vUv;
 void main( void ) {
 
 	vec4 col = vec4( 1.0 );
+	col.w *= 0.1;
 
 	gl_FragColor = col;
 

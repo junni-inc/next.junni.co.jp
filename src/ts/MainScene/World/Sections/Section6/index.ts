@@ -6,11 +6,15 @@ import { GLTF } from 'three/examples/jsm/loaders/GLTFLoader';
 import { Objects } from './Objects';
 import { Comrades } from './Comrades';
 import { Wind } from './Wind';
+import { Particle } from './Particle';
 
 export class Section6 extends Section {
 
+	private info: ORE.LayerInfo | null = null;
 	private objects?: Objects;
 	private comrades?: Comrades;
+	private wind?: Wind;
+	private particle?: Particle;
 
 	constructor( manager: THREE.LoadingManager, parentUniforms: ORE.Uniforms ) {
 
@@ -47,14 +51,28 @@ export class Section6 extends Section {
 			Wind
 		-------------------------------*/
 
-		let wind = new Wind( this.commonUniforms );
-		wind.quaternion.copy( ( this.getObjectByName( 'Baku' ) as THREE.Object3D ).quaternion );
-		wind.frustumCulled = false;
-		wind.position.copy( ( this.getObjectByName( 'Baku' ) as THREE.Object3D ).position );
+		this.wind = new Wind( this.commonUniforms );
+		this.wind.quaternion.copy( ( this.getObjectByName( 'Baku' ) as THREE.Object3D ).quaternion );
+		this.wind.position.copy( ( this.getObjectByName( 'Baku' ) as THREE.Object3D ).position );
+		this.wind.rotateY( Math.PI / 2 );
+		this.wind.frustumCulled = false;
+		this.add( this.wind );
 
-		wind.rotateY( Math.PI / 2 );
+		/*-------------------------------
+			Paritcle
+		-------------------------------*/
 
-		this.add( wind );
+		this.particle = new Particle( this.commonUniforms );
+		this.particle.quaternion.copy( ( this.getObjectByName( 'Baku' ) as THREE.Object3D ).quaternion );
+		this.particle.position.copy( ( this.getObjectByName( 'Baku' ) as THREE.Object3D ).position );
+		this.particle.rotateY( Math.PI / 2 );
+		this.add( this.particle );
+
+		if ( this.info ) {
+
+			this.particle.resize( this.info );
+
+		}
 
 	}
 
@@ -65,6 +83,18 @@ export class Section6 extends Section {
 		if ( this.comrades ) {
 
 			this.comrades.update( deltaTime );
+
+		}
+
+	}
+
+	public resize( info: ORE.LayerInfo ) {
+
+		this.info = info;
+
+		if ( this.particle ) {
+
+			this.particle.resize( info );
 
 		}
 

@@ -12,8 +12,8 @@ export class Wind extends THREE.Mesh {
 
 	constructor( parentUniforms?: ORE.Uniforms ) {
 
-		let num = 10;
-		let range = new THREE.Vector3( 60, 10, 10 );
+		let num = 20;
+		let range = new THREE.Vector3( 50, 10, 10 );
 
 		let animatorId = Math.floor( Math.random() * 10000 ).toString();
 
@@ -32,7 +32,7 @@ export class Wind extends THREE.Mesh {
 
 		}
 
-		let originGeo = new THREE.PlaneBufferGeometry( 10.0, 0.05, 10.0, 1.0 );
+		let originGeo = new THREE.PlaneBufferGeometry( 5.0, 0.01, 10.0, 1.0 );
 
 		let geo = new THREE.InstancedBufferGeometry();
 		geo.setAttribute( 'position', originGeo.getAttribute( 'position' ) );
