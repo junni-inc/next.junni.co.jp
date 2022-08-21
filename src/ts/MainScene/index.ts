@@ -80,6 +80,7 @@ export class MainScene extends ORE.BaseLayer {
 				value.wrapT = THREE.RepeatWrapping;
 
 			}, },
+			{ name: 'display', path: './assets/textures/display.png', type: 'tex', timing: 'sub' },
 			{ name: 'human', path: './assets/textures/humans/human03.png', type: 'tex', timing: 'sub' }
 		] } );
 

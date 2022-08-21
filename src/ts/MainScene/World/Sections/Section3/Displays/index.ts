@@ -15,19 +15,24 @@ export class Displays extends EventEmitter {
 		super();
 
 		this.commonUniforms = ORE.UniformsLib.mergeUniforms( parentUniforms, {
-			uNoiseTex: window.gManager.assetManager.getTex( 'noise' )
+			uNoiseTex: window.gManager.assetManager.getTex( 'noise' ),
+			uDisplayTex: window.gManager.assetManager.getTex( 'display' )
 		} );
 
 		this.root = root;
 
-		this.root.children.forEach( item => {
+		this.root.children.forEach( ( item, index ) => {
 
 			let mesh = item.children[ 0 ] as THREE.Mesh;
 
 			mesh.material = new THREE.ShaderMaterial( {
 				vertexShader: displayVert,
 				fragmentShader: displayFrag,
-				uniforms: this.commonUniforms
+				uniforms: ORE.UniformsLib.mergeUniforms( this.commonUniforms, {
+					uOffset: {
+						value: index
+					}
+				} )
 			} );
 
 		} );
