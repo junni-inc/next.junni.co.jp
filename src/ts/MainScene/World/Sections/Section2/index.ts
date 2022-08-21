@@ -34,9 +34,11 @@ export class Section2 extends Section {
 			Light
 		-------------------------------*/
 
-		let light = new THREE.DirectionalLight();
-		light.position.set( - 1, 1, 1 );
-		this.add( light );
+		this.light1Data = {
+			position: new THREE.Vector3( - 1, 2, 1 ),
+			targetPosition: new THREE.Vector3( 0, 0, 0 ),
+			intensity: 1
+		};
 
 	}
 

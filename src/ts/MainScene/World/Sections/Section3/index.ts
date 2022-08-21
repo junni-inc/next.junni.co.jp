@@ -25,19 +25,16 @@ export class Section3 extends Section {
 
 		this.ppParam.bloomBrightness = 1.0;
 
-		// light
+		/*-------------------------------
+			Light
+		-------------------------------*/
 
-		let light = new THREE.DirectionalLight();
-		light.position.set( 0.5, 0.0, - 0.9 );
-		this.add( light );
+		this.light2Data = {
+			intensity: 1,
+			position: new THREE.Vector3( - 3.0, - 11.0, - 3.0 ),
+			targetPosition: new THREE.Vector3( 0, - 11.0, 0 ),
+		};
 
-		this.directionLightList.push( light );
-
-		light = new THREE.DirectionalLight();
-		light.position.set( - 1.5, 0.3, - 1 );
-		this.add( light );
-
-		this.directionLightList.push( light );
 
 		/*-------------------------------
 			EnvMap
@@ -80,24 +77,6 @@ export class Section3 extends Section {
 	public update( deltaTime: number ) {
 
 		super.update( deltaTime );
-
-		if ( this.animator.isAnimatingVariable( 'sectionVisibility' + this.sectionName ) ) {
-
-			let intensity = this.animator.get<number>( 'sectionVisibility' + this.sectionName ) || 0;
-
-			for ( let i = 0; i < this.directionLightList.length; i ++ ) {
-
-				this.directionLightList[ i ].intensity = 0;
-
-			}
-
-			if ( this.lights ) {
-
-				this.lights.setIntensity( intensity );
-
-			}
-
-		}
 
 	}
 

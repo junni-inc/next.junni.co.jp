@@ -21,6 +21,17 @@ export class Section5 extends Section {
 		this.ppParam.bloomBrightness = 1.0;
 		this.cameraRange.set( 0.0, 0.0 );
 
+		/*-------------------------------
+			Lights
+		-------------------------------*/
+
+		this.light2Data = {
+			position: new THREE.Vector3( 5.0, - 10.7, 20 ),
+			targetPosition: new THREE.Vector3( - 1.7, - 6.7, 12 ),
+			intensity: 1,
+		};
+
+
 	}
 
 	protected onLoadedGLTF( gltf: GLTF ): void {

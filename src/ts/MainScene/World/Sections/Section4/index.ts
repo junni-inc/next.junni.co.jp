@@ -44,6 +44,20 @@ export class Section4 extends Section {
 		this.cannonWorld.iterations = 50;
 		this.cannonWorld.gravity = new CANNON.Vec3( 0.0, - 9.8, 0.0 );
 
+		/*-------------------------------
+			Light1
+		-------------------------------*/
+
+		this.light1Data = {
+			position: new THREE.Vector3( 2.7, - 2.5, 18.7 ),
+			targetPosition: new THREE.Vector3(
+				- 1.2926819324493408,
+				- 12.504984855651855,
+				13.764548301696777
+			),
+			intensity: 1
+		};
+
 	}
 
 	protected onLoadedGLTF( gltf: GLTF ): void {
@@ -102,30 +116,6 @@ export class Section4 extends Section {
 		this.peoples.switchVisibility( this.sectionVisibility, 2 );
 		this.peoples.position.y = 0.5;
 		ground.add( this.peoples );
-
-
-		/*-------------------------------
-			Light
-		-------------------------------*/
-
-		this.light = new THREE.DirectionalLight();
-		this.light.position.copy( ground.position );
-		this.light.position.add( new THREE.Vector3( 4, 10, 5 ) );
-		this.light.target = ground;
-
-		this.light.castShadow = true;
-		let shadowSize = 10.0;
-		this.light.shadow.blurSamples = 100;
-		this.light.shadow.camera.left = - shadowSize;
-		this.light.shadow.camera.right = shadowSize;
-		this.light.shadow.camera.top = shadowSize;
-		this.light.shadow.camera.bottom = - shadowSize;
-		this.light.shadow.camera.far = 35.0;
-		this.light.shadow.bias = - 0.002;
-		this.light.shadow.mapSize.set( 1024, 1024 );
-
-		this.light.intensity = 1;
-		this.add( this.light );
 
 	}
 

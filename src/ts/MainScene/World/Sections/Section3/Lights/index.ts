@@ -46,22 +46,8 @@ export class Lights extends EventEmitter {
 
 			}
 
-			// let light = new THREE.PointLight();
-			// mesh.add( light );
-			// this.lightList.push( light );
-
 		} );
 
-
-	}
-
-	public setIntensity( intensity: number ) {
-
-		for ( let i = 0; i < this.lightList.length; i ++ ) {
-
-			this.lightList[ i ].intensity = intensity;
-
-		}
 
 	}
 

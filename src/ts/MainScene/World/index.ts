@@ -11,6 +11,7 @@ import { Intro } from './Intro';
 import { Section6 } from './Sections/Section6';
 import { BG } from './BG';
 import { Ground } from './Ground';
+import { Lights } from './Lights';
 
 export class World extends THREE.Object3D {
 
@@ -20,6 +21,8 @@ export class World extends THREE.Object3D {
 	// manager
 
 	private manager: THREE.LoadingManager;
+
+	private lights: Lights;
 
 	// bg
 
@@ -102,6 +105,12 @@ export class World extends THREE.Object3D {
 
 			}
 		);
+
+		/*-------------------------------
+			Lights
+		-------------------------------*/
+
+		this.lights = new Lights( this.scene );
 
 		/*-------------------------------
 			BG
@@ -192,11 +201,14 @@ export class World extends THREE.Object3D {
 
 		let section = this.sections[ viewingIndex ];
 
+		this.lights.changeSection( section );
+
 		this.baku.changeMaterial( section.bakuMaterialType );
 		this.baku.changeAction( section.sectionName );
 
 		this.bg.changeSection( sectionIndex );
 		this.ground.changeSection( sectionIndex );
+
 
 		return section;
 
@@ -248,6 +260,8 @@ export class World extends THREE.Object3D {
 		} );
 
 		this.baku.update( deltaTime );
+
+		this.lights.update( deltaTime );
 
 	}
 

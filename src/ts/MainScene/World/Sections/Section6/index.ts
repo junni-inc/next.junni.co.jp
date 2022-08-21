@@ -25,21 +25,22 @@ export class Section6 extends Section {
 
 		// this.ppParam.bloomBrightness = 0.0;
 
+		/*-------------------------------
+			Lights
+		-------------------------------*/
+
+		this.light1Data = {
+			position: new THREE.Vector3( - 10, 1, 0 ),
+			targetPosition: new THREE.Vector3( 0, 0, 0 ),
+			intensity: 1,
+		};
+
 	}
 
 	protected onLoadedGLTF( gltf: GLTF ): void {
 
 		let scene = gltf.scene;
-
 		this.add( scene );
-
-		/*-------------------------------
-			light
-		-------------------------------*/
-
-		let light = new THREE.DirectionalLight();
-		light.position.set( - 10, 1, 0 );
-		this.add( light );
 
 		/*-------------------------------
 			Comrades

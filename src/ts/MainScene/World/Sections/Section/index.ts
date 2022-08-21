@@ -13,6 +13,12 @@ export type BakuTransform = {
 	scale: THREE.Vector3;
 }
 
+export type LightData = {
+	position: THREE.Vector3;
+	targetPosition: THREE.Vector3;
+	intensity: number
+}
+
 export type ViewingState = 'ready' | 'viewing' | 'passed'
 
 export class Section extends THREE.Object3D {
@@ -33,6 +39,11 @@ export class Section extends THREE.Object3D {
 	// manager
 
 	protected manager: THREE.LoadingManager;
+
+	// light datas
+
+	public light1Data?: LightData;
+	public light2Data?: LightData;
 
 	// transforms
 
