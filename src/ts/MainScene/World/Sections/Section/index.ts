@@ -78,7 +78,6 @@ export class Section extends THREE.Object3D {
 		} );
 
 		this.sectionVisibility = false;
-		this.visible = false;
 
 		/*-------------------------------
 			Animator

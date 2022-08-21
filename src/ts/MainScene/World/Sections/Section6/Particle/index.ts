@@ -6,6 +6,7 @@ import particlesFrag from './shaders/particle.fs';
 
 export class Particle extends THREE.Points {
 
+	private animator: ORE.Animator;
 	private commonUniforms: ORE.Uniforms;
 
 	constructor( parentUniforms?: ORE.Uniforms ) {
@@ -41,6 +42,17 @@ export class Particle extends THREE.Points {
 			}
 		} );
 
+		/*-------------------------------
+			Animator
+		-------------------------------*/
+
+		let animator = window.gManager.animator;
+
+		uni.uVisibility = animator.add( {
+			name: 'sec6ParticleVisibility',
+			initValue: 0,
+		} );
+
 		let mat = new THREE.ShaderMaterial( {
 			vertexShader: particlesVert,
 			fragmentShader: particlesFrag,
@@ -51,6 +63,8 @@ export class Particle extends THREE.Points {
 
 		super( geo, mat );
 
+		this.animator = animator;
+
 		this.commonUniforms = uni;
 
 	}
@@ -58,6 +72,18 @@ export class Particle extends THREE.Points {
 	public resize( layerInfo: ORE.LayerInfo ) {
 
 		this.commonUniforms.particleSize.value = layerInfo.size.canvasSize.y / 200;
+
+	}
+
+	public switchVisibility( visible: boolean ) {
+
+		if ( visible ) this.visible = true;
+
+		this.animator.animate( 'sec6ParticleVisibility', visible ? 1 : 0, 1, () => {
+
+			if ( ! visible ) this.visible = false;
+
+		} );
 
 	}
 

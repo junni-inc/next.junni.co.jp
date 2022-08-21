@@ -1,7 +1,7 @@
 import * as THREE from 'three';
 import * as ORE from 'ore-three';
 
-import { Section } from '../Section';
+import { Section, ViewingState } from '../Section';
 import { GLTF } from 'three/examples/jsm/loaders/GLTFLoader';
 import { Objects } from './Objects';
 import { Comrades } from './Comrades';
@@ -46,6 +46,7 @@ export class Section6 extends Section {
 		-------------------------------*/
 
 		this.comrades = new Comrades( this.getObjectByName( 'Comrades' ) as THREE.Object3D, this.getObjectByName( "Comrades_Origin_Wrap" ) as THREE.SkinnedMesh, gltf.animations, this.commonUniforms );
+		this.comrades.switchVisibility( this.sectionVisibility );
 
 		/*-------------------------------
 			Wind
@@ -66,6 +67,7 @@ export class Section6 extends Section {
 		this.particle.quaternion.copy( ( this.getObjectByName( 'Baku' ) as THREE.Object3D ).quaternion );
 		this.particle.position.copy( ( this.getObjectByName( 'Baku' ) as THREE.Object3D ).position );
 		this.particle.rotateY( Math.PI / 2 );
+		this.particle.switchVisibility( this.sectionVisibility );
 		this.add( this.particle );
 
 		if ( this.info ) {
@@ -83,6 +85,24 @@ export class Section6 extends Section {
 		if ( this.comrades ) {
 
 			this.comrades.update( deltaTime );
+
+		}
+
+	}
+
+	public switchViewingState( viewing: ViewingState ): void {
+
+		super.switchViewingState( viewing );
+
+		if ( this.particle ) {
+
+			this.particle.switchVisibility( this.sectionVisibility );
+
+		}
+
+		if ( this.comrades ) {
+
+			this.comrades.switchVisibility( this.sectionVisibility );
 
 		}
 

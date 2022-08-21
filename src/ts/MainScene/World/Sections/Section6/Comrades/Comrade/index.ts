@@ -8,6 +8,8 @@ import bakuVert from './shaders/comrade.vs';
 
 export class Comrade {
 
+	private animator: ORE.Animator;
+
 	private root: THREE.Object3D;
 	private animationMixer: THREE.AnimationMixer;
 	private animations: THREE.AnimationClip[] = [];
@@ -30,9 +32,22 @@ export class Comrade {
 
 		let clonedMesh = clonedRoot.getObjectByName( "Comrades_Origin" ) as THREE.SkinnedMesh;
 
+		/*-------------------------------
+			Animtor
+		-------------------------------*/
+
+		this.animator = window.gManager.animator;
+
+		this.commonUniforms.uVisibility = this.animator.add( {
+			name: 'comradeVisibility' + this.root.uuid,
+			initValue: 0,
+			easing: ORE.Easings.easeOutCubic
+		} );
+
 		this.mesh = new PowerMesh( clonedMesh, {
 			fragmentShader: comradeFrag,
 			vertexShader: bakuVert,
+			uniforms: this.commonUniforms
 		}, true );
 
 		this.root.add( clonedRoot );
@@ -64,6 +79,8 @@ export class Comrade {
 
 		}
 
+		this.root.visible = false;
+
 	}
 
 	public update( deltaTime: number ) {
@@ -79,7 +96,39 @@ export class Comrade {
 
 		// this.root.rotation.z += deltaTime * 0.2;
 
+	}
+
+	private timer: number | null = null;
+
+	public switchVisibility( visible: boolean ) {
+
+		if ( this.timer != null ) {
+
+			window.clearTimeout( this.timer );
+
+		}
+
+		if ( visible ) {
+
+			this.root.visible = true;
+
+		}
+
+		this.timer = window.setTimeout( () => {
+
+			this.animator.animate( 'comradeVisibility' + this.root.uuid, visible ? 1 : 0, 3, () => {
+
+				if ( ! visible ) {
+
+					this.root.visible = false;
+
+				}
+
+			} );
+
+		}, 500 * Math.random() );
 
 	}
+
 
 }

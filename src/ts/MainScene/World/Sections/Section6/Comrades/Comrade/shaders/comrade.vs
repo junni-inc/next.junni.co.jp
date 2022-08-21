@@ -1,3 +1,5 @@
+uniform float uVisibility;
+
 attribute vec4 tangent;
 
 varying vec2 vUv;
@@ -14,12 +16,26 @@ varying vec2 vHighPrecisionZW;
 	uniform float uLine;
 	
 #endif
+
+#define linearstep(edge0, edge1, x) min(max(((x) - (edge0)) / ((edge1) - (edge0)), 0.0), 1.0)
+
 /*-------------------------------
 	ShadowMap
 -------------------------------*/
 
 #include <shadowmap_pars_vertex>
 #include <skinning_pars_vertex>
+
+#pragma glslify: rotate = require('./rotate.glsl' )
+
+float easeOutBack(float x) {
+
+	float c1 = 1.70158;
+	float c3 = c1 + 1.0;
+
+	return 1.0 + c3 * pow(x - 1.0, 3.0) + c1 * pow(x - 1.0, 2.0);
+	
+}
 
 void main( void ) {
 
@@ -49,16 +65,18 @@ void main( void ) {
 	-------------------------------*/
 
 	vec3 transformed = vec3( position );
-
-	#ifdef IS_LINE
-
-		transformed += normal * 0.02 * uLine;
-	
-	#endif
 	
 	#include <skinning_vertex>
 
 	vec3 pos = transformed;
+	float visibility = (1.0 - easeOutBack(linearstep( 0.0, 1.5, +(pos.z - 2.0) + uVisibility * 4.0 ))) * 2.0;
+	pos.xy *= rotate( visibility );
+
+	float invUVisibility = (1.0 - uVisibility );
+	pos.xy *= max( 0.0, 1.0 - visibility );
+	pos.xy *= rotate( invUVisibility * 3.0 );
+	pos.zy += invUVisibility * 2.0 ;
+	
 	vec4 worldPos = modelMatrix * vec4( pos, 1.0 );
 	vec4 mvPosition = viewMatrix * worldPos;
 	

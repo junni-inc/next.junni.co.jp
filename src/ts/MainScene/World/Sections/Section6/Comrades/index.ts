@@ -42,4 +42,14 @@ export class Comrades extends EventEmitter {
 
 	}
 
+	public switchVisibility( visible: boolean ) {
+
+		this.comradeList.forEach( item => {
+
+			item.switchVisibility( visible );
+
+		} );
+
+	}
+
 }
