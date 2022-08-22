@@ -3,8 +3,11 @@ import * as ORE from 'ore-three';
 
 import slideVert from './shaders/slide.vs';
 import slideFrag from './shaders/slide.fs';
+import { ViewingState } from '../../Section';
 
 export class Slides {
+
+	private animator: ORE.Animator;
 
 	private commonUniforms: ORE.Uniforms;
 	private root: THREE.Object3D;
@@ -12,6 +15,22 @@ export class Slides {
 	constructor( root: THREE.Object3D, parentUniforms: ORE.Uniforms ) {
 
 		this.commonUniforms = ORE.UniformsLib.mergeUniforms( parentUniforms, {
+		} );
+
+		/*-------------------------------
+			Animator
+		-------------------------------*/
+
+		this.animator = window.gManager.animator;
+
+		this.commonUniforms.uVisibility = this.animator.add( {
+			name: 'sec2SlidesVisibility',
+			initValue: 0,
+		} );
+
+		this.commonUniforms.uSlide = this.animator.add( {
+			name: 'sec2SlidesSlide',
+			initValue: 0,
 		} );
 
 		this.root = root;
@@ -44,6 +63,25 @@ export class Slides {
 				} ),
 				transparent: true,
 			} );
+
+		} );
+
+	}
+
+	public switchVisibility( viewing: ViewingState ) {
+
+		let visible = viewing == 'viewing';
+
+		if ( visible ) this.root.visible = true;
+
+		let slide = 1.0;
+		if ( viewing == 'viewing' ) slide = 0.0;
+		if ( viewing == 'passed' ) slide = - 1.0;
+
+		this.animator.animate( 'sec2SlidesSlide', slide, 1 );
+		this.animator.animate( 'sec2SlidesVisibility', visible ? 1 : 0, 1, () => {
+
+			if ( ! visible ) this.root.visible = false;
 
 		} );
 

@@ -11,6 +11,8 @@ uniform vec2 uBloomMipmapResolution;
 
 uniform float uVignet;
 uniform float uBrightness;
+uniform float uGlitch;
+uniform sampler2D uNoiseTex;
 
 #pragma glslify: random = require( './random.glsl' );
 
@@ -69,28 +71,43 @@ vec4 textureBicubic(sampler2D t, vec2 texCoords, vec2 textureSize) {
 
 void main(){
 
-	vec3 c = vec3( 0.0 );
+	vec3 color = vec3( 0.0 );
 
 	vec2 uv = vUv;
 	vec2 cuv = vUv * 2.0 - 1.0;
 	float w = max( .0, length( cuv ) ) * 0.02;
 
-	c = texture2D( uSceneTex, vUv ).xyz;
+	if( uGlitch > 0.5 ) {
+
+		vec2 n = vec2( (texture2D( uNoiseTex, vec2( uv.y * .04, time * 3.0 ) ).x - 0.5) * 0.5, 0.0 ) * 0.6;
+		vec2 texUvR = uv + n;
+		vec2 texUvG = uv + n * 0.9;
+		vec2 texUvB = uv + n * 0.8;
+
+		color.x += texture2D( uSceneTex, texUvR ).x;
+		color.y += texture2D( uSceneTex, texUvG ).y;
+		color.z += texture2D( uSceneTex, texUvB ).z;
+
+	} else {
+
+		color = texture2D( uSceneTex, uv ).xyz;
+
+	}
+
 
 	vec2 mipUV;
 
 	#pragma unroll_loop_start
 	for ( int i = 0; i < RENDER_COUNT; i ++ ) {
 
-		mipUV = getMipmapUV( vUv, float( UNROLLED_LOOP_INDEX ) );
-		// c += texture2D( uBloomTex, mipUV ).xyz * uBrightness * float( UNROLLED_LOOP_INDEX ) / float( RENDER_COUNT );
-		c += textureBicubic( uBloomTex, mipUV, uBloomMipmapResolution ).xyz * uBrightness * float( UNROLLED_LOOP_INDEX ) / float( RENDER_COUNT );
+		mipUV = getMipmapUV( uv, float( UNROLLED_LOOP_INDEX ) );
+		color += textureBicubic( uBloomTex, mipUV, uBloomMipmapResolution ).xyz * uBrightness * float( UNROLLED_LOOP_INDEX ) / float( RENDER_COUNT );
 		
 	}
 	#pragma unroll_loop_end
 
-	c *= mix( 1.0, smoothstep( 2.0, 0.8, length( cuv ) ), uVignet );
+	color *= mix( 1.0, smoothstep( 2.0, 0.8, length( cuv ) ), uVignet );
 
-	gl_FragColor = vec4( c, 1.0 );
+	gl_FragColor = vec4( color, 1.0 );
 
 }

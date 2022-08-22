@@ -1,6 +1,6 @@
 import * as THREE from 'three';
 import * as ORE from 'ore-three';
-import { Section } from '../Section';
+import { Section, ViewingState } from '../Section';
 import { GLTF } from 'three/examples/jsm/loaders/GLTFLoader';
 import { Displays } from './Displays';
 import { Lights } from './Lights';
@@ -83,6 +83,17 @@ export class Section3 extends Section {
 	public resize( info: ORE.LayerInfo ) {
 
 		super.resize( info );
+
+	}
+
+	public switchViewingState( viewing: ViewingState ): void {
+
+		let cViewing = this.viewing;
+
+		super.switchViewingState( viewing );
+
+		this.visible = this.sectionVisibility;
+
 
 	}
 

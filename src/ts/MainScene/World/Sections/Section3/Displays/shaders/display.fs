@@ -24,7 +24,6 @@ void main( void ) {
 	vec2 texUvG = texUv + n * 0.5;
 	vec2 texUvB = texUv + n * 0.2;
 
-
 	vec4 message = vec4( 0.0 );
 	message.xw += texture2D( uDisplayTex, texUvR ).xw;
 	message.yw += texture2D( uDisplayTex, texUvG ).yw;

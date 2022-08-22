@@ -99,23 +99,23 @@ export class Section extends THREE.Object3D {
 		this.commonUniforms.uSectionViewing = this.animator.add( {
 			name: 'sectionViewing' + this.sectionName,
 			initValue: 0,
-			userData: {
-				pane: {
-					min: 0,
-					max: 2
-				}
-			}
+			// userData: {
+			// 	pane: {
+			// 		min: 0,
+			// 		max: 2
+			// 	}
+			// }
 		} );
 
 		this.commonUniforms.uSectionVisibility = this.animator.add( {
 			name: 'sectionVisibility' + this.sectionName,
 			initValue: 0,
-			userData: {
-				pane: {
-					min: 0,
-					max: 1
-				}
-			}
+			// userData: {
+			// 	pane: {
+			// 		min: 0,
+			// 		max: 1
+			// 	}
+			// }
 		} );
 
 		/*-------------------------------

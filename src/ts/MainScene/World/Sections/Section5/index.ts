@@ -1,7 +1,7 @@
 import * as THREE from 'three';
 import * as ORE from 'ore-three';
 
-import { Section } from '../Section';
+import { Section, ViewingState } from '../Section';
 import { GLTF } from 'three/examples/jsm/loaders/GLTFLoader';
 import { Objects } from './Objects';
 

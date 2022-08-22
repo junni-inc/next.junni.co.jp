@@ -7,7 +7,7 @@ import displayFrag from './shaders/display.fs';
 
 export class Displays extends EventEmitter {
 
-	private root: THREE.Object3D;
+	public root: THREE.Object3D;
 	private commonUniforms: ORE.Uniforms;
 
 	constructor( root: THREE.Object3D, parentUniforms: ORE.Uniforms ) {

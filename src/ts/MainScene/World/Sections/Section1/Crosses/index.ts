@@ -30,8 +30,6 @@ export class Crosses {
 			easing: ORE.Easings.linear
 		} );
 
-
-
 		root.children.forEach( ( item, i ) => {
 
 			let origin = item as THREE.Mesh;

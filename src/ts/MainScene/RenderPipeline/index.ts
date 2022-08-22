@@ -256,6 +256,17 @@ export class RenderPipeline {
 		this.compositePP = new ORE.PostProcessing( this.renderer, {
 			fragmentShader: compo,
 			uniforms: ORE.UniformsLib.mergeUniforms( {
+				uNoiseTex: window.gManager.assetManager.getTex( 'noise' ),
+				uGlitch: window.gManager.animator.add( {
+					name: 'sceneGlitch',
+					initValue: 0,
+					userData: {
+						pane: {
+							min: 0,
+							max: 1
+						}
+					}
+				} )
 			}, this.commonUniforms ),
 			defines: {
 				RENDER_COUNT: this.bloomRenderCount.toString()

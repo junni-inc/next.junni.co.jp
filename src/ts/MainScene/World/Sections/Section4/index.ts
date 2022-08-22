@@ -145,36 +145,7 @@ export class Section4 extends Section {
 
 	public switchViewingState( viewing: ViewingState ): void {
 
-		this.viewing = viewing;
-		this.sectionVisibility = viewing == 'viewing';
-
-		if ( viewing == 'ready' ) {
-
-			this.animator.animate( 'sectionViewing' + this.sectionName, 0 );
-
-		} else if ( viewing == 'viewing' ) {
-
-			this.animator.animate( 'sectionViewing' + this.sectionName, 1 );
-
-		} else if ( viewing == 'passed' ) {
-
-			this.animator.animate( 'sectionViewing' + this.sectionName, 2 );
-
-		}
-
-		if ( this.sectionVisibility ) {
-
-			this.visible = true;
-
-		}
-
-		this.animator.animate( 'sectionVisibility' + this.sectionName, this.sectionVisibility ? 1 : 0, 1 );
-
-		if ( this.elm ) {
-
-			this.elm.setAttribute( 'data-visible', viewing == 'viewing' ? 'true' : 'false' );
-
-		}
+		super.switchViewingState( viewing );
 
 		if ( this.peoples ) {
 
@@ -184,6 +155,7 @@ export class Section4 extends Section {
 			this.peoples.switchJump( passed, passed ? 4 : 1.5 );
 
 		}
+
 
 	}
 

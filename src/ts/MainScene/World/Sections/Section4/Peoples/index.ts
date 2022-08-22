@@ -51,18 +51,12 @@ export class Peoples extends THREE.Mesh {
 			name: 'peopleVisibility',
 			initValue: 0,
 			easing: ORE.Easings.linear,
-			userData: {
-				pane: {}
-			}
 		} );
 
 		commonUniforms.uJump = animator.add( {
 			name: 'peopleJump',
 			initValue: 0,
 			easing: ORE.Easings.linear,
-			userData: {
-				pane: {}
-			}
 		} );
 
 		/*-------------------------------

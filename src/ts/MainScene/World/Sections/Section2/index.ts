@@ -1,6 +1,6 @@
 import * as THREE from 'three';
 import * as ORE from 'ore-three';
-import { Section } from '../Section';
+import { Section, ViewingState } from '../Section';
 import { GLTF } from 'three/examples/jsm/loaders/GLTFLoader';
 import { Slides } from './Slides';
 import { Transparents } from './Transparents';
@@ -53,6 +53,7 @@ export class Section2 extends Section {
 		-------------------------------*/
 
 		this.slides = new Slides( scene.getObjectByName( 'Slides' ) as THREE.Object3D, this.commonUniforms );
+		this.slides.switchVisibility( this.viewing );
 
 		/*-------------------------------
 			Transparent
@@ -77,6 +78,14 @@ export class Section2 extends Section {
 		super.resize( info );
 
 		this.commonUniforms.winResolution.value.copy( info.size.canvasPixelSize );
+
+	}
+
+	public switchViewingState( viewing: ViewingState ): void {
+
+		super.switchViewingState( viewing );
+
+		if ( this.slides ) this.slides.switchVisibility( viewing );
 
 	}
 
