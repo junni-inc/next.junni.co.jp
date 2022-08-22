@@ -4,6 +4,9 @@ import * as THREE from 'three';
 import objectVert from './shaders/object.vs';
 import objectFrag from './shaders/object.fs';
 
+import slashVert from './shaders/slash.vs';
+import slashFrag from './shaders/slash.fs';
+
 export class Objects {
 
 	private commonUniforms: ORE.Uniforms;
@@ -40,8 +43,20 @@ export class Objects {
 
 		if ( type ) {
 
-			if ( type == '' ) {}
+			if ( type == 'Slash' ) {
 
+				return new THREE.ShaderMaterial( {
+					vertexShader: slashVert,
+					fragmentShader: slashFrag,
+					uniforms: ORE.UniformsLib.mergeUniforms( this.commonUniforms, {
+						uColor: {
+							value: baseMaterial.emissive
+						}
+					} ),
+					side: THREE.DoubleSide
+				} );
+
+			}
 
 		}
 

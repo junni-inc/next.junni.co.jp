@@ -138,6 +138,23 @@ export class Section extends THREE.Object3D {
 
 			let camera = gltf.scene.getObjectByName( 'Camera' ) as THREE.PerspectiveCamera;
 
+			if ( ! camera.isPerspectiveCamera ) {
+
+				let camera_ = camera.children[ 0 ] as THREE.PerspectiveCamera;
+				camera_.position.copy( camera.position );
+				camera_.rotation.copy( camera.rotation );
+				camera_.scale.copy( camera.scale );
+
+				if ( camera.parent ) {
+
+					camera.parent.add( camera_ );
+
+				}
+
+				camera = camera_;
+
+			}
+
 			if ( camera ) {
 
 				this.cameraTransform.position.copy( camera.position );

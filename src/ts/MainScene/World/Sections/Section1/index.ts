@@ -8,6 +8,7 @@ import { Wall } from './Wall';
 import { BakuCollision } from './BakuCollision';
 import { Objects } from './Objects';
 import { Logo } from './Logo';
+import { Crosses } from './Crosses';
 
 export class Section1 extends Section {
 
@@ -22,6 +23,7 @@ export class Section1 extends Section {
 	public wall: Wall;
 	private objects?: Objects;
 	private logo?: Logo;
+	private crosses?: Crosses;
 
 	constructor( manager: THREE.LoadingManager, parentUniforms: ORE.Uniforms ) {
 
@@ -112,6 +114,13 @@ export class Section1 extends Section {
 		-------------------------------*/
 
 		this.objects = new Objects( scene.getObjectByName( 'Objects' ) as THREE.Object3D, this.commonUniforms );
+
+		/*-------------------------------
+			Closses
+		-------------------------------*/
+
+		this.crosses = new Crosses( this.getObjectByName( 'Crosses' ) as THREE.Object3D, this.commonUniforms );
+
 
 	}
 
