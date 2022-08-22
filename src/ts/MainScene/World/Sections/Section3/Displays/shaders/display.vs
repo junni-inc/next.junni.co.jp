@@ -39,8 +39,8 @@ void main( void ) {
 	vUv2 = spriteUVSelector( vUv, vec2( 2.0, 4.0 ), 8.0, vCount / 8.0 );
 
 
-	vec4 noise = texture2D( uNoiseTex, vec2( time * 0.5 + modelMatrix[3][0] ) );
-	vBrightness = 0.0;
-	vBrightness += smoothstep( 0.0, 0.4, noise.x ) * 0.9;
+	float noise = texture2D( uNoiseTex, vec2( time * 0.03 + modelMatrix[3][0] ) ).x;
+	float noiseHigh = texture2D( uNoiseTex, vec2( time * 3.0 + modelMatrix[3][0] ) ).x;
+	vBrightness = smoothstep( 0.54, 0.55, noise + noiseHigh * 0.08 ) * 0.9;
 
 }

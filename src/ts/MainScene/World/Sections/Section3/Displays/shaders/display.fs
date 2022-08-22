@@ -13,7 +13,7 @@ uniform sampler2D uDisplayTex;
 
 void main( void ) {
 
-	vec3 color = vec3( vBrightness );
+	vec3 color = vec3( 1.0 );
 
 	vec2 texUv = vUv2;
 
@@ -33,9 +33,9 @@ void main( void ) {
 
 
 	color = mix( color, message.xyz, message.w );
+	color = mix( vec3( random(vUv + uTimeMod) ), color, vBrightness );
 	color *= smoothstep( 2.0, 0.0, length( vUv - 0.5 ) );
-	color -= random(vUv + uTimeMod) * 0.15;
-	color *= 1.0 - (sin( vUv.y * 200.0 - time * 10.0 ) * 0.5 + 0.5) * 0.02;
+	color *= 0.8 - (sin( vUv.y * 200.0 - time * 10.0 ) * 0.5 + 0.5) * 0.08;
 
 	// color *= (step( 0.5, mod(vUv2.x * 200.0, 1.0) ) * step( 0.5, mod(vUv2.y * 200.0, 1.0 ) )) * 0.1 + 0.9;
 
