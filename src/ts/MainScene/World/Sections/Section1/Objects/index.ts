@@ -39,26 +39,6 @@ export class Objects {
 
 		let baseMaterial = mesh.material as THREE.MeshStandardMaterial;
 
-		let type = mesh.name.split( '_' )[ 1 ];
-
-		if ( type ) {
-
-			if ( type == 'Slash' ) {
-
-				return new THREE.ShaderMaterial( {
-					vertexShader: slashVert,
-					fragmentShader: slashFrag,
-					uniforms: ORE.UniformsLib.mergeUniforms( this.commonUniforms, {
-						uColor: {
-							value: baseMaterial.emissive
-						}
-					} ),
-					side: THREE.DoubleSide
-				} );
-
-			}
-
-		}
 
 		return new THREE.ShaderMaterial( {
 			vertexShader: objectVert,
@@ -68,7 +48,8 @@ export class Objects {
 					value: baseMaterial.emissive
 				}
 			} ),
-			side: THREE.DoubleSide
+			side: THREE.DoubleSide,
+			transparent: true,
 		} );
 
 

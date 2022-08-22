@@ -4,6 +4,8 @@ import { Cross } from './Cross';
 
 export class Crosses {
 
+	private animator: ORE.Animator;
+
 	private root: THREE.Object3D;
 	private commonUniforms: ORE.Uniforms;
 	private crossList: Cross[] = [];
@@ -14,6 +16,21 @@ export class Crosses {
 
 		this.commonUniforms = ORE.UniformsLib.mergeUniforms( parentUniforms, {
 		} );
+
+
+		/*-------------------------------
+			Animator
+		-------------------------------*/
+
+		this.animator = window.gManager.animator;
+
+		this.commonUniforms.uVisibility = this.animator.add( {
+			name: 'sec1CrossesVisibility',
+			initValue: 0,
+			easing: ORE.Easings.linear
+		} );
+
+
 
 		root.children.forEach( ( item, i ) => {
 
@@ -39,6 +56,18 @@ export class Crosses {
 				origin.visible = false;
 
 			}
+
+		} );
+
+	}
+
+	public switchVisibility( visible: boolean ) {
+
+		if ( visible ) this.root.visible = true;
+
+		this.animator.animate( 'sec1CrossesVisibility', visible ? 1 : 0, 1, () => {
+
+			if ( ! visible ) this.root.visible = false;
 
 		} );
 

@@ -9,6 +9,10 @@ import { BakuCollision } from './BakuCollision';
 import { Objects } from './Objects';
 import { Logo } from './Logo';
 import { Crosses } from './Crosses';
+import { Gradation } from './Gradation';
+import { Lines } from './Lines';
+import { Slashes } from './Slashes';
+import { Dots } from './Dots';
 
 export class Section1 extends Section {
 
@@ -21,19 +25,23 @@ export class Section1 extends Section {
 	private sceneRoot?: THREE.Object3D;
 
 	public wall: Wall;
-	private objects?: Objects;
 	private logo?: Logo;
+	private objects?: Objects;
 	private crosses?: Crosses;
+	private gradation?: Gradation;
+	private lines?: Lines;
+	private slashes?: Slashes;
+	private dots?: Dots;
 
 	constructor( manager: THREE.LoadingManager, parentUniforms: ORE.Uniforms ) {
 
 		super( manager, 'section_1', parentUniforms );
 
-
 		// params
 
 		this.cameraRange.set( 0.01, 0.01 );
 		this.elm = document.querySelector( '.section1' ) as HTMLElement;
+		this.ppParam.vignet = 0.6;
 
 		// baku
 
@@ -108,6 +116,7 @@ export class Section1 extends Section {
 		-------------------------------*/
 
 		this.logo = new Logo( scene.getObjectByName( 'Logo' ) as THREE.Object3D, this.commonUniforms );
+		this.logo.switchVisibility( this.sectionVisibility );
 
 		/*-------------------------------
 			Objects
@@ -116,10 +125,40 @@ export class Section1 extends Section {
 		this.objects = new Objects( scene.getObjectByName( 'Objects' ) as THREE.Object3D, this.commonUniforms );
 
 		/*-------------------------------
-			Closses
+			crosses
 		-------------------------------*/
 
 		this.crosses = new Crosses( this.getObjectByName( 'Crosses' ) as THREE.Object3D, this.commonUniforms );
+		this.crosses.switchVisibility( this.sectionVisibility );
+
+		/*-------------------------------
+			Gradations
+		-------------------------------*/
+
+		this.gradation = new Gradation( this.getObjectByName( 'Gradations' ) as THREE.Object3D, this.commonUniforms );
+		this.gradation.switchVisibility( this.sectionVisibility );
+
+
+		/*-------------------------------
+			Lines
+		-------------------------------*/
+
+		this.lines = new Lines( this.getObjectByName( 'Lines' ) as THREE.Object3D, this.commonUniforms );
+		this.lines.switchVisibility( this.viewing );
+
+		/*-------------------------------
+			Slash
+		-------------------------------*/
+
+		this.slashes = new Slashes( this.getObjectByName( 'Slashes' ) as THREE.Object3D, this.commonUniforms );
+		this.slashes.switchVisibility( this.sectionVisibility );
+
+		/*-------------------------------
+			Dots
+		-------------------------------*/
+
+		this.dots = new Dots( this.getObjectByName( 'Dots' ) as THREE.Object3D, this.commonUniforms );
+		this.dots.switchVisibility( this.sectionVisibility );
 
 
 	}
@@ -183,6 +222,13 @@ export class Section1 extends Section {
 	public switchViewingState( viewing: ViewingState ): void {
 
 		super.switchViewingState( viewing );
+
+		if ( this.logo ) this.logo.switchVisibility( this.sectionVisibility );
+		if ( this.gradation ) this.gradation.switchVisibility( this.sectionVisibility );
+		if ( this.lines ) this.lines.switchVisibility( viewing );
+		if ( this.slashes ) this.slashes.switchVisibility( this.sectionVisibility );
+		if ( this.crosses ) this.crosses.switchVisibility( this.sectionVisibility );
+		if ( this.dots ) this.dots.switchVisibility( this.sectionVisibility );
 
 	}
 

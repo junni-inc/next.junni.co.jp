@@ -55,14 +55,14 @@ export class Lights {
 		// helpers
 
 		let helper = new THREE.DirectionalLightHelper( this.light1 );
-		scene.add( helper );
 
-		this.helpers.push( helper );
+		// scene.add( helper );
+		// this.helpers.push( helper );
 
 		helper = new THREE.DirectionalLightHelper( this.light2 );
-		scene.add( helper );
 
-		this.helpers.push( helper );
+		// scene.add( helper );
+		// this.helpers.push( helper );
 
 		this.animator = window.gManager.animator;
 

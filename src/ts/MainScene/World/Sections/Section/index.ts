@@ -228,7 +228,7 @@ export class Section extends THREE.Object3D {
 
 		if ( this.sectionVisibility ) {
 
-			this.visible = true;
+			// this.visible = true;
 
 		}
 
@@ -236,7 +236,7 @@ export class Section extends THREE.Object3D {
 
 			if ( ! this.sectionVisibility ) {
 
-				this.visible = false;
+				// this.visible = false;
 
 			}
 

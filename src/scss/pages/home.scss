@@ -98,6 +98,8 @@ body {
 			opacity: 1;
 			transform: rotate(45deg) translateX(0%);
 			transition: transform .7s cubic-bezier(0,1.33,.37,.99);
+			transition-delay: 0.7s;
+
 		}
 
 	}
@@ -121,6 +123,7 @@ body {
 			opacity: 1;
 			transform: rotate(0deg) translateX(0%);
 			transition: transform .7s cubic-bezier(0,1.33,.37,.99);
+			transition-delay: 0.8s;
 		}
 
 		transition-delay: .1s;

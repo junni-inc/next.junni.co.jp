@@ -9,7 +9,7 @@ varying vec2 vUv;
 
 void main( void ) {
 
-	vec3 sec1 = hsv2rgb( vec3( vUv.y * 0.3 + time * 0.1 + random( gl_FragCoord.xy * 0.01 ) * 0.05, 1.0 * 0.6, 1.0  ) );
+	vec3 sec1 = hsv2rgb( vec3( vUv.y * 0.3 + time * 0.1 + random( gl_FragCoord.xy * 0.01 ) * 0.05, 0.5, 1.0  ) );
 	vec3 sec2 = vec3( 1.0 );
 	vec3 sec3 = vec3( 0.0 );
 	vec3 sec4 = vec3( 1.0 );

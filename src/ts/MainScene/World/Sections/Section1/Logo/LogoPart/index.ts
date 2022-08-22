@@ -19,7 +19,7 @@ export class LogoPart {
 	constructor( mesh: THREE.Mesh, offset: number, parentUniforms: ORE.Uniforms ) {
 
 		this.offset = offset;
-		this.time -= offset * 0.8;
+		this.time -= offset * 5.0;
 
 		this.commonUniforms = ORE.UniformsLib.mergeUniforms( parentUniforms, {
 		} );
@@ -34,7 +34,10 @@ export class LogoPart {
 				uColor: {
 					value: baseMaterial.emissive.convertLinearToSRGB()
 				},
-				uMatCapTex: window.gManager.assetManager.getTex( 'matCap' )
+				uMatCapTex: window.gManager.assetManager.getTex( 'matCap' ),
+				num: {
+					value: 1.0 - offset
+				}
 			} ),
 			side: THREE.DoubleSide
 		} );
