@@ -12,8 +12,14 @@ export class LogoPart {
 	private worldPosition: THREE.Vector3;
 	private basePosition: THREE.Vector3;
 	private velocity: THREE.Vector3;
+	private time = 0.0;
+	private offset: number = 0.0;
 
-	constructor( mesh: THREE.Mesh, parentUniforms: ORE.Uniforms ) {
+
+	constructor( mesh: THREE.Mesh, offset: number, parentUniforms: ORE.Uniforms ) {
+
+		this.offset = offset;
+		this.time -= offset * 0.8;
 
 		this.commonUniforms = ORE.UniformsLib.mergeUniforms( parentUniforms, {
 		} );
@@ -42,9 +48,13 @@ export class LogoPart {
 
 	}
 
+
 	public update( deltaTime: number ) {
 
+		this.time += deltaTime;
+
 		this.velocity.add( this.basePosition.clone().sub( this.mesh.position ).multiplyScalar( deltaTime ) );
+		this.velocity.y += Math.sin( this.time ) * 0.002;
 		this.velocity.multiplyScalar( 0.9 );
 
 		this.mesh.position.add( this.velocity );

@@ -15,13 +15,13 @@ export class Logo {
 
 		this.commonUniforms = ORE.UniformsLib.mergeUniforms( parentUniforms, {} );
 
-		this.root.traverse( obj => {
+		this.root.children.forEach( ( obj, index ) => {
 
 			let mesh = obj as THREE.Mesh;
 
 			if ( mesh.isMesh ) {
 
-				let part = new LogoPart( mesh, this.commonUniforms );
+				let part = new LogoPart( mesh, index, this.commonUniforms );
 				this.meshList.push( part );
 
 			}
