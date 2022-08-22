@@ -22,27 +22,40 @@ export class Objects {
 
 			if ( mesh.isMesh ) {
 
-				let baseMaterial = mesh.material as THREE.MeshStandardMaterial;
-
-				let mat = new THREE.ShaderMaterial( {
-					vertexShader: objectVert,
-					fragmentShader: objectFrag,
-					uniforms: ORE.UniformsLib.mergeUniforms( this.commonUniforms, {
-						uColor: {
-							value: baseMaterial.emissive
-						}
-					} ),
-					side: THREE.DoubleSide
-				} );
-
-
-				mesh.material = mat;
+				mesh.material = this.getMat( mesh );
 
 				this.objects.push( mesh );
 
 			}
 
 		} );
+
+	}
+
+	private getMat( mesh: THREE.Mesh ) {
+
+		let baseMaterial = mesh.material as THREE.MeshStandardMaterial;
+
+		let type = mesh.name.split( '_' )[ 1 ];
+
+		if ( type ) {
+
+			if ( type == '' ) {}
+
+
+		}
+
+		return new THREE.ShaderMaterial( {
+			vertexShader: objectVert,
+			fragmentShader: objectFrag,
+			uniforms: ORE.UniformsLib.mergeUniforms( this.commonUniforms, {
+				uColor: {
+					value: baseMaterial.emissive
+				}
+			} ),
+			side: THREE.DoubleSide
+		} );
+
 
 	}
 
