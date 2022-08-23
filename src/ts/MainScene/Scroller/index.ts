@@ -115,7 +115,7 @@ export class Scroller extends EventEmitter {
 			if ( Math.abs( diff ) > 0.1 ) {
 
 				this.selectingContentPos += Math.sign( diff );
-				this.selectingContentPos = Math.max( 0.0, Math.min( this.sectionNum, this.selectingContentPos ) );
+				this.selectingContentPos = Math.max( 0.0, Math.min( this.sectionNum - 1, this.selectingContentPos ) );
 				this.touchMoveDiff = 0.0;
 
 			}

@@ -133,7 +133,7 @@ export class MainScene extends ORE.BaseLayer {
 
 			this.scroller.changeSectionNum( this.world.sections.length );
 
-			this.world.section1.splash();
+			// this.world.section1.splash();
 
 		}
 

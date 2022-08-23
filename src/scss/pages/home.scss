@@ -1,7 +1,11 @@
-@import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Noto+Sans&family=Noto+Sans+JP&display=swap');
+@use "../global/" as *;
+@import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Noto+Sans&family=Noto+Sans+JP&family=Jura&family=Play&family=Noto+Serif&display=swap');
 
 $notosans: 'Noto Sans JP', 'Noto Sans', sans-serif;
+$notoserif: 'Noto Serif', serif;
 $bebas: 'Bebas Neue', cursive;
+$jura: 'Jura', sans-serif;
+$play: 'Play', sans-serif;
 
 body {
 	width: 100%;
@@ -106,10 +110,10 @@ body {
 
 	&-message {
 		position: absolute;
-		width: 25vw;
-		height: 25vw;
+		width: 28vw;
+		height: 28vw;
 		right: 0;
-		bottom: -3.5vw;
+		bottom: -5.0vw;
 		display: flex;
 		flex-direction: column;
 		justify-content: center;
@@ -127,6 +131,53 @@ body {
 		}
 
 		transition-delay: .1s;
+		
+		&-line {
+			width: 90%;
+			margin: 0 auto;
+			margin-bottom: 15px;
+			max-width: 900px;
+			transform: translateY(-1.5vw);
+			
+			&.bigmargin {
+				margin-bottom: 60px;
+			}
+			
+			@include sp {
+				margin-block: 40px;	
+			}
+	
+			p {
+				width: 100%;
+				text-align: center;
+				font-size: 20px;
+				line-height: 1.5em;
+				color: #fff;
+	
+				&.ja {
+					font-size: 0.9vw;
+					letter-spacing: 0.4em;
+					font-family: $notosans;
+					color: #aaa;
+					
+					@include sp {
+						font-size: 8px;
+						letter-spacing: 0.0em;
+					}
+				}
+	
+				&.en {
+					font-size: 1.0vw;
+					font-weight: 200;
+					font-family: $play;
+					letter-spacing: .2em;
+	
+					@include sp {
+						font-size: 18px;
+					}
+				}
+			}
+		}
 		
 		&::before {
 			position: absolute;
@@ -149,24 +200,66 @@ body {
 
 			transition-delay: .1s;
 		}
-		
-		&-text {
-			color: #fff;
-			font-family: $notosans;
-			font-size: 18px;
-			padding: 20px;
-			text-align: center;
-			line-height: 2.5em;
-			font-size: 1.0vw;
-			
-			&-rb {
-				color: #fff;
-			}
-		}
 
 	}
 }
 
+
+.section3 {
+	&-message {
+		width: 100%;
+		height: 100%;
+		display: flex;
+		justify-content: center;
+		align-items: center;
+		flex-direction: column;
+		
+		opacity: 0;
+		transition: opacity .3s;
+		
+		[data-visible="true"] &{
+			opacity: 1;
+		}
+		
+		&-inner {
+			position: relative;
+			width: 80%;
+		}
+
+		&-text {
+			color: #fff;
+			font-family: $jura;
+			font-size: 1.5vw;
+			letter-spacing: 0.4em;
+			text-align: center;
+			width: 100%;
+
+			&.ja {
+				font-size: 1.0vw;
+				letter-spacing: 1.3vw;
+				color: rgba($color: #fff, $alpha: 0.6);
+			}
+			
+			@include sp {
+				font-size: 3.5vw;
+			}
+		}
+
+		&-deco {
+			position: absolute;
+			
+			&.deco1 {
+				right: 0;
+				bottom: -3vw;	
+			}
+			
+			&.deco2 {
+				left: 0;
+				top: -3vw;	
+			}
+		}
+	}
+}
 
 .section5 {
 	&-message {
@@ -174,6 +267,7 @@ body {
 		width: 100%;
 		height: 100%;
 		display: flex;
+		flex-direction: column;
 		align-items: center;
 		justify-content: center;
 		background: rgba($color: #000000, $alpha: 0.6);
@@ -183,6 +277,53 @@ body {
 		
 		[data-visible="true"] &{
 			opacity: 1;
+			transition-delay: .8s;
+		}
+
+		&-section {
+			width: 90%;
+			margin: 0 auto;
+			margin-bottom: 15px;
+			max-width: 900px;
+			
+			&.bigmargin {
+				margin-bottom: 60px;
+			}
+			
+			@include sp {
+				margin-block: 40px;	
+			}
+	
+			p {
+				width: 100%;
+				text-align: center;
+				font-size: 20px;
+				line-height: 1.5em;
+				color: #fff;
+	
+				&.ja {
+					font-size: 13px;
+					letter-spacing: 0.4em;
+					font-family: $notosans;
+					color: #aaa;
+					
+					@include sp {
+						font-size: 8px;
+						letter-spacing: 0.0em;
+					}
+				}
+	
+				&.en {
+					font-size: 21px;
+					font-weight: 200;
+					font-family: $play;
+					letter-spacing: .2em;
+	
+					@include sp {
+						font-size: 18px;
+					}
+				}
+			}
 		}
 
 		&-text {
@@ -192,14 +333,71 @@ body {
 			font-size: 18px;
 			font-family: $notosans;
 			font-weight: bold;
+			letter-spacing: 0.4em;
 
 			opacity: 0;
 			transition: opacity 1.0s;
-			
+
 			[data-visible="true"] &{
 				opacity: 1;
 				transition: opacity 1.5s;
 				transition-delay: .5s;
+			}
+		}
+	}
+}
+
+.section6 {
+	
+	width: 100%;
+	height: 100%;
+
+	&-main {
+		width: 100%;
+		height: 100%;
+		display: flex;
+		flex-direction: column;
+		justify-content: center;
+		align-items: center;
+
+		&-head {
+			font-family: $play;
+			font-size: 2.5vw;
+			font-weight: normal;
+			color: #fff;
+			margin-bottom: 50px;
+		}
+	}
+	
+	&-content {
+		position: absolute;
+		left: 0;
+		bottom: 30px;
+		width: 90%;
+		left: 50%;
+		transform: translateX(-50%);
+		
+		opacity: 0;
+		transition: opacity 1s;
+		
+		[data-visible="true"] & {
+			transition-delay: 1s;
+			opacity: 1;
+		}
+
+		&-head {
+			color: #fff;
+			font-size: 2.3vw;
+			font-family: $play;
+			// font-weight: bold;
+			margin-bottom: 30px;
+		}
+
+		&-link {
+			display: flex;
+
+			&-item {
+				padding-right: 20px;
 			}
 		}
 	}

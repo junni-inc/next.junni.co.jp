@@ -20,6 +20,8 @@ export class Section6 extends Section {
 
 		super( manager, 'section_6', parentUniforms );
 
+		this.elm = document.querySelector( '.section6' );
+
 		this.bakuMaterialType = 'normal';
 		this.ppParam.bloomBrightness = 1.0;
 

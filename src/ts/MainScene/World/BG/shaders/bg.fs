@@ -14,7 +14,7 @@ void main( void ) {
 	vec3 sec3 = vec3( 0.0 );
 	vec3 sec4 = vec3( 1.0 );
 	vec3 sec5 = vec3( smoothstep( 0.0, 1.0, vUv.y ) * 0.7 );
-	vec3 sec6 = vec3( smoothstep( 0.0, 1.0, vUv.y ) * 0.7 );
+	vec3 sec6 = vec3( smoothstep( 0.0, 1.0, vUv.y ) * 0.01 );
 	// vec3 sec6 = sec1;
 
 	vec3 color = vec3( 0.0 );
