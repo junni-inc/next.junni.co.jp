@@ -58,6 +58,12 @@ export class Section4 extends Section {
 			intensity: 1
 		};
 
+		this.light2Data = {
+			position: new THREE.Vector3( 5.0, - 10.7, 20 ),
+			targetPosition: new THREE.Vector3( - 1.7, - 6.7, 12 ),
+			intensity: 1,
+		};
+
 	}
 
 	protected onLoadedGLTF( gltf: GLTF ): void {

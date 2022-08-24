@@ -74,6 +74,7 @@ export class MainScene extends ORE.BaseLayer {
 			{ name: 'introText', path: './assets/textures/intro-text.png', type: 'tex', timing: 'must' },
 			{ name: 'topLogo', path: './assets/textures/top_logo.png', type: 'tex', timing: 'must' },
 			{ name: 'matCap', path: './assets/textures/matcap.png', type: 'tex', timing: 'must' },
+			{ name: 'matCapOrange', path: './assets/textures/matcap_orange.png', type: 'tex', timing: 'must' },
 			{ name: 'noise', path: './assets/textures/noise.png', type: 'tex', timing: 'sub', onLoad( value: THREE.Texture ) {
 
 				value.wrapS = THREE.RepeatWrapping;

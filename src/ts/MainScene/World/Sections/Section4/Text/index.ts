@@ -2,6 +2,9 @@ import * as THREE from 'three';
 import * as ORE from 'ore-three';
 import * as CANNON from 'cannon';
 
+import textVert from './shaders/text.vs';
+import textFrag from './shaders/text.fs';
+
 export class Text {
 
 	private commonUniforms: ORE.Uniforms;
@@ -15,6 +18,9 @@ export class Text {
 
 	constructor( mesh: THREE.Object3D, parentUniforms: ORE.Uniforms ) {
 
+		this.commonUniforms = ORE.UniformsLib.mergeUniforms( parentUniforms, {
+		} );
+
 		this.mesh = mesh;
 		this.mesh.traverse( obj => {
 
@@ -25,11 +31,56 @@ export class Text {
 				mesh.castShadow = true;
 				mesh.receiveShadow = true;
 
+				let uni = ORE.UniformsLib.mergeUniforms( this.commonUniforms, THREE.UniformsUtils.clone( THREE.UniformsLib.lights ), {
+					uMatCapTex: window.gManager.assetManager.getTex( 'matCapOrange' ),
+					shadowLightModelViewMatrix: {
+						value: new THREE.Matrix4()
+					},
+					shadowLightProjectionMatrix: {
+						value: new THREE.Matrix4()
+					},
+					shadowLightDirection: {
+						value: new THREE.Vector3()
+					},
+					shadowLightCameraClip: {
+						value: new THREE.Vector2()
+					},
+					shadowMap: {
+						value: null
+					},
+					shadowMapSize: {
+						value: new THREE.Vector2()
+					},
+					shadowMapResolution: {
+						value: new THREE.Vector2()
+					},
+					cameraNear: {
+						value: 0.01
+					},
+					cameraFar: {
+						value: 1000.0
+					},
+				} );
+
+				mesh.material = new THREE.ShaderMaterial( {
+					vertexShader: textVert,
+					fragmentShader: textFrag,
+					uniforms: uni,
+					lights: true,
+				} );
+
+				mesh.customDepthMaterial = new THREE.ShaderMaterial( {
+					vertexShader: textVert,
+					fragmentShader: textFrag,
+					uniforms: uni,
+					lights: true,
+					defines: {
+						DEPTH: ""
+					}
+				} );
+
 			}
 
-		} );
-
-		this.commonUniforms = ORE.UniformsLib.mergeUniforms( parentUniforms, {
 		} );
 
 		/*-------------------------------
