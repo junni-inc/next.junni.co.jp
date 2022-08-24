@@ -81,7 +81,13 @@ export class MainScene extends ORE.BaseLayer {
 
 			}, },
 			{ name: 'display', path: './assets/textures/display.png', type: 'tex', timing: 'sub' },
-			{ name: 'human', path: './assets/textures/humans/human03.png', type: 'tex', timing: 'sub' }
+			{ name: 'human', path: './assets/textures/humans/human03.png', type: 'tex', timing: 'sub' },
+			{ name: 'outro', path: './assets/textures/outro-text.png', type: 'tex', timing: 'sub', onLoad: ( tex: THREE.Texture ) => {
+
+				tex.wrapS = THREE.RepeatWrapping;
+
+			} },
+
 		] } );
 
 		this.gManager.assetManager.addEventListener( 'loadMustAssets', ( e ) => {
@@ -279,7 +285,7 @@ export class MainScene extends ORE.BaseLayer {
 
 	}
 
-	public onWheel( event: WheelEvent, trackpadDelta: number ): void {
+	public onWheel( event: WheelEvent ): void {
 
 		this.scroller.addVelocity( event.deltaY * 0.00005 );
 
@@ -287,6 +293,7 @@ export class MainScene extends ORE.BaseLayer {
 
 			this.world.intro.paused = true;
 			this.world.section1.splash();
+			this.world.section6.wheel( event );
 
 		}
 

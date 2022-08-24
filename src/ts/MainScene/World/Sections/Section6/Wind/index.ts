@@ -60,7 +60,7 @@ export class Wind extends THREE.Mesh {
 		let animator = window.gManager.animator;
 
 		uni.visibility = animator.add( {
-			name: 'roseVisibility' + animatorId,
+			name: 'windVisibility' + animatorId,
 			initValue: 1,
 		} );
 
@@ -68,8 +68,9 @@ export class Wind extends THREE.Mesh {
 			vertexShader: windVert,
 			fragmentShader: windFrag,
 			uniforms: uni,
-			transparent: true,
-			side: THREE.DoubleSide
+			side: THREE.DoubleSide,
+			depthTest: false,
+			blending: THREE.AdditiveBlending
 		} );
 
 		super( geo, mat );
@@ -97,7 +98,7 @@ export class Wind extends THREE.Mesh {
 
 	public switchVisibilit( visible: boolean, duration: number = 1 ) {
 
-		this.animator.animate( 'roseVisibility' + this.animatorId, visible ? 1 : 0, duration );
+		this.animator.animate( 'windVisibility' + this.animatorId, visible ? 1 : 0, duration );
 
 	}
 

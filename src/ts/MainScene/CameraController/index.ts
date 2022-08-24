@@ -23,6 +23,10 @@ export class CameraController {
 	public cursorPosDelay: THREE.Vector2;
 	private cursorPosDelayVel: THREE.Vector2;
 
+	// state
+
+	private shakeTime: number = 0;
+
 	private posData = {
 		base: {
 			pos: new THREE.Vector3( 0, 0, 3.49641 ),
@@ -53,12 +57,48 @@ export class CameraController {
 
 		this.animator.add( {
 			name: 'cameraFov',
-			initValue: 0
+			initValue: 0,
 		} );
 
 		this.animator.add( {
 			name: 'cameraMoveRange',
-			initValue: new THREE.Vector2( 0.1, 0.1 )
+			initValue: new THREE.Vector2( 0.1, 0.1 ),
+			userData: {
+				pane: {}
+			}
+		} );
+
+		this.animator.add( {
+			name: 'cameraShake',
+			initValue: 0,
+			userData: {
+				pane: {
+					min: 0,
+					max: 1
+				}
+			}
+		} );
+
+		this.animator.add( {
+			name: 'cameraShakeTimeScale',
+			initValue: 1,
+			userData: {
+				pane: {
+					min: 0,
+					max: 10
+				}
+			}
+		} );
+
+		this.animator.add( {
+			name: 'cameraFovOffset',
+			initValue: 0,
+			userData: {
+				pane: {
+					min: - 50,
+					max: 50
+				}
+			}
 		} );
 
 		this.cursorPos = new THREE.Vector2();
@@ -73,7 +113,7 @@ export class CameraController {
 		this.animator.setValue( 'cameraTargetPos', cameraTransform.targetPosition );
 		this.animator.setValue( 'cameraFov', cameraTransform.fov );
 
-		this.camera.fov = cameraTransform.fov + this.portraitWeight * 20.0;
+		this.camera.fov = cameraTransform.fov + this.portraitWeight * 20.0 + ( this.animator.get<number>( 'cameraFovOffset' ) || 0 );
 		this.camera.updateProjectionMatrix();
 
 	}
@@ -99,7 +139,6 @@ export class CameraController {
 
 		this.cursorPosDelayVel.add( diff.multiplyScalar( 5.0 ) );
 		this.cursorPosDelayVel.multiplyScalar( 0.85 );
-
 		this.cursorPosDelay.add( this.cursorPosDelayVel );
 
 		/*------------------------
@@ -116,11 +155,38 @@ export class CameraController {
 			basePos.z
 		);
 
+		let fovOffset = this.animator.get<number>( 'cameraFovOffset' ) || 0;
+
+		if ( fovOffset > 0 ) {
+
+			this.camera.position.add( new THREE.Vector3( 0.0, 0.0, - fovOffset * 0.05 ).applyQuaternion( this.camera.quaternion ) );
+
+		}
+
 		/*------------------------
 			Target
 		------------------------*/
 
 		this.camera.lookAt( this.animator.get<THREE.Vector3>( 'cameraTargetPos' ) || new THREE.Vector3() );
+
+		/*-------------------------------
+			Shake
+		-------------------------------*/
+
+		let shake = this.animator.get<number>( 'cameraShake' ) || 0;
+
+		if ( shake > 0 ) {
+
+			let timeScale = this.animator.get<number>( 'cameraShakeTimeScale' ) || 1;
+
+			this.shakeTime += deltaTime * timeScale;
+
+			this.camera.applyQuaternion( new THREE.Quaternion().setFromEuler( new THREE.Euler(
+				Math.sin( this.shakeTime * 7.0 ) * Math.sin( this.shakeTime * 4.0 ) * 0.1 * shake,
+				Math.sin( this.shakeTime * 3.3 ) * Math.sin( this.shakeTime * 5.2 ) * 0.1 * shake,
+			) ) );
+
+		}
 
 	}
 

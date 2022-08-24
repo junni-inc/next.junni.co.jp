@@ -12,7 +12,7 @@ void main( void ) {
 	float t = time * 0.5;
 
 	pos += vec3( 
-		t * 1.3 + sin( t + ( position.y + position.z ) * 10.0 ) * 0.3,
+		t * 4.0 + sin( t + ( position.y + position.z ) * 10.0 ) * 0.3,
 		0.0,
 		0.0
 	);

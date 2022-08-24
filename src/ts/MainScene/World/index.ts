@@ -201,12 +201,22 @@ export class World extends THREE.Object3D {
 
 		let section = this.sections[ viewingIndex ];
 
+		// light
+
 		this.lights.changeSection( section );
+
+		// baku
 
 		this.baku.changeMaterial( section.bakuMaterialType );
 		this.baku.changeAction( section.sectionName );
+		// this.baku.textLing.switchVisibility( sectionIndex == 4 );
+
+		//  bg
 
 		this.bg.changeSection( sectionIndex );
+
+		// ground
+
 		this.ground.changeSection( sectionIndex );
 
 

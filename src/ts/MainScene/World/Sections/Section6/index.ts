@@ -20,12 +20,19 @@ export class Section6 extends Section {
 
 		super( manager, 'section_6', parentUniforms );
 
+
 		this.elm = document.querySelector( '.section6' );
 
 		this.bakuMaterialType = 'normal';
 		this.ppParam.bloomBrightness = 1.0;
 
 		// this.ppParam.bloomBrightness = 0.0;
+
+		/*-------------------------------
+			Animator
+		-------------------------------*/
+
+		this.animator = window.gManager.animator;
 
 		/*-------------------------------
 			Lights
@@ -81,15 +88,26 @@ export class Section6 extends Section {
 
 	}
 
+	private speed: number = 0.0;
+
+	public wheel( e: WheelEvent ) {
+
+		if ( this.sectionVisibility && e.deltaY > 0 ) {
+
+			if ( this.particle ) this.particle.boost();
+
+		}
+
+
+	}
+
 	public update( deltaTime: number ): void {
 
 		this.bakuTransform.rotation.multiply( new THREE.Quaternion().setFromAxisAngle( new THREE.Vector3( 0.0, 0.0, 1.0 ), deltaTime * 0.5 ) );
 
-		if ( this.comrades ) {
+		if ( this.comrades ) this.comrades.update( deltaTime );
 
-			this.comrades.update( deltaTime );
-
-		}
+		if ( this.particle ) this.particle.update( deltaTime );
 
 	}
 
@@ -99,15 +117,21 @@ export class Section6 extends Section {
 
 		if ( this.particle ) {
 
-			this.particle.switchVisibility( this.sectionVisibility );
+			if ( this.particle ) this.particle.switchVisibility( this.sectionVisibility );
+
+			if ( this.sectionVisibility ) {
+
+				this.particle.boost();
+
+			} else {
+
+				this.particle.boostCancel();
+
+			}
 
 		}
 
-		if ( this.comrades ) {
-
-			this.comrades.switchVisibility( this.sectionVisibility );
-
-		}
+		if ( this.comrades ) this.comrades.switchVisibility( this.sectionVisibility );
 
 	}
 

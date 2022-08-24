@@ -1,6 +1,8 @@
 varying float vNum;
 varying float vAlpha;
 
+uniform float uVisibility;
+
 void main( void ) {
 
 	vec2 uv = gl_PointCoord.xy;
@@ -13,6 +15,6 @@ void main( void ) {
 		
 	}
 
-	gl_FragColor = vec4( vec3( 1.0 ), 1.0 );
+	gl_FragColor = vec4( vec3( 1.0 ), uVisibility );
 
 }

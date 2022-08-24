@@ -6,6 +6,7 @@ import { PowerMesh } from 'power-mesh';
 import bakuFrag from './shaders/baku.fs';
 import bakuVert from './shaders/baku.vs';
 import passThroughFrag from './shaders/passThrough.fs';
+import { TextRing } from './TextRing';
 
 export type BakuMaterialType = 'normal' | 'grass' | 'line'
 
