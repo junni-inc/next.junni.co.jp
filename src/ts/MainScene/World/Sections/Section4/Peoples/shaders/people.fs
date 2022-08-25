@@ -11,6 +11,7 @@ varying float vAlpha;
 
 #include <packing>
 
+#pragma glslify: random = require('./random.glsl' )
 
 void main( void ) {
 
@@ -35,6 +36,8 @@ void main( void ) {
 	#endif
 
 	// col.w *= vAlpha * uSectionVisibility;
+
+	col.xyz *= 1.0 - random(gl_FragCoord.xy * 0.001) * 0.08;
 
 	gl_FragColor = col;
 

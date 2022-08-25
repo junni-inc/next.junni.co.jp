@@ -5,11 +5,15 @@ import { Section, ViewingState } from '../Section';
 import { GLTF } from 'three/examples/jsm/loaders/GLTFLoader';
 import { Objects } from './Objects';
 import { TextRing } from './TextRing';
+import { Rings } from './Rings';
+import { Grid } from './Grid';
 
 export class Section5 extends Section {
 
 	private objects?: Objects;
 	private textring: TextRing;
+	private rings: Rings;
+	private grid: Grid;
 
 	constructor( manager: THREE.LoadingManager, parentUniforms: ORE.Uniforms ) {
 
@@ -39,6 +43,18 @@ export class Section5 extends Section {
 
 		this.textring = new TextRing( this.commonUniforms );
 
+		/*-------------------------------
+			Rings
+		-------------------------------*/
+
+		this.rings = new Rings( this.commonUniforms );
+
+		/*-------------------------------
+			Grid
+		-------------------------------*/
+
+		this.grid = new Grid( this.commonUniforms );
+
 	}
 
 	protected onLoadedGLTF( gltf: GLTF ): void {
@@ -55,11 +71,26 @@ export class Section5 extends Section {
 
 		baku.add( this.textring );
 
+		// ring
+
+		baku.add( this.rings );
+
+		// grid
+
+		baku.add( this.grid );
+
 	}
 
 	public update( deltaTime: number ): void {
 
 		this.bakuTransform.rotation.multiply( new THREE.Quaternion().setFromAxisAngle( new THREE.Vector3( 0.0, 0.0, 1.0 ), deltaTime * 0.1 ) );
+
+		let baku = this.getObjectByName( 'Baku' ) as THREE.Object3D;
+		if ( baku ) {
+
+			baku.rotateZ( - deltaTime * 0.1 );
+
+		}
 
 	}
 
@@ -68,6 +99,7 @@ export class Section5 extends Section {
 		super.switchViewingState( viewing );
 
 		this.textring.switchVisibility( this.sectionVisibility );
+		this.rings.switchVisibility( this.sectionVisibility );
 
 	}
 

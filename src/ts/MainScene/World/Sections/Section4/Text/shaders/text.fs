@@ -238,7 +238,10 @@ vec3 RE( Geometry geo, Material mat, Light light) {
 
 	vec3 irradiance = light.color * dNL;
 
-	vec3 color = mix( vec3( 1.0, 0.0, 0.0 ), mat.diffuseColor, dNL);
+	vec3 color = mix( #000, vec3( 0.7 ), dNL * 0.8 + random(gl_FragCoord.xy * 0.001) * 0.1 );
+
+	// color *= sin( geo.posWorld.y * 40.0 + time * 10.0 ) * 0.5 + 0.5;
+
 
 	return color;
 
@@ -259,7 +262,7 @@ void main( void ) {
 	-------------------------------*/
 
 	Material mat;
-	mat.albedo = #FF6F32;
+	mat.albedo = vec3( 1.0 );
 	mat.opacity = 1.0;
 
 	mat.roughness = 0.0;

@@ -96,9 +96,15 @@ export class Wind extends THREE.Mesh {
 
 	}
 
-	public switchVisibilit( visible: boolean, duration: number = 1 ) {
+	public switchVisibility( visible: boolean, duration: number = 1 ) {
 
-		this.animator.animate( 'windVisibility' + this.animatorId, visible ? 1 : 0, duration );
+		if ( visible ) this.visible = true;
+
+		this.animator.animate( 'windVisibility' + this.animatorId, visible ? 1 : 0, duration, () => {
+
+			if ( ! visible ) this.visible = false;
+
+		} );
 
 	}
 

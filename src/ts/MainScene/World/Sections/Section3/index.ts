@@ -4,15 +4,12 @@ import { Section, ViewingState } from '../Section';
 import { GLTF } from 'three/examples/jsm/loaders/GLTFLoader';
 import { Displays } from './Displays';
 import { Lights } from './Lights';
-import { NoiseText } from '../../../NoiseText';
 
 export class Section3 extends Section {
 
 	private displays?: Displays;
 	private lights?: Lights;
 	private directionLightList: THREE.DirectionalLight[] = [];
-	private noiseTextEn: NoiseText;
-	private noiseTextJa: NoiseText;
 
 	constructor( manager: THREE.LoadingManager, parentUniforms: ORE.Uniforms ) {
 
@@ -56,12 +53,6 @@ export class Section3 extends Section {
 
 		} );
 
-		/*-------------------------------
-			Message
-		-------------------------------*/
-
-		this.noiseTextJa = new NoiseText( this.elm.querySelector( '.section3-message-text.ja' ) as HTMLElement, "革新的な提案を実現するために 私たちは挑戦をやめません。", "Junni is... !&#%$)#'%" );
-		this.noiseTextEn = new NoiseText( this.elm.querySelector( '.section3-message-text.en' ) as HTMLElement, "We never stop challenging to realize innovative plans.", "Junni is... !&#%$)#'%" );
 
 	}
 
@@ -106,32 +97,9 @@ export class Section3 extends Section {
 
 		}
 
-		let cViewing = this.viewing;
-
 		super.switchViewingState( viewing );
 
 		this.visible = this.sectionVisibility;
-
-		if ( this.visible ) {
-
-			this.noiseTextEn.clear();
-			this.noiseTextJa.clear();
-
-			this.textTimer = window.setTimeout( () => {
-
-				this.noiseTextJa.show( 1, 40 );
-				this.noiseTextEn.show( 1, 40 );
-				this.textTimer = null;
-
-			}, 1000 );
-
-		} else {
-
-			this.noiseTextJa.hide();
-			this.noiseTextEn.hide();
-
-		}
-
 
 	}
 

@@ -398,6 +398,7 @@ float fresnel( float d ) {
 
 vec3 RE( Geometry geo, Material mat, Light light) {
 
+
 	vec3 lightDir = normalize( light.direction );
 	vec3 halfVec = normalize( geo.viewDir + lightDir );
 
@@ -408,20 +409,10 @@ vec3 RE( Geometry geo, Material mat, Light light) {
 
 	vec3 irradiance = light.color * dNL;
 
-	// diffuse
-	vec3 diffuse = lambert( mat.diffuseColor ) * irradiance;
+	vec3 color = mix( #000, vec3( 0.2 ), dNL - random(gl_FragCoord.xy * 0.001) * 0.15 );
 
-	// specular
-	float D = ggx( dNH, mat.roughness );
-	float G = gSmith( dNV, dNL, mat.roughness );
-	float F = fresnel( dLH );
-	
-	vec3 specular = (( D * G * F ) / ( 4.0 * dNL * dNV + 0.0001 ) * mat.specularColor ) * irradiance; 
 
-	vec3 c = vec3( 0.0 );
-	c += diffuse * ( 1.0 - F ) + specular;
-
-	return c;
+	return color;
 
 }
 

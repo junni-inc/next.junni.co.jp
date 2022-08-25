@@ -11,7 +11,7 @@ export class TextRing extends THREE.Mesh {
 
 	constructor( parentUniforms: ORE.Uniforms ) {
 
-		let res = 50;
+		let res = 4;
 
 		let numArray: number[] = [];
 		let rndArray: number[] = [];
@@ -24,7 +24,7 @@ export class TextRing extends THREE.Mesh {
 
 		for ( let i = 0; i <= res; i ++ ) {
 
-			let theta = i / res * Math.PI * 2.0;
+			let theta = i / res * Math.PI * 2.0 + Math.PI / 4.0;
 
 			let x = Math.cos( theta ) * radius;
 			let y = Math.sin( theta ) * radius;
@@ -56,7 +56,7 @@ export class TextRing extends THREE.Mesh {
 		for ( let i = 0; i < num; i ++ ) {
 
 			numArray.push( i );
-			rndArray.push( Math.random() );
+			rndArray.push( Math.random(), Math.random(), Math.random() );
 
 		}
 
@@ -66,7 +66,7 @@ export class TextRing extends THREE.Mesh {
 		geo.setIndex( new THREE.BufferAttribute( new Uint8Array( indexArray ), 1 ) );
 
 		geo.setAttribute( 'num', new THREE.InstancedBufferAttribute( new Float32Array( numArray ), 1 ) );
-		geo.setAttribute( 'rnd', new THREE.InstancedBufferAttribute( new Float32Array( rndArray ), 1 ) );
+		geo.setAttribute( 'rnd', new THREE.InstancedBufferAttribute( new Float32Array( rndArray ), 3 ) );
 
 		let uni = ORE.UniformsLib.mergeUniforms( parentUniforms, {
 			total: {

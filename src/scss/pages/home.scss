@@ -66,6 +66,24 @@ body {
 	}
 }
 
+.subtitles {
+	position: absolute;
+	width: 100%;
+	bottom: 50px;
+	color: #fff;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+
+	&-text {
+		display: inline-block;
+		background: #000;
+		padding: 5px 10px;
+		text-align: center;
+		font-family: $notosans;
+	}
+}
+
 .section {
 	&-wrap {
 		position: relative;
@@ -108,100 +126,6 @@ body {
 
 	}
 
-	&-message {
-		position: absolute;
-		width: 28vw;
-		height: 28vw;
-		right: 0;
-		bottom: -5.0vw;
-		display: flex;
-		flex-direction: column;
-		justify-content: center;
-		align-items: center;
-		z-index: 0;
-
-		transform: translateX(150%) rotate(0);
-		transition: transform .5s cubic-bezier(.74,-0.02,.94,-0.32);
-		
-		[data-visible="true"] &{
-			opacity: 1;
-			transform: rotate(0deg) translateX(0%);
-			transition: transform .7s cubic-bezier(0,1.33,.37,.99);
-			transition-delay: 0.8s;
-		}
-
-		transition-delay: .1s;
-		
-		&-line {
-			width: 90%;
-			margin: 0 auto;
-			margin-bottom: 15px;
-			max-width: 900px;
-			transform: translateY(-1.5vw);
-			
-			&.bigmargin {
-				margin-bottom: 60px;
-			}
-			
-			@include sp {
-				margin-block: 40px;	
-			}
-	
-			p {
-				width: 100%;
-				text-align: center;
-				font-size: 20px;
-				line-height: 1.5em;
-				color: #fff;
-	
-				&.ja {
-					font-size: 0.9vw;
-					letter-spacing: 0.4em;
-					font-family: $notosans;
-					color: #aaa;
-					
-					@include sp {
-						font-size: 8px;
-						letter-spacing: 0.0em;
-					}
-				}
-	
-				&.en {
-					font-size: 1.0vw;
-					font-weight: 200;
-					font-family: $play;
-					letter-spacing: .2em;
-	
-					@include sp {
-						font-size: 18px;
-					}
-				}
-			}
-		}
-		
-		&::before {
-			position: absolute;
-			content: "";
-			display: block;
-			width: 100%;
-			height: 100%;
-			background-color: rgba($color: #000000, $alpha: 0.95);
-			border-radius: 20px 20px;
-			z-index: -1;
-
-			transform: rotate(0deg);
-			transition: transform .5s cubic-bezier(.74,-0.02,.94,-0.32);
-			
-			[data-visible="true"] &{
-				opacity: 1;
-				transform: rotate(-20deg) rotate(-90deg);
-				transition: transform .7s cubic-bezier(0,1.33,.37,.99);
-			}
-
-			transition-delay: .1s;
-		}
-
-	}
 }
 
 
@@ -261,89 +185,66 @@ body {
 	}
 }
 
+
 .section5 {
-	&-message {
-		position: absolute;
+	width: 100%;
+	height: 100%;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	background: rgba($color: #000000, $alpha: 0.2);
+
+	opacity: 0;
+	transition: opacity 1.0s;
+
+	&[data-visible="true"] {
+		opacity: 1;
+	}
+}
+
+.section5 {
+	
+	width: 100%;
+	height: 100%;
+	
+	&-content {
 		width: 100%;
 		height: 100%;
-		display: flex;
-		flex-direction: column;
-		align-items: center;
-		justify-content: center;
-		background: rgba($color: #000000, $alpha: 0.6);
-
-		opacity: 0;
-		transition: opacity 1.0s;
+		padding-top: 20vh;
 		
-		[data-visible="true"] &{
-			opacity: 1;
-			transition-delay: .8s;
-		}
+		display: flex;
+		flex-direction: row-reverse;
+		justify-content: space-around;
 
-		&-section {
-			width: 90%;
-			margin: 0 auto;
-			margin-bottom: 15px;
-			max-width: 900px;
+		// flex-direction: column;
+		// padding-top: 0vh;
+
+	
+	}
+	
+	&-text {
+		&-wrap {
+			display: flex;
+			flex-direction: row-reverse;
+			justify-content: center;
+			justify-content: space-around;
+			align-items: start;
 			
-			&.bigmargin {
-				margin-bottom: 60px;
-			}
-			
-			@include sp {
-				margin-block: 40px;	
-			}
-	
-			p {
-				width: 100%;
-				text-align: center;
-				font-size: 20px;
-				line-height: 1.5em;
-				color: #fff;
-	
-				&.ja {
-					font-size: 13px;
-					letter-spacing: 0.4em;
-					font-family: $notosans;
-					color: #aaa;
-					
-					@include sp {
-						font-size: 8px;
-						letter-spacing: 0.0em;
-					}
-				}
-	
-				&.en {
-					font-size: 21px;
-					font-weight: 200;
-					font-family: $play;
-					letter-spacing: .2em;
-	
-					@include sp {
-						font-size: 18px;
-					}
-				}
-			}
+			// flex-direction: column;
+			// align-items: flex-start;
+
+			// align-items: center;
+
 		}
-
-		&-text {
-			color: #fff;
-			text-align: center;
-			line-height: 2em;
-			font-size: 18px;
-			font-family: $notosans;
-			font-weight: bold;
-			letter-spacing: 0.4em;
-
-			opacity: 0;
-			transition: opacity 1.0s;
-
-			[data-visible="true"] &{
-				opacity: 1;
-				transition: opacity 1.5s;
-				transition-delay: .5s;
-			}
-		}
+		
+		padding: 10px 5px;
+		display: inline-block;
+		background-color: #000;
+		color: #fff;
+		font-family: $notosans;
+		writing-mode: vertical-rl;
+		
 	}
 }
 

@@ -54,10 +54,28 @@ mat3 makeRotationDir( vec3 direction, vec3 up ) {
 
 }
 
+vec2 spriteUVSelector( vec2 uv, vec2 tile, float frames, float time, float offset ) {
+
+	float t = floor(frames * mod( time, 1.0 ) );
+	t += offset;
+
+	uv.x += mod(t, tile.x);
+	uv.y -= floor(t / tile.x);
+
+	uv.y -= 1.0;
+	uv /= tile;
+	uv.y += 1.0;
+	
+	return uv;
+	
+}
+
 void main( void ) {
 
 	vAlpha = easeOutQuart( smoothstep( 0.0, 0.6, -computeUV.x + uVisibility * 1.6 ) );
 	float posYOffset = 1.0 - easeOutQuart( smoothstep( 0.0, 0.6, -computeUV.x + (1.0 - uJump) * 1.6 ) );
+
+	vec4 vel = texture2D( dataVel, computeUV );
 
 	/*-------------------------------
 		Position
@@ -67,12 +85,11 @@ void main( void ) {
 	p *= (vAlpha);
 
     vec3 pos = vec3( 0.0 );
+
+
 	pos.xz = texture2D( dataPos, computeUV).xz;
 	pos.y += (posYOffset) * 12.0;
 	pos.xz *= rotate( sin(computeUV.y * 20.0 + time * 0.6 + posYOffset ) * posYOffset * 0.2 );
-
-	// vec3 vec = texture2D( dataVel, computeUV).xyz;
-	// p *= makeRotationDir(vec3( vec.x, 0.0, vec.z ), vec3( 0.0, 1.0, 0.0 ) );
 
 	vec4 worldPos = modelMatrix * vec4( p + pos, 1.0 );
 	vec4 mvPosition = viewMatrix * worldPos;
@@ -80,13 +97,14 @@ void main( void ) {
 	gl_Position = projectionMatrix * mvPosition;
 	
 	vUv = uv;
-	vUv.x *= 0.5;
+	float offset = abs(vel.x) > 0.1 ? 16.0 : 0.0;
 
-	if( computeUV.x + computeUV.y == 0.0 ) {
+	vUv = spriteUVSelector( vUv, vec2( 16.0, 2.0 ), 16.0, time + computeUV.x, offset );
 
-		vUv.x += 0.5;
-		
+	if( offset > 0.0 && vel.x < 0.0 ) {
+		vUv.x = 1.0 - vUv.x;
 	}
+	
 	
 	vNormal = normal;
 	vViewPos = -mvPosition.xyz;

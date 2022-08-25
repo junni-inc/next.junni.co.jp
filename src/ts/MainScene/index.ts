@@ -6,14 +6,17 @@ import { RenderPipeline } from './RenderPipeline';
 import { CameraController } from './CameraController';
 import { World } from './World';
 import { Scroller } from './Scroller';
+import { Subtitles } from './Subtitle';
 
 export class MainScene extends ORE.BaseLayer {
+
 
 	private gManager?: GlobalManager;
 	private renderPipeline?: RenderPipeline;
 	private cameraController?: CameraController;
 	private scroller: Scroller;
 
+	private subtitles: Subtitles;
 	private world?: World;
 
 	constructor() {
@@ -38,17 +41,11 @@ export class MainScene extends ORE.BaseLayer {
 
 				let section = this.world.changeSection( sectionIndex );
 
-				if ( this.cameraController ) {
+				this.subtitles.changeSection( sectionIndex );
 
-					this.cameraController.changeRange( section.cameraRange );
+				if ( this.cameraController ) this.cameraController.changeRange( section.cameraRange );
 
-				}
-
-				if ( this.renderPipeline ) {
-
-					this.renderPipeline.updateParam( section.ppParam );
-
-				}
+				if ( this.renderPipeline ) this.renderPipeline.updateParam( section.ppParam );
 
 				this.world.bg.changeSection( sectionIndex );
 
@@ -59,6 +56,12 @@ export class MainScene extends ORE.BaseLayer {
 			}
 
 		} );
+
+		/*-------------------------------
+			Subtitles
+		-------------------------------*/
+
+		this.subtitles = new Subtitles();
 
 	}
 
@@ -82,7 +85,7 @@ export class MainScene extends ORE.BaseLayer {
 
 			}, },
 			{ name: 'display', path: './assets/textures/display.png', type: 'tex', timing: 'sub' },
-			{ name: 'human', path: './assets/textures/humans/human03.png', type: 'tex', timing: 'sub' },
+			{ name: 'human', path: './assets/textures/humans/human.png', type: 'tex', timing: 'sub' },
 			{ name: 'outro', path: './assets/textures/outro-text.png', type: 'tex', timing: 'sub', onLoad: ( tex: THREE.Texture ) => {
 
 				tex.wrapS = THREE.RepeatWrapping;

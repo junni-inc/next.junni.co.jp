@@ -4,7 +4,6 @@ import * as CANNON from 'cannon';
 
 import { Section, ViewingState } from '../Section';
 import { GLTF } from 'three/examples/jsm/loaders/GLTFLoader';
-import { Shadow } from './Shadow';
 import { Peoples } from './Peoples';
 import { Text } from './Text';
 
@@ -12,6 +11,10 @@ type PhysicsObj = {
 	visual: THREE.Object3D;
 	body: CANNON.Body
 }
+
+
+import textVert from './shaders/text.vs';
+import textFrag from './shaders/text.fs';
 
 export class Section4 extends Section {
 
@@ -31,6 +34,7 @@ export class Section4 extends Section {
 		this.renderer = renderer;
 
 		this.bakuMaterialType = 'line';
+		this.ppParam.vignet = 1.5;
 
 		// params
 
@@ -49,7 +53,7 @@ export class Section4 extends Section {
 		-------------------------------*/
 
 		this.light1Data = {
-			position: new THREE.Vector3( 2.7, - 2.5, 18.7 ),
+			position: new THREE.Vector3( 10.7, 15.5, 18.7 ),
 			targetPosition: new THREE.Vector3(
 				- 1.2926819324493408,
 				- 12.504984855651855,
@@ -59,9 +63,9 @@ export class Section4 extends Section {
 		};
 
 		this.light2Data = {
-			position: new THREE.Vector3( 5.0, - 10.7, 20 ),
+			position: new THREE.Vector3( 5.0, 10.7, 20 ),
 			targetPosition: new THREE.Vector3( - 1.7, - 6.7, 12 ),
-			intensity: 1,
+			intensity: 0
 		};
 
 	}
@@ -77,6 +81,70 @@ export class Section4 extends Section {
 		-------------------------------*/
 
 		// new Shadow( scene.getObjectByName( 'Shadow' ) as THREE.Mesh, this.commonUniforms );
+
+		let text = scene.getObjectByName( 'Making' ) as THREE.Object3D;
+		text.children.forEach( item => {
+
+			let mesh = item as THREE.Mesh;
+			mesh.castShadow = true;
+			mesh.receiveShadow = true;
+			let uni = ORE.UniformsLib.mergeUniforms( this.commonUniforms, THREE.UniformsUtils.clone( THREE.UniformsLib.lights ), {
+				uMatCapTex: window.gManager.assetManager.getTex( 'matCapOrange' ),
+				shadowLightModelViewMatrix: {
+					value: new THREE.Matrix4()
+				},
+				shadowLightProjectionMatrix: {
+					value: new THREE.Matrix4()
+				},
+				shadowLightDirection: {
+					value: new THREE.Vector3()
+				},
+				shadowLightCameraClip: {
+					value: new THREE.Vector2()
+				},
+				shadowMap: {
+					value: null
+				},
+				shadowMapSize: {
+					value: new THREE.Vector2()
+				},
+				shadowMapResolution: {
+					value: new THREE.Vector2()
+				},
+				cameraNear: {
+					value: 0.01
+				},
+				cameraFar: {
+					value: 1000.0
+				},
+			} );
+
+			let defines: any = {};
+			if ( mesh.name == 'Sapuraizu' ) {
+
+				defines[ "MAIN" ] = '';
+
+			}
+
+			mesh.material = new THREE.ShaderMaterial( {
+				vertexShader: textVert,
+				fragmentShader: textFrag,
+				uniforms: uni,
+				lights: true,
+				defines
+			} );
+
+			mesh.customDepthMaterial = new THREE.ShaderMaterial( {
+				vertexShader: textVert,
+				fragmentShader: textFrag,
+				uniforms: uni,
+				lights: true,
+				defines: {
+					DEPTH: ""
+				}
+			} );
+
+		} );
 
 		/*-------------------------------
 			Text

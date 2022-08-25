@@ -327,6 +327,10 @@ vec3 RE( Geometry geo, Material mat, Light light) {
 	vec3 c = vec3( 0.0 );
 	c += diffuse * ( 1.0 - F ) + specular;
 
+	
+	vec3 color = vec3( mix( vec3( 1.0 ), mat.diffuseColor * 0.5 + 0.5, length( mat.diffuseColor ) ) )* mix( #000, vec3( 1.0, 1.0, 1.0 ), dNL + random(gl_FragCoord.xy * 0.001) * 0.15 );
+	c = mix( c, color, uLine);
+
 	return c;
 
 }
@@ -339,7 +343,9 @@ void main( void ) {
 
 	#ifdef IS_LINE
 
-		gl_FragColor = vec4( 0.0, 0.0, 0.0, 1.0 );
+		// gl_FragColor = vec4( 0.0, 0.0, 0.0, 1.0 );
+		discard;
+		
 		return;
 		
 	#endif
@@ -392,12 +398,13 @@ void main( void ) {
 		mat.opacity *= opacity;
 
 	#endif
-	
+
 	mat.diffuseColor = mix( mat.albedo, vec3( 0.0, 0.0, 0.0 ), mat.metalness );
 	mat.specularColor = mix( vec3( 1.0, 1.0, 1.0 ), mat.albedo, mat.metalness );
 
 	// output
-	vec3 outColor = mix( vec3( 0.0 ), vec3( mix( vec3( 1.0 ), mat.diffuseColor, length( mat.diffuseColor ) )  ), uLine );
+	// vec3 outColor = mix( vec3( 0.0 ), vec3( mix( vec3( 1.0 ), mat.diffuseColor, length( mat.diffuseColor ) )  ), uLine );
+	vec3 outColor = vec3( 0.0 );
 	float outOpacity = mat.opacity;
 
 	/*-------------------------------

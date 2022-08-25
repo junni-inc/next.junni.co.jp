@@ -67,6 +67,7 @@ export class Section6 extends Section {
 		this.wind.position.copy( ( this.getObjectByName( 'Baku' ) as THREE.Object3D ).position );
 		this.wind.rotateY( Math.PI / 2 );
 		this.wind.frustumCulled = false;
+		this.wind.switchVisibility( this.sectionVisibility );
 		this.add( this.wind );
 
 		/*-------------------------------
@@ -131,6 +132,7 @@ export class Section6 extends Section {
 
 		}
 
+		if ( this.wind ) this.wind.switchVisibility( this.sectionVisibility );
 		if ( this.comrades ) this.comrades.switchVisibility( this.sectionVisibility );
 
 	}
