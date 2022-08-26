@@ -30,6 +30,16 @@ export class Wall extends THREE.Object3D {
 			}
 		} );
 
+	}
+
+	public setTex( texture: THREE.Texture ) {
+
+		this.commonUniforms.tex.value = texture;
+
+	}
+
+	public init() {
+
 		/*-------------------------------
 			Mesh
 		-------------------------------*/
@@ -89,12 +99,6 @@ export class Wall extends THREE.Object3D {
 
 	}
 
-	public setTex( texture: THREE.Texture ) {
-
-		this.commonUniforms.tex.value = texture;
-
-	}
-
 	public update( deltaTime: number ) {
 
 		for ( let i = 0; i < this.physics.length; i ++ ) {
@@ -114,7 +118,25 @@ export class Wall extends THREE.Object3D {
 
 	public resize( info: ORE.LayerInfo ) {
 
-		let 
+		let aspect = info.size.canvasAspectRatio;
+
+		this.physics.forEach( item => {
+
+			let size = new THREE.Vector2();
+
+			if ( aspect < 1.0 ) {
+
+				size.set( 1.0, 1.0 / aspect );
+
+			} else {
+
+				size.set( aspect, 1.0 );
+
+			}
+
+			item.mesh.scale.set( size.x, size.y, 1.0 );
+
+		} );
 
 	}
 

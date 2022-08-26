@@ -236,9 +236,17 @@ export class MainScene extends ORE.BaseLayer {
 
 			}
 
+
 		}
 
 		if ( this.renderPipeline ) {
+
+			if ( this.world && ! this.world.intro.paused ) {
+
+				this.renderPipeline.render( this.world.intro.scene, this.world.intro.camera );
+				return;
+
+			}
 
 			this.renderPipeline.render( this.scene, this.camera );
 
@@ -295,9 +303,15 @@ export class MainScene extends ORE.BaseLayer {
 
 		if ( this.world ) {
 
-			this.world.intro.paused = true;
-			this.world.section1.splash();
-			this.world.section6.wheel( event );
+			if ( this.world.intro.paused == false ) {
+
+				this.world.intro.paused = true;
+				this.world.section1.wall.init();
+				this.world.section1.splash();
+				this.world.section6.wheel( event );
+
+
+			}
 
 		}
 

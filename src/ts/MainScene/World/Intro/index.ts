@@ -11,8 +11,8 @@ export class Intro {
 	private animator: ORE.Animator;
 
 	private renderer: THREE.WebGLRenderer;
-	private scene: THREE.Scene;
-	private camera: THREE.PerspectiveCamera;
+	public scene: THREE.Scene;
+	public camera: THREE.PerspectiveCamera;
 	private cameraController: CameraController;
 
 	public renderTarget: THREE.WebGLRenderTarget;
