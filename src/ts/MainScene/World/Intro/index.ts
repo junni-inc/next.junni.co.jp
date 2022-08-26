@@ -135,6 +135,12 @@ export class Intro {
 
 	public resize( info: ORE.LayerInfo ) {
 
+		this.renderTarget.setSize( info.size.canvasPixelSize.x, info.size.canvasPixelSize.y );
+
+
+		this.camera.aspect = info.size.canvasAspectRatio;
+		this.camera.updateProjectionMatrix();
+
 	}
 
 }

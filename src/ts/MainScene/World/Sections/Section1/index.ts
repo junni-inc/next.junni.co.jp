@@ -219,6 +219,12 @@ export class Section1 extends Section {
 
 	}
 
+	public resize( info: ORE.LayerInfo ) {
+
+		this.wall.resize( info );
+
+	}
+
 	public switchViewingState( viewing: ViewingState ): void {
 
 		super.switchViewingState( viewing );

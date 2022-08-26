@@ -13,7 +13,7 @@ export class Grid extends THREE.LineSegments {
 	constructor( parentUniforms?: ORE.Uniforms ) {
 
 		let range = new THREE.Vector3( 5.0, 5.0, 8.0 );
-		let resScale = 1.5;
+		let resScale = 2.0;
 		let res = new THREE.Vector3( range.x * resScale, range.y * resScale, range.z * resScale );
 
 		let animatorId = Math.floor( Math.random() * 10000 ).toString();
@@ -45,10 +45,10 @@ export class Grid extends THREE.LineSegments {
 
 		let geo = new THREE.InstancedBufferGeometry();
 
-		let scale = 0.9;
+		let scale = 0.33;
 		geo.setAttribute( 'position', new THREE.BufferAttribute( new Float32Array( [
-			- scale, 0.0, 0.0,
-			scale, 0.0, 0.0,
+			- scale - scale * 0.1, 0.0, 0.0,
+			scale + scale * 0.1, 0.0, 0.0,
 			0.0, scale, 0.0,
 			0.0, - scale, 0.0,
 			0.0, 0.0, scale,

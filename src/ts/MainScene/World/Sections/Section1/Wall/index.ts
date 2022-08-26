@@ -34,9 +34,8 @@ export class Wall extends THREE.Object3D {
 			Mesh
 		-------------------------------*/
 
-		let globalSize = new THREE.Vector3( 3.3, 0.0, 0.2 );
-		globalSize.y = globalSize.x * 9 / 16;
-		let res = new THREE.Vector2( globalSize.x, globalSize.y ).multiplyScalar( 4 );
+		let globalSize = new THREE.Vector3( 1.0, 1.0, 0.15 );
+		let res = new THREE.Vector2( globalSize.x, globalSize.y ).multiplyScalar( 10 );
 		let size = new THREE.Vector2( globalSize.x / res.x, globalSize.y / res.y );
 
 		for ( let i = 0; i < res.x; i ++ ) {
@@ -66,8 +65,6 @@ export class Wall extends THREE.Object3D {
 
 				let boxMesh = new THREE.Mesh( geo, boxMat );
 				this.add( boxMesh );
-
-
 
 				boxBody.sleep();
 				boxBody.sleepSpeedLimit = 0.1;
@@ -112,6 +109,12 @@ export class Wall extends THREE.Object3D {
 			// mat.uniforms.velocity.value.copy( body.velocity as unknown as THREE.Vector3 );
 
 		}
+
+	}
+
+	public resize( info: ORE.LayerInfo ) {
+
+		let 
 
 	}
 
