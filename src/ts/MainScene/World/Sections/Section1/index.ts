@@ -33,6 +33,8 @@ export class Section1 extends Section {
 	private slashes?: Slashes;
 	private dots?: Dots;
 
+	public splashed: boolean = false; //ここがtrueにならないとswitchVisivilityがきかない
+
 	constructor( manager: THREE.LoadingManager, parentUniforms: ORE.Uniforms ) {
 
 		super( manager, 'section_1', parentUniforms );
@@ -160,7 +162,6 @@ export class Section1 extends Section {
 		this.dots = new Dots( this.getObjectByName( 'Dots' ) as THREE.Object3D, this.commonUniforms );
 		this.dots.switchVisibility( this.sectionVisibility );
 
-
 	}
 
 	public update( deltaTime: number ): void {
@@ -191,6 +192,7 @@ export class Section1 extends Section {
 
 	public splash() {
 
+		this.splashed = true;
 		this.animator.animate( 'bakuSplash', 1, 1 );
 
 		this.animationActionList.forEach( action => {
@@ -201,11 +203,7 @@ export class Section1 extends Section {
 
 		} );
 
-		setTimeout( () => {
-
-			this.bakuCollision.splash();
-
-		}, 200 );
+		this.bakuCollision.splash();
 
 	}
 
@@ -221,11 +219,11 @@ export class Section1 extends Section {
 
 	public resize( info: ORE.LayerInfo ) {
 
-		this.wall.resize( info );
-
 	}
 
 	public switchViewingState( viewing: ViewingState ): void {
+
+		if ( ! this.splashed ) return;
 
 		super.switchViewingState( viewing );
 

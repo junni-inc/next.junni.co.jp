@@ -13,10 +13,15 @@ export type PhysicsData = {
 
 export class Wall extends THREE.Object3D {
 
+	private animator: ORE.Animator;
+
 	private cannonWorld: CANNON.World;
 	private commonUniforms: ORE.Uniforms;
 
 	private physics: PhysicsData[] = [];
+
+	private disposed: boolean = false;
+	private animating: boolean = true;
 
 	constructor( cannonWorld: CANNON.World, parentUniforms: ORE.Uniforms ) {
 
@@ -30,6 +35,18 @@ export class Wall extends THREE.Object3D {
 			}
 		} );
 
+		/*-------------------------------
+			Animator
+		-------------------------------*/
+
+		this.animator = window.gManager.animator;
+
+		this.commonUniforms.uVisibility = this.animator.add( {
+			name: 'wallVisibility',
+			initValue: 1,
+		} );
+
+
 	}
 
 	public setTex( texture: THREE.Texture ) {
@@ -38,14 +55,27 @@ export class Wall extends THREE.Object3D {
 
 	}
 
-	public init() {
+	public init( camera: THREE.PerspectiveCamera ) {
+
+		let parent = this;
+		let distance = 2.0;
+
+		let height = Math.tan( camera.fov / 2 * THREE.MathUtils.DEG2RAD ) * 2.0 * distance;
+		let width = height * camera.aspect;
+
+		let cameraWorldPos = camera.getWorldPosition( new THREE.Vector3() );
+		let position = parent.worldToLocal( cameraWorldPos.clone().add( camera.getWorldDirection( new THREE.Vector3() ).normalize().multiplyScalar( distance ) ) );
+
+		let mesh = new THREE.Mesh( new THREE.PlaneBufferGeometry( width, height ), new THREE.MeshNormalMaterial( { wireframe: true } ) );
+		mesh.position.copy( position );
+		mesh.lookAt( parent.worldToLocal( cameraWorldPos ) );
 
 		/*-------------------------------
 			Mesh
 		-------------------------------*/
 
-		let globalSize = new THREE.Vector3( 1.0, 1.0, 0.15 );
-		let res = new THREE.Vector2( globalSize.x, globalSize.y ).multiplyScalar( 10 );
+		let globalSize = new THREE.Vector3( width, height, 0.15 );
+		let res = new THREE.Vector2( globalSize.x, globalSize.y ).multiplyScalar( 5 ).round();
 		let size = new THREE.Vector2( globalSize.x / res.x, globalSize.y / res.y );
 
 		for ( let i = 0; i < res.x; i ++ ) {
@@ -80,9 +110,14 @@ export class Wall extends THREE.Object3D {
 				boxBody.sleepSpeedLimit = 0.1;
 				boxBody.sleepTimeLimit = 1;
 
+				let pos = new THREE.Vector3( size.x / 2 + i * size.x - ( globalSize.x / 2 ), size.y / 2 + j * size.y - ( globalSize.y / 2 ), - globalSize.z / 2 );
+				pos.applyQuaternion( mesh.quaternion );
+				pos.add( mesh.position );
+
 				// @ts-ignore
 				boxBody.name = i + '-' + j;
-				boxBody.position.set( i * size.x - ( globalSize.x - size.x ) / 2, j * size.y - globalSize.y / 2 + 1.2, globalSize.z );
+				boxBody.position.set( pos.x, pos.y, pos.z );
+				boxBody.quaternion.copy( mesh.quaternion as unknown as CANNON.Quaternion );
 				boxBody.addShape( new CANNON.Box( new CANNON.Vec3( size.x / 2, size.y / 2, globalSize.z ) ) );
 
 				this.cannonWorld.addBody( boxBody );
@@ -101,6 +136,8 @@ export class Wall extends THREE.Object3D {
 
 	public update( deltaTime: number ) {
 
+		if ( ! this.animating ) return;
+
 		for ( let i = 0; i < this.physics.length; i ++ ) {
 
 			let mesh = this.physics[ i ].mesh;
@@ -110,31 +147,28 @@ export class Wall extends THREE.Object3D {
 			mesh.position.copy( body.position as unknown as THREE.Vector3 );
 			mesh.quaternion.copy( body.quaternion as unknown as THREE.Quaternion );
 
-			// mat.uniforms.velocity.value.copy( body.velocity as unknown as THREE.Vector3 );
-
 		}
 
 	}
 
-	public resize( info: ORE.LayerInfo ) {
+	public dispose() {
 
-		let aspect = info.size.canvasAspectRatio;
+		if ( this.disposed ) return;
 
-		this.physics.forEach( item => {
+		this.animator.animate( 'wallVisibility', 0, 1, () => {
 
-			let size = new THREE.Vector2();
+			this.visible = false;
+			this.animating = false;
 
-			if ( aspect < 1.0 ) {
+			this.physics.forEach( item => {
 
-				size.set( 1.0, 1.0 / aspect );
+				this.remove( item.mesh );
+				item.mesh.geometry.dispose();
+				item.material.dispose();
 
-			} else {
+			} );
 
-				size.set( aspect, 1.0 );
-
-			}
-
-			item.mesh.scale.set( size.x, size.y, 1.0 );
+			this.physics.length = 0;
 
 		} );
 

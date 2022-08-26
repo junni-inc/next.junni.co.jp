@@ -113,7 +113,7 @@ export class CameraController {
 		this.animator.setValue( 'cameraTargetPos', cameraTransform.targetPosition );
 		this.animator.setValue( 'cameraFov', cameraTransform.fov );
 
-		this.camera.fov = cameraTransform.fov + this.portraitWeight * 20.0 + ( this.animator.get<number>( 'cameraFovOffset' ) || 0 );
+		this.camera.fov = cameraTransform.fov + this.portraitWeight * 45.0 + ( this.animator.get<number>( 'cameraFovOffset' ) || 0 );
 		this.camera.updateProjectionMatrix();
 
 	}

@@ -33,7 +33,7 @@ export class Intro {
 		this.camera.position.set( 0, 0, 5 );
 		this.scene.add( this.camera );
 
-		this.renderTarget = new THREE.WebGLRenderTarget( 1920, 1080 );
+		this.renderTarget = new THREE.WebGLRenderTarget( 1, 1 );
 
 		this.commonUniforms = ORE.UniformsLib.mergeUniforms( parentUniforms, {
 		} );
@@ -136,7 +136,6 @@ export class Intro {
 	public resize( info: ORE.LayerInfo ) {
 
 		this.renderTarget.setSize( info.size.canvasPixelSize.x, info.size.canvasPixelSize.y );
-
 
 		this.camera.aspect = info.size.canvasAspectRatio;
 		this.camera.updateProjectionMatrix();

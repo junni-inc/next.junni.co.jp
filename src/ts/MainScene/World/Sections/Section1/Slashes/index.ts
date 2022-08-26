@@ -57,15 +57,33 @@ export class Slashes {
 
 	}
 
+	private timer: number | null = null;
+
 	public switchVisibility( visible: boolean ) {
 
-		if ( visible ) this.root.visible = true;
+		if ( this.timer != null ) {
 
-		this.animator.animate( 'sec1SlashVisibile', visible ? 1 : 0, 0.5, () => {
+			window.clearTimeout( this.timer );
+			this.timer = null;
 
-			if ( ! visible ) this.root.visible = false;
+		}
 
-		} );
+		let wait = visible ? 500 : 0;
+
+		this.timer = window.setTimeout( () => {
+
+			if ( visible ) this.root.visible = true;
+
+			this.animator.animate( 'sec1SlashVisibile', visible ? 1 : 0, 0.5, () => {
+
+				if ( ! visible ) this.root.visible = false;
+
+			} );
+
+			this.timer = null;
+
+		}, wait );
+
 
 	}
 

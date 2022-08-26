@@ -64,6 +64,8 @@ export class Slides {
 				transparent: true,
 			} );
 
+			mesh.renderOrder = 1;
+
 		} );
 
 	}

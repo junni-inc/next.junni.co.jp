@@ -19,6 +19,8 @@ export class MainScene extends ORE.BaseLayer {
 	private subtitles: Subtitles;
 	private world?: World;
 
+	private canScroll: boolean = false;
+
 	constructor() {
 
 		super();
@@ -129,6 +131,8 @@ export class MainScene extends ORE.BaseLayer {
 			CameraController
 		-------------------------------*/
 
+		this.scene.add( this.camera );
+
 		this.cameraController = new CameraController( this.camera );
 
 		/*-------------------------------
@@ -142,8 +146,6 @@ export class MainScene extends ORE.BaseLayer {
 			this.scene.add( this.world );
 
 			this.scroller.changeSectionNum( this.world.sections.length );
-
-			// this.world.section1.splash();
 
 		}
 
@@ -188,6 +190,13 @@ export class MainScene extends ORE.BaseLayer {
 						window.gManager.addListener( 'sectionChange', onSectionChange );
 
 					} );
+
+					if ( i > 0 && ! this.canScroll ) {
+
+						this.world.cancelIntro();
+						this.canScroll = true;
+
+					}
 
 					break;
 
@@ -299,17 +308,22 @@ export class MainScene extends ORE.BaseLayer {
 
 	public onWheel( event: WheelEvent ): void {
 
-		this.scroller.addVelocity( event.deltaY * 0.00005 );
-
 		if ( this.world ) {
 
-			if ( this.world.intro.paused == false ) {
+			if ( this.canScroll ) {
 
-				this.world.intro.paused = true;
-				this.world.section1.wall.init();
-				this.world.section1.splash();
+				this.scroller.addVelocity( event.deltaY * 0.00005 );
 				this.world.section6.wheel( event );
 
+			} else {
+
+				this.world.splash( this.camera );
+
+				setTimeout( () => {
+
+					this.canScroll = true;
+
+				}, 1000 );
 
 			}
 
@@ -325,12 +339,30 @@ export class MainScene extends ORE.BaseLayer {
 
 	public onTouchMove( args: ORE.TouchEventArgs ) {
 
-		this.scroller.drag( args.delta.y );
+		if ( this.canScroll ) {
+
+			this.scroller.drag( args.delta.y );
+
+		} else {
+
+			if ( this.world ) {
+
+				this.world.splash( this.camera );
+
+				setTimeout( () => {
+
+					this.canScroll = true;
+
+				}, 1000 );
+
+			}
+
+		}
+
 
 	}
 
 	public onTouchEnd( args: ORE.TouchEventArgs ) {
-
 
 		this.scroller.release( args.delta.y );
 

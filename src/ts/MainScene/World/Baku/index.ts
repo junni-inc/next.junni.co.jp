@@ -101,6 +101,7 @@ export class Baku extends THREE.Object3D {
 			}, true );
 
 			this.mesh.castShadow = true;
+			this.mesh.renderOrder = 2;
 
 			this.mesh.onBeforeRender = ( renderer ) => {
 

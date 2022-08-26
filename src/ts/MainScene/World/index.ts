@@ -18,11 +18,11 @@ export class World extends THREE.Object3D {
 	private scene: THREE.Scene;
 	private commonUniforms: ORE.Uniforms;
 
+	private lights: Lights;
+
 	// manager
 
 	private manager: THREE.LoadingManager;
-
-	private lights: Lights;
 
 	// bg
 
@@ -49,6 +49,10 @@ export class World extends THREE.Object3D {
 	// baku
 
 	private baku: Baku;
+
+	// state
+
+	private splashed: boolean = false;
 
 	constructor( renderer: THREE.WebGLRenderer, scene: THREE.Scene, parentUniforms: ORE.Uniforms ) {
 
@@ -289,7 +293,34 @@ export class World extends THREE.Object3D {
 
 	}
 
-	public dispose() {
+	public splash( camera: THREE.PerspectiveCamera ) {
+
+		if ( this.splashed ) return;
+
+		this.splashed = true;
+
+		this.intro.paused = true;
+		this.section1.wall.init( camera );
+		this.section1.splash();
+
+		setTimeout( () => {
+
+			this.section1.switchViewingState( "viewing" );
+
+		}, 500 );
+
+	}
+
+	public cancelIntro() {
+
+		if ( this.splashed ) return;
+
+		this.splashed = true;
+
+		this.intro.paused = true;
+		this.section1.wall.dispose();
+		this.section1.splash();
+
 	}
 
 }

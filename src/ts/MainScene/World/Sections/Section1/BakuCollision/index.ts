@@ -71,7 +71,7 @@ export class BakuCollision extends THREE.Object3D {
 	public splash() {
 
 		this.body.wakeUp();
-		this.body.velocity.set( - 0.5, 1, 5 );
+		this.body.velocity.set( - 0.5, 1, 7 );
 
 		setTimeout( () => {
 

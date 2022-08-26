@@ -46,6 +46,7 @@ export class Ground extends PowerReflectionMesh {
 
 		this.animator = animator;
 		this.receiveShadow = true;
+		this.renderOrder = 0;
 
 	}
 
@@ -53,7 +54,7 @@ export class Ground extends PowerReflectionMesh {
 
 		let reflection = 0.0;
 		let color = new THREE.Vector3();
-		let visibility = 1.0;
+		let visible = false;
 
 		if ( sectionIndex == 2.0 ) {
 
@@ -67,17 +68,21 @@ export class Ground extends PowerReflectionMesh {
 
 		}
 
-		if ( sectionIndex >= 4.0 ) {
+		if ( sectionIndex >= 2.0 && sectionIndex <= 3.0 ) {
 
-			visibility = 0;
+			visible = true;
 
 		}
 
-		this.visible = sectionIndex >= 2.0;
+		if ( visible ) this.visible = true;
 
 		this.animator.animate( 'groundReflection', reflection );
 		this.animator.animate( 'groundColor', color );
-		this.animator.animate( 'groundVisibility', visibility );
+		this.animator.animate( 'groundVisibility', visible ? 1 : 0, 1, () => {
+
+			this.visible = visible;
+
+		} );
 
 	}
 
