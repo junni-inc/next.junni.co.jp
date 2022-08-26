@@ -19,9 +19,10 @@ void main( void ) {
 		Position
 	-------------------------------*/
 
-	vec3 pos = position;
+	vec3 pos = position;	
 	vec4 worldPos = modelMatrix * vec4( pos, 1.0 );
 	vec4 mvPosition = viewMatrix * worldPos;
+	
 	
 	gl_Position = projectionMatrix * mvPosition;
 

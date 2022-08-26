@@ -4,6 +4,9 @@ varying	float vBrightness;
 varying float vCount;
 varying float vFade;
 
+varying vec3 vNormal;
+varying vec3 vViewPos;
+
 uniform vec2 uv2;
 uniform float time;
 uniform sampler2D uNoiseTex;
@@ -36,11 +39,19 @@ void main( void ) {
 	vFade = smoothstep( 0.85, 1.0, mod(t, 1.0) );
 
 	vUv = uv;
+	vUv.y = 1.0 - vUv.y;
 	vUv2 = spriteUVSelector( vUv, vec2( 2.0, 4.0 ), 8.0, vCount / 8.0 );
-
 
 	float noise = texture2D( uNoiseTex, vec2( time * 0.03 + modelMatrix[3][0] ) ).x;
 	float noiseHigh = texture2D( uNoiseTex, vec2( time * 3.0 + modelMatrix[3][0] ) ).x;
 	vBrightness = smoothstep( 0.54, 0.55, noise + noiseHigh * 0.08 ) * 0.9;
+
+	/*-------------------------------
+		Varying
+	-------------------------------*/
+	
+	vUv = uv;
+	vNormal = normalMatrix * normal;
+	vViewPos = -mvPosition.xyz;
 
 }

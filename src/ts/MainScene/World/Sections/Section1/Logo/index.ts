@@ -46,6 +46,8 @@ export class Logo {
 
 	public update( deltaTime: number ) {
 
+		if ( ! this.root.visible ) return;
+
 		this.meshList.forEach( item => {
 
 			item.update( deltaTime );

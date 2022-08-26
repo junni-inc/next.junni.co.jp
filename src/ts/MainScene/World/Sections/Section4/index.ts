@@ -156,7 +156,7 @@ export class Section4 extends Section {
 
 			textRoot.children.concat().forEach( item => {
 
-				let text = new Text( item, this.commonUniforms );
+				let text = new Text( item as THREE.Mesh, this.commonUniforms );
 				this.add( text.mesh );
 				this.cannonWorld.addBody( text.body );
 				this.textList.push( text );

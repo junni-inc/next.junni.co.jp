@@ -234,6 +234,8 @@ export class Peoples extends THREE.Mesh {
 
 	public update( deltaTime: number ) {
 
+		if ( ! this.visible ) return;
+
 		this.commonUniforms.deltaTime.value = deltaTime;
 
 		this.kernels.velocity.uniforms.dataPos.value = this.datas.position.buffer.texture;

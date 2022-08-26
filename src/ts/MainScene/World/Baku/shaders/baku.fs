@@ -343,10 +343,8 @@ void main( void ) {
 
 	#ifdef IS_LINE
 
-		// gl_FragColor = vec4( 0.0, 0.0, 0.0, 1.0 );
+		gl_FragColor = vec4( 0.0, 0.0, 0.0, 1.0 );
 		discard;
-		
-		return;
 		
 	#endif
 

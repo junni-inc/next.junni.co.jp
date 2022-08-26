@@ -16,72 +16,84 @@ export class Text {
 	private baseSize: CANNON.Vec3;
 	private boxShape: CANNON.Box;
 
-	constructor( mesh: THREE.Object3D, parentUniforms: ORE.Uniforms ) {
+	constructor( mesh: THREE.Mesh, parentUniforms: ORE.Uniforms ) {
 
 		this.commonUniforms = ORE.UniformsLib.mergeUniforms( parentUniforms, {
 		} );
 
 		this.mesh = mesh;
-		this.mesh.traverse( obj => {
 
-			let mesh = obj as THREE.Mesh;
+		if ( mesh.isMesh ) {
 
-			if ( mesh.isMesh ) {
+			mesh.castShadow = true;
+			mesh.receiveShadow = true;
 
-				mesh.castShadow = true;
-				mesh.receiveShadow = true;
+			let uni = ORE.UniformsLib.mergeUniforms( this.commonUniforms, THREE.UniformsUtils.clone( THREE.UniformsLib.lights ), {
+				uMatCapTex: window.gManager.assetManager.getTex( 'matCapOrange' ),
+				shadowLightModelViewMatrix: {
+					value: new THREE.Matrix4()
+				},
+				shadowLightProjectionMatrix: {
+					value: new THREE.Matrix4()
+				},
+				shadowLightDirection: {
+					value: new THREE.Vector3()
+				},
+				shadowLightCameraClip: {
+					value: new THREE.Vector2()
+				},
+				shadowMap: {
+					value: null
+				},
+				shadowMapSize: {
+					value: new THREE.Vector2()
+				},
+				shadowMapResolution: {
+					value: new THREE.Vector2()
+				},
+				cameraNear: {
+					value: 0.01
+				},
+				cameraFar: {
+					value: 1000.0
+				},
+			} );
 
-				let uni = ORE.UniformsLib.mergeUniforms( this.commonUniforms, THREE.UniformsUtils.clone( THREE.UniformsLib.lights ), {
-					uMatCapTex: window.gManager.assetManager.getTex( 'matCapOrange' ),
-					shadowLightModelViewMatrix: {
-						value: new THREE.Matrix4()
-					},
-					shadowLightProjectionMatrix: {
-						value: new THREE.Matrix4()
-					},
-					shadowLightDirection: {
-						value: new THREE.Vector3()
-					},
-					shadowLightCameraClip: {
-						value: new THREE.Vector2()
-					},
-					shadowMap: {
-						value: null
-					},
-					shadowMapSize: {
-						value: new THREE.Vector2()
-					},
-					shadowMapResolution: {
-						value: new THREE.Vector2()
-					},
-					cameraNear: {
-						value: 0.01
-					},
-					cameraFar: {
-						value: 1000.0
-					},
-				} );
+			mesh.material = new THREE.ShaderMaterial( {
+				vertexShader: textVert,
+				fragmentShader: textFrag,
+				uniforms: uni,
+				lights: true,
+			} );
 
-				mesh.material = new THREE.ShaderMaterial( {
+			mesh.customDepthMaterial = new THREE.ShaderMaterial( {
+				vertexShader: textVert,
+				fragmentShader: textFrag,
+				uniforms: uni,
+				lights: true,
+				defines: {
+					DEPTH: ""
+				}
+			} );
+
+			let lineMesh = mesh.children[ 0 ] as THREE.Mesh;
+
+			if ( lineMesh ) {
+
+				lineMesh.material = new THREE.ShaderMaterial( {
 					vertexShader: textVert,
 					fragmentShader: textFrag,
 					uniforms: uni,
-					lights: true,
-				} );
-
-				mesh.customDepthMaterial = new THREE.ShaderMaterial( {
-					vertexShader: textVert,
-					fragmentShader: textFrag,
-					uniforms: uni,
-					lights: true,
+					side: THREE.BackSide,
 					defines: {
-						DEPTH: ""
+						LINE: ""
 					}
 				} );
 
 			}
 
-		} );
+
+		}
 
 		/*-------------------------------
 			Animator
@@ -101,11 +113,10 @@ export class Text {
 
 		let rot = new THREE.Euler().copy( this.mesh.rotation );
 		this.mesh.rotation.set( 0, 0, 0 );
-		let size = new THREE.Box3().setFromObject( this.mesh, true ).getSize( new THREE.Vector3() ).multiply( new THREE.Vector3( 0.8, 1.0, 0.8 ) );
+		let size = new THREE.Box3().setFromObject( this.mesh, true ).getSize( new THREE.Vector3() ).multiply( new THREE.Vector3( 0.8, 1.2, 1.0 ) );
 		this.mesh.rotation.copy( rot );
 		let worldPos = this.mesh.getWorldPosition( new THREE.Vector3() );
 		let worldQua = this.mesh.getWorldQuaternion( new THREE.Quaternion() );
-
 
 		this.body = new CANNON.Body( { mass: 65 } );
 		this.baseSize = new CANNON.Vec3( size.x / 2, size.y / 2, size.z / 2 );

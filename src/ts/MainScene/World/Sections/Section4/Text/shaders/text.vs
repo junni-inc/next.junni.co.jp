@@ -20,6 +20,13 @@ void main( void ) {
 	-------------------------------*/
 
 	vec3 pos = position;
+
+	#ifdef LINE
+
+		pos += normal * 0.08;
+	
+	#endif
+
 	vec4 worldPos = modelMatrix * vec4( pos, 1.0 );
 	vec4 mvPosition = viewMatrix * worldPos;
 	

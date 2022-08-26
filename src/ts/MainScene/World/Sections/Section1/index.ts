@@ -166,9 +166,15 @@ export class Section1 extends Section {
 
 	public update( deltaTime: number ): void {
 
-		this.cannonWorld.step( deltaTime );
-		this.bakuCollision.update( deltaTime );
-		this.wall.update( deltaTime );
+
+		if ( this.wall.visible ) {
+
+			this.cannonWorld.step( deltaTime );
+
+			this.bakuCollision.update( deltaTime );
+			this.wall.update( deltaTime );
+
+		}
 
 		if ( this.animator.isAnimatingVariable( 'bakuSplash' ) ) {
 
