@@ -5,7 +5,7 @@ import * as CANNON from 'cannon';
 import { Section, ViewingState } from '../Section';
 import { GLTF } from 'three/examples/jsm/loaders/GLTFLoader';
 import { Peoples } from './Peoples';
-import { Text } from './Text';
+import { FallText } from './FallText';
 
 type PhysicsObj = {
 	visual: THREE.Object3D;
@@ -23,9 +23,11 @@ export class Section4 extends Section {
 
 	private cannonWorld: CANNON.World;
 	private groundBody?: CANNON.Body;
-	private textList: Text[] = [];
+
+	private textList: FallText[] = [];
 
 	private light?: THREE.DirectionalLight;
+
 
 	constructor( manager: THREE.LoadingManager, parentUniforms: ORE.Uniforms, renderer: THREE.WebGLRenderer ) {
 
@@ -39,6 +41,20 @@ export class Section4 extends Section {
 		// params
 
 		this.elm = document.querySelector( '.section4' ) as HTMLElement;
+
+		// animator
+
+		this.commonUniforms.uTextSwitch = this.animator.add( {
+			name: 'sec4TextSwtich',
+			initValue: 0,
+			easing: ORE.Easings.linear
+		} );
+
+		this.commonUniforms.uJumping = this.animator.add( {
+			name: 'sec4Jumping',
+			initValue: 0,
+			easing: ORE.Easings.easeOutCubic
+		} );
 
 		/*-------------------------------
 			Cannon
@@ -73,7 +89,6 @@ export class Section4 extends Section {
 	protected onLoadedGLTF( gltf: GLTF ): void {
 
 		let scene = gltf.scene;
-
 		this.add( scene );
 
 		/*-------------------------------
@@ -147,48 +162,47 @@ export class Section4 extends Section {
 		} );
 
 		/*-------------------------------
-			Text
+			Ground
 		-------------------------------*/
-
-		let textRoot = scene.getObjectByName( 'FallTexts' );
-
-		if ( textRoot ) {
-
-			textRoot.children.concat().forEach( item => {
-
-				let text = new Text( item as THREE.Mesh, this.commonUniforms );
-				this.add( text.mesh );
-				this.cannonWorld.addBody( text.body );
-				this.textList.push( text );
-
-				setTimeout( () => {
-
-					// text.small();
-
-				}, 2000 );
-
-			} );
-
-		}
 
 		let ground = this.getObjectByName( 'Ground' ) as THREE.Mesh<any, THREE.MeshStandardMaterial>;
 		ground.material.visible = false;
 
 		let size = new THREE.Box3().setFromObject( ground ).getSize( new THREE.Vector3() );
+
 		let body = new CANNON.Body( { type: CANNON.Body.KINEMATIC } );
 		body.addShape( new CANNON.Box( new CANNON.Vec3( size.x / 2, size.y / 2, size.z / 2 ) ) );
-		body.position.set( ground.position.x, ground.position.y, ground.position.z );
-		body.quaternion.set( ground.quaternion.x, ground.quaternion.y, ground.quaternion.z, ground.quaternion.z );
+		body.position.set( 0, 0, 0 );
 
 		this.cannonWorld.addBody( body );
+
+		/*-------------------------------
+			Text
+		-------------------------------*/
+
+		let textRoot = scene.getObjectByName( 'FallTexts' );
+		let textAssets = scene.getObjectByName( 'TextAssets' ) as THREE.Object3D;
+
+		if ( textRoot && textAssets ) {
+
+			textRoot.children.concat().forEach( ( item, index ) => {
+
+				let text = new FallText( item as THREE.Mesh, textAssets.getObjectByName( 'Text' + ( index + 1 ) ) as THREE.Object3D, this.commonUniforms, ground );
+				// ground.add( text.root );
+				this.cannonWorld.addBody( text.body );
+				this.textList.push( text );
+
+			} );
+
+		}
 
 		/*-------------------------------
 			Peoples
 		-------------------------------*/
 
-		this.peoples = new Peoples( this.renderer, 30, this.commonUniforms, ground.getObjectByName( 'Avoids' ) as THREE.Object3D );
+		this.peoples = new Peoples( this.renderer, 30, this.commonUniforms, ground.getObjectByName( 'Avoids' ) as THREE.Object3D, this.textList );
 		this.peoples.switchVisibility( this.sectionVisibility, 2 );
-		this.peoples.position.y = 0.5;
+		this.peoples.position.y += 0.5;
 		ground.add( this.peoples );
 
 	}
@@ -230,6 +244,73 @@ export class Section4 extends Section {
 
 		}
 
+		this.textList.forEach( item => {
+
+			item.switchVisibility( this.sectionVisibility );
+
+		} );
+
+		if ( this.sectionVisibility ) {
+
+			this.createInterval();
+
+		} else {
+
+			this.clearInterval();
+
+		}
+
+	}
+
+	private intervalTimer: number | null = null;
+	private currentTextIndex: number = 0;
+
+	private switchText() {
+
+		this.animator.setValue( 'sec4TextSwtich', 0 );
+		this.animator.animate( 'sec4TextSwtich', 1, 1 );
+
+		this.animator.setValue( 'sec4Jumping', 1 );
+		this.animator.animate( 'sec4Jumping', 0, 1.0, ()=> {
+
+			// this.animator.animate( 'sec4Jumping', 0, 0.5 );
+
+		} );
+
+		this.textList.forEach( ( item, index ) => {
+
+			setTimeout( () => {
+
+				item.switchText( this.currentTextIndex );
+
+			}, 50 * index );
+
+		} );
+
+		this.currentTextIndex = ( this.currentTextIndex + 1 ) % 3;
+
+	}
+
+	public createInterval() {
+
+		this.clearInterval();
+
+		this.intervalTimer = window.setInterval( () => {
+
+			this.switchText();
+
+		}, 5000 );
+
+	}
+
+	public clearInterval() {
+
+		if ( this.intervalTimer ) {
+
+			window.clearInterval( this.intervalTimer );
+			this.intervalTimer = null;
+
+		}
 
 	}
 

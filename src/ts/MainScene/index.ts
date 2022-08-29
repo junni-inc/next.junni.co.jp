@@ -291,6 +291,12 @@ export class MainScene extends ORE.BaseLayer {
 
 		if ( args.position.x != args.position.x ) return;
 
+		if ( this.gManager ) {
+
+			this.gManager.eRay.update( args.screenPosition, this.camera );
+
+		}
+
 		if ( this.cameraController ) {
 
 			this.cameraController.updateCursor( args.screenPosition );
@@ -303,6 +309,7 @@ export class MainScene extends ORE.BaseLayer {
 			this.world.section1.hover( args, this.camera );
 
 		}
+
 
 	}
 

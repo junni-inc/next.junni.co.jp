@@ -42,11 +42,17 @@ export class Ground extends PowerReflectionMesh {
 			transparent: true,
 		}, true );
 
+		mesh.position.y = this.position.y;
 		this.resize( new THREE.Vector2( 1024, 1024 ) );
 
 		this.animator = animator;
 		this.receiveShadow = true;
 		this.renderOrder = 0;
+
+		window.gManager.eRay.touchableObjects.push( this );
+
+		// @ts-ignore
+		this.isSkinnedMesh = false;
 
 	}
 

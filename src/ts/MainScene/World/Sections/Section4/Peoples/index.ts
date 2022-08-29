@@ -6,6 +6,7 @@ import comVelocity from './shaders/computeVelocity.glsl';
 
 import peopleVert from './shaders/people.vs';
 import peopleFrag from './shaders/people.fs';
+import { FallText } from '../FallText';
 
 declare interface Kernels{
     velocity: ORE.GPUComputationKernel,
@@ -33,12 +34,18 @@ export class Peoples extends THREE.Mesh {
 
 	private avoidRoot: THREE.Object3D;
 
-	constructor( renderer: THREE.WebGLRenderer, num: number, parentUniforms: ORE.Uniforms, avoidRoot: THREE.Object3D ) {
+	constructor( renderer: THREE.WebGLRenderer, num: number, parentUniforms: ORE.Uniforms, avoidRoot: THREE.Object3D, textMeshList: FallText[] ) {
 
 		let commonUniforms = ORE.UniformsLib.mergeUniforms( parentUniforms, {
 			deltaTime: {
 				value: 1
 			},
+			uModelPosition: {
+				value: null
+			},
+			uCursorPos: {
+				value: new THREE.Vector3( 999, 999 )
+			}
 		} );
 
 		/*-------------------------------
@@ -116,6 +123,7 @@ export class Peoples extends THREE.Mesh {
 			side: THREE.DoubleSide,
 		} ) );
 
+
 		this.castShadow = true;
 		this.animator = animator;
 		this.renderer = renderer;
@@ -123,6 +131,7 @@ export class Peoples extends THREE.Mesh {
 		this.avoidRoot = avoidRoot;
 
 		this.commonUniforms = commonUniforms;
+		this.commonUniforms.uModelPosition.value = this.position;
 		this.meshUniforms = meshUniforms;
 
 		this.customDepthMaterial = new THREE.ShaderMaterial( {
@@ -139,18 +148,36 @@ export class Peoples extends THREE.Mesh {
 			GPU Controller
 		-------------------------------*/
 
+		let avoidList:{
+			position: THREE.Vector3,
+			scale: THREE.Vector3,
+		}[] = [];
+
+		this.avoidRoot.children.forEach( item => {
+
+			item.visible = false;
+
+			avoidList.push( {
+				position: item.position,
+				scale: item.scale,
+			} );
+
+		} );
+
+		textMeshList.forEach( item => {
+
+			let mesh = item.root;
+
+			avoidList.push( {
+				position: mesh.position,
+				scale: new THREE.Vector3( 2.0, 1.0, 4.0 ),
+			} );
+
+		} );
+
 		let gpuCommonUniforms = ORE.UniformsLib.mergeUniforms( this.commonUniforms, {
 			uAvoid: {
-				value: this.avoidRoot.children.map( item => {
-
-					item.visible = false;
-
-					return {
-						position: item.position,
-						scale: item.scale,
-					};
-
-				} )
+				value: avoidList
 			}
 		} );
 
@@ -176,7 +203,7 @@ export class Peoples extends THREE.Mesh {
 		} );
 
 		let velKernel = this.gCon.createKernel( {
-			fragmentShader: comVelocity.replace( /AVOID_COUNT/g, this.avoidRoot.children.length.toString() ),
+			fragmentShader: comVelocity.replace( /AVOID_COUNT/g, avoidList.length.toString() ),
 			uniforms: velUni
 		} );
 
@@ -194,6 +221,19 @@ export class Peoples extends THREE.Mesh {
 
 		this.frustumCulled = false;
 
+		/*-------------------------------
+			Cursor
+		-------------------------------*/
+
+		window.gManager.eRay.addEventListener( 'hover/CommonGround', ( e ) => {
+
+			let intersection = e.intersection as THREE.Intersection;
+			let p = intersection.point;
+
+			this.commonUniforms.uCursorPos.value.copy( this.worldToLocal( new THREE.Vector3( p.x, p.y, p.z ) ) );
+
+		} );
+
 	}
 
 	private createInitialPositionData() {
@@ -206,7 +246,7 @@ export class Peoples extends THREE.Mesh {
 
 				let r = Math.random() * Math.PI * 2.0;
 
-				let radius = 0.0 + Math.random() * 15.0;
+				let radius = 0.0 + Math.random() * 18.0;
 
 				let pos = [
 					Math.sin( r ) * radius,
@@ -273,6 +313,12 @@ export class Peoples extends THREE.Mesh {
 
 		this.jump = jump;
 
+
+	}
+
+	public updateCursor( pos: THREE.Vector3 ) {
+
+		this.commonUniforms.cursorPos.value.copy( pos );
 
 	}
 

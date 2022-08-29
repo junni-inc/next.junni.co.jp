@@ -7,6 +7,6 @@ void main() {
 	vec3 pos = texture2D( dataPos, uv ).xyz;
 	vec3 vel = texture2D( dataVel, uv ).xyz;
 
-	pos += normalize(vel) * 0.02;
+	pos += vel;
 	gl_FragColor = vec4(pos,1.0);
 }
