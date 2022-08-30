@@ -329,7 +329,7 @@ vec3 RE( Geometry geo, Material mat, Light light) {
 
 	
 	vec3 color = vec3( mix( vec3( 1.0 ), mat.diffuseColor * 0.5 + 0.5, length( mat.diffuseColor ) ) )* mix( #000, vec3( 1.0, 1.0, 1.0 ), dNL + random(gl_FragCoord.xy * 0.001) * 0.15 );
-	c = mix( c, color, uLine);
+	c = mix( c, vec3( 1.0 ), uLine);
 
 	return c;
 
@@ -344,7 +344,7 @@ void main( void ) {
 	#ifdef IS_LINE
 
 		gl_FragColor = vec4( 0.0, 0.0, 0.0, 1.0 );
-		discard;
+		return;
 		
 	#endif
 

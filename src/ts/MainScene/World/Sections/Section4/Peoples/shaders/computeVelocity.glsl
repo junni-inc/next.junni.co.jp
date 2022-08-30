@@ -31,7 +31,7 @@ void main() {
     vec3 vel = texture2D( dataVel, uv ).xyz;
     float idParticle = uv.y * dataSize.x + uv.x;
 	
-    float scale = 0.6 + sin( time ) * 0.1;
+    float scale = 0.7 + sin( time ) * 0.1;
 	vec3 p = scale * pos.xyz;
     
     vel.xyz += vec3(
@@ -59,10 +59,10 @@ void main() {
 
 	vel += baseVel;
     vel.xyz *= 0.99 - uv.y * 0.02;
-	vel += ( gravity ) * length(gravity) * 0.00005;
+	vel += ( gravity ) * length(gravity) * 0.00003;
 
 	vel = normalize( vel ) * 0.02;
-	vel += normalize( pos ) * 0.03 * sin( linearstep( 0.0, 1.0, -length( pos.xz ) * 0.1 + uTextSwitch * 3.0) * PI );
+	// vel += normalize( pos ) * 0.03 * sin( linearstep( 0.0, 1.0, -length( pos.xz ) * 0.1 + uTextSwitch * 3.0) * PI );
 
 	vec2 diffCursor = pos.xz - uCursorPos.xz;
 	vel.xz += smoothstep( 2.0, 0.0, length( diffCursor ) ) * diffCursor * 0.1;

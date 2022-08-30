@@ -4,12 +4,14 @@ import { Section, ViewingState } from '../Section';
 import { GLTF } from 'three/examples/jsm/loaders/GLTFLoader';
 import { Displays } from './Displays';
 import { Lights } from './Lights';
+import { BackText } from './BackText';
 
 export class Section3 extends Section {
 
 	private displays?: Displays;
 	private lights?: Lights;
 	private directionLightList: THREE.DirectionalLight[] = [];
+	private backText?: BackText;
 
 	constructor( manager: THREE.LoadingManager, parentUniforms: ORE.Uniforms ) {
 
@@ -72,6 +74,13 @@ export class Section3 extends Section {
 
 		this.lights = new Lights( this.getObjectByName( 'Lights' ) as THREE.Object3D, this.commonUniforms );
 
+		/*-------------------------------
+			BackText
+		-------------------------------*/
+
+		this.backText = new BackText( this.getObjectByName( 'BackText' ) as THREE.Mesh, this.commonUniforms );
+		this.backText.switchVisibility( this.sectionVisibility );
+
 	}
 
 	public update( deltaTime: number ) {
@@ -99,7 +108,7 @@ export class Section3 extends Section {
 
 		super.switchViewingState( viewing );
 
-		this.visible = this.sectionVisibility;
+		if ( this.backText ) this.backText.switchVisibility( this.sectionVisibility );
 
 	}
 
