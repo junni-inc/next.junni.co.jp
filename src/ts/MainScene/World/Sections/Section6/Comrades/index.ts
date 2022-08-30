@@ -20,9 +20,9 @@ export class Comrades extends EventEmitter {
 		this.commonUniforms = ORE.UniformsLib.mergeUniforms( parentUniforms, {
 		} );
 
-		this.root.children.forEach( item => {
+		this.root.children.forEach( ( item, index ) => {
 
-			let comrade = new Comrade( item, this.origin, animations, this.commonUniforms );
+			let comrade = new Comrade( item, this.origin, animations, this.commonUniforms, ( index ) % 4 );
 
 			this.comradeList.push( comrade );
 

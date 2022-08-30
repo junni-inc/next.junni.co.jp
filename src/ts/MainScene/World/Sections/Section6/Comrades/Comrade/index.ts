@@ -16,13 +16,17 @@ export class Comrade {
 
 	private mesh: PowerMesh;
 	private commonUniforms: ORE.Uniforms;
-
 	private action?: THREE.AnimationAction;
 
-	constructor( root: THREE.Object3D, origin: THREE.Object3D, animations: THREE.AnimationClip[], parentUniforms: ORE.Uniforms ) {
+	constructor( root: THREE.Object3D, origin: THREE.Object3D, animations: THREE.AnimationClip[], parentUniforms: ORE.Uniforms, colorNum: number ) {
 
 		this.root = root;
-		this.commonUniforms = ORE.UniformsLib.mergeUniforms( parentUniforms, {} );
+		this.commonUniforms = ORE.UniformsLib.mergeUniforms( parentUniforms, {
+			uTex: {
+				value: null
+			},
+		} );
+
 
 		let clonedRoot = SkeletonUtils.clone( origin );
 		clonedRoot.position.set( 0, 0, 0 );
@@ -31,6 +35,18 @@ export class Comrade {
 		clonedBone.position.set( 0, - 0.5, 0 );
 
 		let clonedMesh = clonedRoot.getObjectByName( "Comrades_Origin" ) as THREE.SkinnedMesh;
+
+		/*-------------------------------
+			Texture
+		-------------------------------*/
+
+		let loader = new THREE.TextureLoader();
+
+		loader.load( './assets/textures/baku/baku_' + colorNum + '.jpg', ( tex ) => {
+
+			this.commonUniforms.uTex.value = tex;
+
+		} );
 
 		/*-------------------------------
 			Animtor
@@ -47,7 +63,7 @@ export class Comrade {
 		this.mesh = new PowerMesh( clonedMesh, {
 			fragmentShader: comradeFrag,
 			vertexShader: bakuVert,
-			uniforms: this.commonUniforms
+			uniforms: this.commonUniforms,
 		}, true );
 
 		this.root.add( clonedRoot );

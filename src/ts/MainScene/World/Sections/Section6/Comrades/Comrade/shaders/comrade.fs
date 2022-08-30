@@ -2,6 +2,8 @@ varying vec2 vUv;
 varying vec3 vTangent;
 varying vec3 vBitangent;
 
+uniform sampler2D uTex;
+
 /*-------------------------------
 	Require
 -------------------------------*/
@@ -436,18 +438,9 @@ void main( void ) {
 
 	Material mat;
 
-	#ifdef USE_MAP
-
-		vec4 color = LinearTosRGB( texture2D( map, vUv ) );
-		mat.albedo = color.xyz;
-		mat.opacity = color.w;
-
-	#else
-
-		mat.albedo = color.xyz;
-		mat.opacity = 1.0;
-	
-	#endif
+	vec4 color = texture2D( uTex, vUv );
+	mat.albedo = color.xyz;
+	mat.opacity = color.w;
 
 	#ifdef USE_ROUGHNESS_MAP
 
@@ -535,29 +528,6 @@ void main( void ) {
 	
 	geo.normalWorld = normalize( ( vec4( geo.normal, 0.0 ) * viewMatrix ).xyz );
 
-	/*-------------------------------
-		Lighting
-	-------------------------------*/
-	
-	Light light;
-
-	#if NUM_DIR_LIGHTS > 0
-
-		float shadow;
-
-		#pragma unroll_loop_start
-			for ( int i = 0; i < NUM_DIR_LIGHTS; i ++ ) {
-
-				light.direction = directionalLights[ i ].direction;
-				light.color = directionalLights[ i ].color;
-				shadow = 1.0;
-
-				outColor += RE( geo, mat, light ) * shadow;
-				
-			}
-		#pragma unroll_loop_end
-
-	#endif
 
 	/*-------------------------------
 		リムライト
@@ -566,6 +536,8 @@ void main( void ) {
 	float dNV = clamp( dot( geo.normal, geo.viewDir ), 0.0, 1.0 );
 	float EF = fresnel( dNV );
 	outColor += EF;
+
+	outColor += mat.albedo *( 0.65 + EF);
 
 	/*-------------------------------
 		Emission

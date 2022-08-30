@@ -64,13 +64,13 @@ export class BackText {
 
 		}
 
-		let wait = visible ? 1000 : 0;
+		let wait = visible ? 1500 : 0;
 
 		this.timer = window.setTimeout( () => {
 
 			if ( visible ) this.mesh.visible = true;
 
-			this.animator.animate( 'sec4BackTextVisibility', visible ? 1 : 0, 1, () => {
+			this.animator.animate( 'sec4BackTextVisibility', visible ? 1 : 0, 2, () => {
 
 				if ( ! visible ) this.mesh.visible = false;
 

@@ -110,6 +110,8 @@ export class Section3 extends Section {
 
 		if ( this.backText ) this.backText.switchVisibility( this.sectionVisibility );
 
+		this.visible = this.sectionVisibility;
+
 	}
 
 }

@@ -87,6 +87,7 @@ void main( void ) {
 	-------------------------------*/
 	
 	vUv = uv;
+	vUv.y = 1.0 - vUv.y;
 	vNormal = normal;
 	vTangent = tangent;
 	vBitangent = biTangent;

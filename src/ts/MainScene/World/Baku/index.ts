@@ -135,6 +135,7 @@ export class Baku extends THREE.Object3D {
 				uniforms: ORE.UniformsLib.mergeUniforms( this.commonUniforms, {
 				} ),
 				side: THREE.BackSide,
+				depthWrite: false,
 				transparent: true,
 				defines: {
 					IS_LINE: ''

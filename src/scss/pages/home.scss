@@ -1,11 +1,12 @@
 @use "../global/" as *;
-@import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Noto+Sans&family=Noto+Sans+JP&family=Jura&family=Play&family=Noto+Serif&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Noto+Sans&family=Noto+Sans+JP&family=Jura&family=Play&family=Noto+Serif&family=PT+Mono&display=swap');
 
 $notosans: 'Noto Sans JP', 'Noto Sans', sans-serif;
 $notoserif: 'Noto Serif', serif;
 $bebas: 'Bebas Neue', cursive;
 $jura: 'Jura', sans-serif;
 $play: 'Play', sans-serif;
+$ptmono: 'PT Mono', monospace;
 
 body {
 	width: 100%;
@@ -274,7 +275,7 @@ body {
 		}
 		
 		&-head {
-			font-family: $play;
+			font-family: $ptmono;
 			font-size: 2.5vw;
 			font-weight: normal;
 			color: #fff;
@@ -285,7 +286,7 @@ body {
 	&-link {
 		position: absolute;
 		left: 50%;
-		bottom: 10px;
+		bottom: 30px;
 		transform: translateX(-50%);
 		display: flex;
 
@@ -301,7 +302,7 @@ body {
 		
 		
 		&-item {
-			padding: 0 15px;
+			padding: 0 20px;
 		}
 	}
 }
