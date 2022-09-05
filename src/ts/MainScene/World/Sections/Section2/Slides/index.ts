@@ -35,38 +35,43 @@ export class Slides {
 
 		this.root = root;
 
-		this.root.children.forEach( item => {
+		let originGeo = new THREE.PlaneBufferGeometry( 30.0, 1.0, );
 
-			let mesh = item as THREE.Mesh;
+		let offsetPosArray = [];
+		let rndArray = [];
 
-			let mat = ( mesh.material as THREE.MeshStandardMaterial );
+		let num = 30;
 
-			let tex = mat.map;
+		for ( let i = 0; i < num; i ++ ) {
 
-			if ( tex ) {
+			offsetPosArray.push( 0.0, ( i - num / 2 ) * 0.9, 0.0 );
+			rndArray.push( Math.random() );
+			rndArray.push( Math.random() );
 
-				tex.wrapS = THREE.RepeatWrapping;
-				tex.wrapT = THREE.RepeatWrapping;
+		}
 
-			}
+		let geo = new THREE.InstancedBufferGeometry();
+		geo.setAttribute( 'position', originGeo.getAttribute( 'position' ) );
+		geo.setAttribute( 'uv', originGeo.getAttribute( 'uv' ) );
+		geo.setAttribute( 'normal', originGeo.getAttribute( 'normal' ) );
+		geo.setAttribute( 'offsetPos', new THREE.InstancedBufferAttribute( new Float32Array( offsetPosArray ), 3 ) );
+		geo.setAttribute( 'rnd', new THREE.InstancedBufferAttribute( new Float32Array( rndArray ), 2 ) );
+		geo.setIndex( originGeo.getIndex() );
 
-			mesh.material = new THREE.ShaderMaterial( {
-				fragmentShader: slideFrag,
-				vertexShader: slideVert,
-				uniforms: ORE.UniformsLib.mergeUniforms( this.commonUniforms, {
-					tex: {
-						value: tex
-					},
-					speed: {
-						value: Math.random() * 0.5 + 0.5
-					}
-				} ),
-				transparent: true,
-			} );
-
-			mesh.renderOrder = 1;
-
+		let mat = new THREE.ShaderMaterial( {
+			fragmentShader: slideFrag,
+			vertexShader: slideVert,
+			uniforms: ORE.UniformsLib.mergeUniforms( this.commonUniforms, {
+				tex: window.gManager.assetManager.getTex( 'sec2BGText' ),
+				speed: {
+					value: Math.random() * 0.5 + 0.5,
+				}
+			} ),
+			transparent: true,
 		} );
+
+		let mesh = new THREE.Mesh( geo, mat );
+		this.root.add( mesh );
 
 	}
 

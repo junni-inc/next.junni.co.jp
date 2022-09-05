@@ -76,6 +76,12 @@ export class MainScene extends ORE.BaseLayer {
 		this.gManager.assetManager.load( { assets: [
 			{ name: 'commonScene', path: './assets/scene/common.glb', type: "gltf", timing: 'must' },
 			{ name: 'logo', path: './assets/textures/junni_logo.png', type: 'tex', timing: 'must' },
+			{ name: 'sec2BGText', path: './assets/textures/sec2-bg-text.png', type: 'tex', timing: 'must', onLoad( value: THREE.Texture ) {
+
+				value.wrapS = THREE.RepeatWrapping;
+				value.wrapT = THREE.RepeatWrapping;
+
+			} },
 			{ name: 'introText', path: './assets/textures/intro-text.png', type: 'tex', timing: 'must' },
 			{ name: 'topLogo', path: './assets/textures/top_logo.png', type: 'tex', timing: 'must' },
 			{ name: 'matCap', path: './assets/textures/matcap.png', type: 'tex', timing: 'must' },
