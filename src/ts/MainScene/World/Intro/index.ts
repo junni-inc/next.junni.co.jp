@@ -24,6 +24,9 @@ export class Intro extends EventEmitter {
 	private text2: IntroText;
 	private text3: IntroText;
 
+	private dirLight: THREE.DirectionalLight;
+	private aLight: THREE.AmbientLight;
+
 	public paused: boolean = false;
 
 	constructor( renderer: THREE.WebGLRenderer, introObj: THREE.Object3D, parentUniforms: ORE.Uniforms ) {
@@ -46,6 +49,10 @@ export class Intro extends EventEmitter {
 		this.commonUniforms = ORE.UniformsLib.mergeUniforms( parentUniforms, {
 		} );
 
+		/*-------------------------------
+			Animator
+		-------------------------------*/
+
 		this.animator = window.gManager.animator;
 
 		this.commonUniforms.loaded = this.animator.add( {
@@ -57,6 +64,12 @@ export class Intro extends EventEmitter {
 					max: 1
 				}
 			}
+		} );
+
+		this.animator.add( {
+			name: 'introLightIntensity',
+			initValue: 0,
+			easing: ORE.Easings.sigmoid( 1 )
 		} );
 
 		/*-------------------------------
@@ -78,16 +91,18 @@ export class Intro extends EventEmitter {
 			Scene
 		-------------------------------*/
 
-		let light = new THREE.DirectionalLight();
-		light.position.set( 1, 1, - 0.0 );
-		light.intensity = 0.5;
-		this.scene.add( light );
+		this.dirLight = new THREE.DirectionalLight();
+		this.dirLight.position.set( 1, 1, - 0.0 );
+		this.scene.add( this.dirLight );
 
-		let aLight = new THREE.AmbientLight();
-		aLight.intensity = 0.05;
-		this.scene.add( aLight );
+		this.aLight = new THREE.AmbientLight();
+		this.scene.add( this.aLight );
 
-		let introGrid = new IntroGrid( this.commonUniforms );
+		let introGrid = new IntroGrid( ORE.UniformsLib.mergeUniforms( this.commonUniforms,
+			{
+				uVisibility: this.animator.getVariableObject( 'introLightIntensity' )!
+			}
+		) );
 		introGrid.position.z = - 1.0;
 		this.scene.add( introGrid );
 
@@ -113,6 +128,13 @@ export class Intro extends EventEmitter {
 
 		this.cameraController.update( deltaTime );
 
+		let lightIntensity = this.animator.get<number>( 'introLightIntensity' ) || 0;
+
+		this.dirLight.intensity = 0.5 * lightIntensity;
+		this.aLight.intensity = 0.05 * lightIntensity;
+
+		this.dirLight.position.y = 1 - ( 1.0 - lightIntensity ) * 2.0;
+
 		let rt = this.renderer.getRenderTarget();
 		this.renderer.setRenderTarget( this.renderTarget );
 		this.renderer.render( this.scene, this.camera );
@@ -126,7 +148,12 @@ export class Intro extends EventEmitter {
 
 			if ( percentage == 1.0 ) {
 
+				if ( this.paused ) return;
+
 				await this.logo.start();
+
+				this.animator.animate( 'introLightIntensity', 1, 10 );
+
 				await this.text1.start();
 				await this.text2.start();
 				await this.text3.start();

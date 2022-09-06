@@ -22,7 +22,7 @@ export class Comrades extends EventEmitter {
 
 		this.root.children.forEach( ( item, index ) => {
 
-			let comrade = new Comrade( item, this.origin, animations, this.commonUniforms, ( index ) % 4 );
+			let comrade = new Comrade( item, this.origin, animations, this.commonUniforms, ( index ) % 6 );
 
 			this.comradeList.push( comrade );
 
