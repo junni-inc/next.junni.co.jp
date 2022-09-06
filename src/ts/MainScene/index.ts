@@ -154,7 +154,6 @@ export class MainScene extends ORE.BaseLayer {
 
 			this.scroller.changeSectionNum( this.world.sections.length );
 
-
 			this.world.intro.addListener( 'finishIntro', () => {
 
 				this.splash();

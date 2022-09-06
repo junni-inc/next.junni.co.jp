@@ -104,7 +104,7 @@ export class Section6 extends Section {
 
 	public update( deltaTime: number ): void {
 
-		this.bakuTransform.rotation.multiply( new THREE.Quaternion().setFromAxisAngle( new THREE.Vector3( 0.0, 0.0, 1.0 ), deltaTime * 0.5 ) );
+		// this.bakuTransform.rotation.multiply( new THREE.Quaternion().setFromAxisAngle( new THREE.Vector3( 0.0, 0.0, 1.0 ), deltaTime * 0.5 ) );
 
 		if ( this.comrades ) this.comrades.update( deltaTime );
 

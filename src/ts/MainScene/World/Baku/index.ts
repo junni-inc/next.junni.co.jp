@@ -242,6 +242,17 @@ export class Baku extends THREE.Object3D {
 
 				}
 
+				if ( name == 'section_3' ) {
+
+					// 無理やりループ
+					if ( action.time > 3.33333333333 ) {
+
+						action.time = 0;
+
+					}
+
+				}
+
 			}
 
 		}
