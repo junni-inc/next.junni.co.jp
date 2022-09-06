@@ -75,6 +75,7 @@ body {
 	display: flex;
 	justify-content: center;
 	align-items: center;
+	flex-direction: column;
 
 	&-text {
 		display: inline-block;
@@ -82,6 +83,11 @@ body {
 		padding: 5px 10px;
 		text-align: center;
 		font-family: $notosans;
+
+		&[data-visible="false"] {
+			opacity: 0;
+			transition: opacity .5s;
+		}
 	}
 }
 

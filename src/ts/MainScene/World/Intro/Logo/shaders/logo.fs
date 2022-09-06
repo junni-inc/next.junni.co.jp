@@ -1,13 +1,15 @@
 uniform sampler2D tex;
 uniform float loaded;
+uniform float uIntroLogoVisibility;
 varying vec2 vUv;
 
 void main( void ) {
 
-	vec4 logo = texture2D( tex, vUv );
-	vec4 col = vec4( 1.0, 1.0, 1.0, logo.w );
+	vec4 col = vec4( 1.0, 1.0, 1.0, 1.0 );
 
-	col *= step( vUv.y - loaded, 0.0 );
+	// col *= step( vUv.y - loaded, 0.0 );
+
+	col.w = loaded * uIntroLogoVisibility;
 
 	gl_FragColor = col;
 

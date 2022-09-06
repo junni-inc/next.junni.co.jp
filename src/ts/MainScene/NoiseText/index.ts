@@ -11,13 +11,16 @@ export class NoiseText {
 
 	private interval: number | null = null;
 
+	public onFinishAnimation?: () => void;
+	public onFinishHide?: () => void;
+
 	constructor( elm: HTMLElement ) {
 
 		this.elm = elm;
 
 	}
 
-	public show( text: string, duration: number = 1, tickRate?: number ) {
+	public show( text: string, duration: number = 1, tickRate?: number, callback?: () => void ) {
 
 		this.text = text;
 
@@ -26,8 +29,10 @@ export class NoiseText {
 		this.startTime = new Date().getTime();
 		this.elm.innerText = '';
 		this.visible = true;
+		this.elm.setAttribute( 'data-visible', 'true' );
 
 		this.duration = duration;
+		this.onFinishAnimation = callback;
 
 		if ( tickRate ) {
 
@@ -44,18 +49,25 @@ export class NoiseText {
 
 	}
 
-	public hide( callBack?: () => any ) {
+	public hide( ) {
 
 		this.stopAnimation();
+
+		this.elm.setAttribute( 'data-visible', 'false' );
 
 		this.startTime = new Date().getTime();
 		this.visible = false;
 
-		if ( callBack ) {
+		setTimeout( () => {
 
-			callBack();
+			if ( this.onFinishHide ) {
 
-		}
+				this.onFinishHide();
+
+			}
+
+		}, 500 );
+
 
 	}
 
@@ -92,6 +104,12 @@ export class NoiseText {
 		this.elm.innerHTML = text;
 
 		if ( time >= this.duration ) {
+
+			if ( this.onFinishAnimation ) {
+
+				this.onFinishAnimation();
+
+			}
 
 			this.stopAnimation();
 

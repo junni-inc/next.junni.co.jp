@@ -38,7 +38,7 @@ void main( void ) {
 
 	pos *= uPartVisibility * uVisibility;
 	pos.yz *= rotate( uSwap * TPI + invVis * 10.0);
-	pos.y += sin( uSwap * PI ) * 2.0 + invVis * 2.0;
+	pos.z -= sin( uSwap * PI ) * 2.0 + invVis * 2.0;
 
 	vec4 worldPos = modelMatrix * vec4( pos, 1.0 );
 	vec4 mvPosition = viewMatrix * worldPos;

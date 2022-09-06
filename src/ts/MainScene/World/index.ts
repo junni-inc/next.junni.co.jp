@@ -133,7 +133,7 @@ export class World extends THREE.Object3D {
 			Intro
 		-------------------------------*/
 
-		this.intro = new Intro( renderer, this.commonUniforms );
+		this.intro = new Intro( renderer, this.scene.getObjectByName( 'Intro' ) as THREE.Object3D, this.commonUniforms );
 
 		/*-------------------------------
 			Baku

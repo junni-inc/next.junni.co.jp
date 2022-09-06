@@ -144,7 +144,7 @@ export class Baku extends THREE.Object3D {
 
 			this.meshLine = new THREE.SkinnedMesh( this.mesh.geometry, lineMat );
 			this.meshLine.skeleton = this.mesh.skeleton;
-			this.add( this.meshLine );
+			// this.add( this.meshLine );
 
 			/*-------------------------------
 				animation

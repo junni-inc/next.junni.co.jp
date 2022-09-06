@@ -1,8 +1,9 @@
 import * as THREE from 'three';
 import * as ORE from 'ore-three';
 import { Logo } from './Logo';
-import { IntroText } from './Text';
 import { CameraController } from './CameraController';
+import { IntroGrid } from './IntroGrid';
+import { IntroText } from './IntroText';
 
 export class Intro {
 
@@ -18,22 +19,24 @@ export class Intro {
 	public renderTarget: THREE.WebGLRenderTarget;
 
 	private logo: Logo;
-	private text: IntroText;
+	private introText: IntroText;
 
 	public paused: boolean = false;
 
-	constructor( renderer: THREE.WebGLRenderer, parentUniforms: ORE.Uniforms ) {
+	constructor( renderer: THREE.WebGLRenderer, introObj: THREE.Object3D, parentUniforms: ORE.Uniforms ) {
 
 		this.renderer = renderer;
 
 		this.scene = new THREE.Scene();
 		this.scene.background = new THREE.Color( "#000" );
 
-		this.camera = new THREE.PerspectiveCamera( 45, 16 / 9, 0.01, 1000, );
-		this.camera.position.set( 0, 0, 5 );
+		this.camera = new THREE.PerspectiveCamera( 38, 16 / 9, 0.01, 1000, );
+		this.camera.position.set( 0, 0, 10 );
 		this.scene.add( this.camera );
 
 		this.renderTarget = new THREE.WebGLRenderTarget( 1, 1 );
+
+		this.scene.add( introObj );
 
 		this.commonUniforms = ORE.UniformsLib.mergeUniforms( parentUniforms, {
 		} );
@@ -55,30 +58,31 @@ export class Intro {
 			Logo
 		-------------------------------*/
 
-		this.logo = new Logo( this.commonUniforms );
-		this.scene.add( this.logo );
+		this.logo = new Logo( this.scene.getObjectByName( 'Logo' ) as THREE.Mesh, this.commonUniforms );
+		// this.scene.add( this.logo );
 
 		/*-------------------------------
-			IntroText
+			Text1
 		-------------------------------*/
 
-		this.text = new IntroText( this.commonUniforms );
-		this.text.position.set( 0, - 0.5, 0 );
-		this.scene.add( this.text );
+		this.introText = new IntroText( this.scene.getObjectByName( 'Text' ) as THREE.Object3D, this.commonUniforms );
 
 		/*-------------------------------
 			Scene
 		-------------------------------*/
 
 		let light = new THREE.DirectionalLight();
-		light.position.set( - 1, 1, 0.0 );
-		light.intensity = 0.3;
+		light.position.set( 1, 1, - 0.0 );
+		light.intensity = 0.5;
 		this.scene.add( light );
 
-		let sphere = new THREE.Mesh( new THREE.SphereBufferGeometry( 1, 10, 30 ), new THREE.MeshStandardMaterial() );
-		sphere.position.set( 4, - 2, - 5 );
-		sphere.scale.setScalar( 4 );
-		this.scene.add( sphere );
+		let aLight = new THREE.AmbientLight();
+		aLight.intensity = 0.05;
+		this.scene.add( aLight );
+
+		let introGrid = new IntroGrid( this.commonUniforms );
+		introGrid.position.z = - 1.0;
+		this.scene.add( introGrid );
 
 		/*-------------------------------
 			CameraController
@@ -109,23 +113,15 @@ export class Intro {
 
 	}
 
-	public updateLoadState( percentage: number ) {
+	public async updateLoadState( percentage: number ) {
 
-		this.animator.animate( 'loaded', percentage, 0.5, () => {
+		this.animator.animate( 'loaded', percentage, 0.5, async () => {
 
 			if ( percentage == 1.0 ) {
 
-				setTimeout( () => {
+				await this.logo.start();
 
-					this.logo.move();
-
-				}, 500 );
-
-				setTimeout( () => {
-
-					this.text.switchVisible( true );
-
-				}, 1400 );
+				await this.introText.switchVisibility( true );
 
 			}
 

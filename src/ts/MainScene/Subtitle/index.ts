@@ -3,8 +3,8 @@ import { NoiseText } from '../NoiseText';
 export class Subtitles {
 
 	private elm: HTMLElement;
-	private innerElm: HTMLParagraphElement;
-	private noiseText: NoiseText;
+
+	private noiseTextList: NoiseText[] = [];
 
 	private textList: string[] = [
 		"",
@@ -16,10 +16,6 @@ export class Subtitles {
 	constructor( ) {
 
 		this.elm = document.querySelector( '.subtitles' ) as HTMLElement;
-		this.innerElm = this.elm.querySelector( '.subtitles-text' ) as HTMLParagraphElement;
-
-		this.noiseText = new NoiseText( this.innerElm );
-		this.noiseText.noise = "このサイト作るの意外と大変なんですよこれが";
 
 	}
 
@@ -27,11 +23,48 @@ export class Subtitles {
 
 		let text = this.textList[ sectionIndex ] || '';
 
-		this.noiseText.hide( () => {
+		this.show( text );
 
-			this.noiseText.show( text );
+	}
 
-		} );
+	public show( text: string, duration: number = 1.0 ) {
+
+		this.hideAll();
+
+		if ( ! text ) return;
+
+		let textElm = document.createElement( 'p' );
+		textElm.classList.add( "subtitles-text" );
+		this.elm.appendChild( textElm );
+
+		let noiseText = new NoiseText( textElm );
+		noiseText.noise = "このサイト作るの意外と大変なんですよこれが";
+		noiseText.show( text, duration, 40 );
+
+		noiseText.onFinishAnimation = () => {
+
+			setTimeout( () => {
+
+				noiseText.hide();
+
+			}, 2000 );
+
+		};
+
+		noiseText.onFinishHide = () => {
+
+			this.noiseTextList = this.noiseTextList.filter( item => ! item.elm.isEqualNode( noiseText.elm ) );
+			noiseText.elm.remove();
+
+		};
+
+		this.noiseTextList.push( noiseText );
+
+	}
+
+	public hideAll() {
+
+		this.noiseTextList.forEach( item => item.hide() );
 
 	}
 

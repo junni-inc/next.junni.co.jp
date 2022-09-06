@@ -3,11 +3,13 @@ import { MainScene } from './MainScene';
 
 import { GlobalManager } from './MainScene/GlobalManager';
 import { AssetManager } from './MainScene/GlobalManager/AssetManager';
+import { Subtitles } from './MainScene/Subtitle';
 
 declare global {
 	interface Window {
 		gManager: GlobalManager;
 		assetManager: AssetManager;
+		subtitles: Subtitles;
 		isIE: boolean;
 		isSP: boolean;
 		mainScene: MainScene;
@@ -46,7 +48,7 @@ class APP {
 		this.controller.addLayer( new MainScene(), {
 			name: 'Main',
 			canvas: this.canvas || undefined,
-			pixelRatio: Math.max( 1.0, window.devicePixelRatio * 0.8 ),
+			pixelRatio: Math.max( 1.0, window.devicePixelRatio * 1.0 ),
 			wrapperElement: wrap
 		} );
 

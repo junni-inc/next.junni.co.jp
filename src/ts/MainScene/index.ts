@@ -64,6 +64,7 @@ export class MainScene extends ORE.BaseLayer {
 		-------------------------------*/
 
 		this.subtitles = new Subtitles();
+		window.subtitles = this.subtitles;
 
 	}
 

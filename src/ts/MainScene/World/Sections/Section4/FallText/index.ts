@@ -27,7 +27,6 @@ export class FallText {
 		this.root = root;
 		this.textAssetPart = textAssetPart;
 
-
 		/*-------------------------------
 			Animator
 		-------------------------------*/
@@ -156,7 +155,7 @@ export class FallText {
 
 		let rot = new THREE.Euler().copy( this.root.rotation );
 		this.root.rotation.set( 0, 0, 0 );
-		let size = new THREE.Box3().setFromObject( this.root, true ).getSize( new THREE.Vector3() ).multiply( new THREE.Vector3( 0.8, 1.2, 1.0 ) );
+		let size = new THREE.Box3().setFromObject( this.root, true ).getSize( new THREE.Vector3() ).multiply( new THREE.Vector3( 0.8, 0.5, 0.0 ) );
 		this.root.rotation.copy( rot );
 
 		let pos = this.root.position;

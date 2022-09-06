@@ -202,4 +202,22 @@ export class CameraController {
 
 	}
 
+	public shake( duration: number ) {
+
+		this.animator.setEasing( 'particleTimeScale', ORE.Easings.easeOutCubic );
+
+		this.animator.animate( 'cameraShakeTimeScale', 8, 0.8 );
+		this.animator.animate( 'cameraShake', 0.15, 0.8, () => {
+
+			this.animator.setEasing( 'particleTimeScale', ORE.Easings.easeOutCubic );
+			this.animator.animate( 'cameraFovOffset', 0, 4 );
+			this.animator.animate( 'cameraShake', 0, 2 );
+			this.animator.animate( 'cameraShakeTimeScale', 2, 4 );
+
+			this.animator.animate( 'particleTimeScale', 1, 4 );
+
+		} );
+
+	}
+
 }

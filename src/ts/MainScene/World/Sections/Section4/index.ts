@@ -209,7 +209,7 @@ export class Section4 extends Section {
 
 	public update( deltaTime: number ): void {
 
-		this.cannonWorld.step( deltaTime );
+		// this.cannonWorld.step( deltaTime );
 
 		this.textList.forEach( item => {
 

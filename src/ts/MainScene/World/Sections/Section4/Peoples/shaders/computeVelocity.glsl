@@ -62,7 +62,7 @@ void main() {
 	vel += ( gravity ) * length(gravity) * 0.00003;
 
 	vel = normalize( vel ) * 0.02;
-	// vel += normalize( pos ) * 0.03 * sin( linearstep( 0.0, 1.0, -length( pos.xz ) * 0.1 + uTextSwitch * 3.0) * PI );
+	vel += normalize( pos ) * 0.03 * sin( linearstep( 0.0, 1.0, -length( pos.xz ) * 0.1 + uTextSwitch * 3.0) * PI );
 
 	vec2 diffCursor = pos.xz - uCursorPos.xz;
 	vel.xz += smoothstep( 2.0, 0.0, length( diffCursor ) ) * diffCursor * 0.1;
