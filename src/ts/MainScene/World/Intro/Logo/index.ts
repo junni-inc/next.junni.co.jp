@@ -8,8 +8,9 @@ import logoIsFrag from './shaders/logoIs.fs';
 
 import imagingVert from './shaders/imaging.vs';
 import imagingFrag from './shaders/imaging.fs';
+import EventEmitter from 'wolfy87-eventemitter';
 
-export class Logo {
+export class Logo extends EventEmitter {
 
 	private commonUniforms: ORE.Uniforms;
 	private animator: ORE.Animator;
@@ -21,6 +22,8 @@ export class Logo {
 	private imagingMesh: THREE.Mesh;
 
 	constructor( logoMesh: THREE.Mesh, parentUniforms: ORE.Uniforms ) {
+
+		super();
 
 		this.commonUniforms = ORE.UniformsLib.mergeUniforms( parentUniforms, {
 		} );
@@ -139,7 +142,10 @@ export class Logo {
 
 			window.subtitles.show( '私たちは想像します。', 0.8 );
 
+			this.emitEvent( 'showImaging' );
+
 		}, 500 );
+
 
 		await this.animator.animate( 'introLogoImaging', 1, 1.5 );
 

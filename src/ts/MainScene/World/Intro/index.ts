@@ -77,7 +77,11 @@ export class Intro extends EventEmitter {
 		-------------------------------*/
 
 		this.logo = new Logo( this.scene.getObjectByName( 'Logo' ) as THREE.Mesh, this.commonUniforms );
-		// this.scene.add( this.logo );
+		this.logo.addListener( 'showImaging', () => {
+
+			this.animator.animate( 'introLightIntensity', 1, 10 );
+
+		} );
 
 		/*-------------------------------
 			Text1
@@ -151,9 +155,6 @@ export class Intro extends EventEmitter {
 				if ( this.paused ) return;
 
 				await this.logo.start();
-
-				this.animator.animate( 'introLightIntensity', 1, 10 );
-
 				await this.text1.start();
 				await this.text2.start();
 				await this.text3.start();
