@@ -72,6 +72,12 @@ export class Baku extends THREE.Object3D {
 			}
 		} );
 
+		this.animator.add( {
+			name: 'bakuRotate',
+			initValue: 1,
+			easing: ORE.Easings.easeOutCubic
+		} );
+
 		/*-------------------------------
 			RenderTarget
 		-------------------------------*/
@@ -239,6 +245,18 @@ export class Baku extends THREE.Object3D {
 			}
 
 		}
+
+		if ( this.mesh ) {
+
+			this.rotation.z -= ( this.animator.get<number>( 'bakuRotate' ) || 0 ) * 6.0;
+
+		}
+
+	}
+
+	public show( duration: number = 1.0 ) {
+
+		this.animator.animate( 'bakuRotate', 0, duration );
 
 	}
 

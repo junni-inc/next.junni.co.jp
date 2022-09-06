@@ -154,6 +154,13 @@ export class MainScene extends ORE.BaseLayer {
 
 			this.scroller.changeSectionNum( this.world.sections.length );
 
+
+			this.world.intro.addListener( 'finishIntro', () => {
+
+				this.splash();
+
+			} );
+
 		}
 
 		/*-------------------------------
@@ -242,9 +249,9 @@ export class MainScene extends ORE.BaseLayer {
 
 		if ( this.world ) {
 
-			this.world.update( deltaTime );
-
 			let transform = this.world.updateTransform( this.scroller.value );
+
+			this.world.update( deltaTime );
 
 			if ( this.cameraController ) {
 
@@ -331,13 +338,7 @@ export class MainScene extends ORE.BaseLayer {
 
 			} else {
 
-				this.world.splash( this.camera );
-
-				setTimeout( () => {
-
-					this.canScroll = true;
-
-				}, 1000 );
+				this.splash();
 
 			}
 
@@ -359,20 +360,26 @@ export class MainScene extends ORE.BaseLayer {
 
 		} else {
 
-			if ( this.world ) {
-
-				this.world.splash( this.camera );
-
-				setTimeout( () => {
-
-					this.canScroll = true;
-
-				}, 1000 );
-
-			}
+			this.splash();
 
 		}
 
+
+	}
+
+	private splash() {
+
+		if ( this.world ) {
+
+			this.world.splash( this.camera );
+
+			setTimeout( () => {
+
+				this.canScroll = true;
+
+			}, 1000 );
+
+		}
 
 	}
 

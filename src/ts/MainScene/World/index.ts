@@ -303,6 +303,8 @@ export class World extends THREE.Object3D {
 		this.section1.wall.init( camera );
 		this.section1.splash();
 
+		this.baku.show();
+
 		setTimeout( () => {
 
 			this.section1.switchViewingState( "viewing" );
@@ -320,6 +322,7 @@ export class World extends THREE.Object3D {
 		this.intro.paused = true;
 		this.section1.wall.dispose();
 		this.section1.splash();
+		this.baku.show( 0 );
 
 	}
 

@@ -9,10 +9,12 @@ export class IntroText {
 	private animator: ORE.Animator;
 	private commonUniforms: ORE.Uniforms;
 	private root: THREE.Object3D;
+	private text: string;
 
-	constructor( root: THREE.Object3D, parentUniforms: ORE.Uniforms ) {
+	constructor( root: THREE.Object3D, parentUniforms: ORE.Uniforms, text: string ) {
 
 		this.root = root;
+		this.text = text;
 
 		this.commonUniforms = ORE.UniformsLib.mergeUniforms( parentUniforms, {
 		} );
@@ -24,7 +26,7 @@ export class IntroText {
 		this.animator = window.gManager.animator;
 
 		this.commonUniforms.uVisibility = this.animator.add( {
-			name: 'introTextVisibility',
+			name: 'introTextVisibility' + this.root.uuid,
 			initValue: 0,
 		} );
 
@@ -68,11 +70,35 @@ export class IntroText {
 
 	}
 
-	public switchVisibility( visible: boolean ) {
+	public async start() {
+
+		setTimeout( () => {
+
+			window.subtitles.show( this.text );
+
+		}, 500 );
+
+		await this.swithVisibility( true );
+
+		await new Promise( ( r ) => {
+
+			setTimeout( () => {
+
+				r( null );
+
+			}, 2000 );
+
+		} );
+
+		await this.swithVisibility( false );
+
+	}
+
+	public async swithVisibility( visible: boolean ) {
 
 		if ( visible ) this.root.visible = true;
 
-		this.animator.animate( 'introTextVisibility', 1, 1, () => {
+		return this.animator.animate( 'introTextVisibility' + this.root.uuid, visible ? 1 : 0, 1, () => {
 
 			if ( ! visible ) this.root.visible = false;
 

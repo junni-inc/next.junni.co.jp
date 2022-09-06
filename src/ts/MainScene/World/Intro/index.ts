@@ -4,8 +4,9 @@ import { Logo } from './Logo';
 import { CameraController } from './CameraController';
 import { IntroGrid } from './IntroGrid';
 import { IntroText } from './IntroText';
+import EventEmitter from 'wolfy87-eventemitter';
 
-export class Intro {
+export class Intro extends EventEmitter {
 
 	private commonUniforms: ORE.Uniforms;
 
@@ -19,11 +20,15 @@ export class Intro {
 	public renderTarget: THREE.WebGLRenderTarget;
 
 	private logo: Logo;
-	private introText: IntroText;
+	private text1: IntroText;
+	private text2: IntroText;
+	private text3: IntroText;
 
 	public paused: boolean = false;
 
 	constructor( renderer: THREE.WebGLRenderer, introObj: THREE.Object3D, parentUniforms: ORE.Uniforms ) {
+
+		super();
 
 		this.renderer = renderer;
 
@@ -65,7 +70,9 @@ export class Intro {
 			Text1
 		-------------------------------*/
 
-		this.introText = new IntroText( this.scene.getObjectByName( 'Text' ) as THREE.Object3D, this.commonUniforms );
+		this.text1 = new IntroText( this.scene.getObjectByName( 'Text1' ) as THREE.Object3D, this.commonUniforms, 'アイデアとテクノロジーで、世界をもっとワクワクさせ、ハッピーにしたい。' );
+		this.text2 = new IntroText( this.scene.getObjectByName( 'Text2' ) as THREE.Object3D, this.commonUniforms, 'そして、理想を現実に。そんな想いを込めて、みんなで力を合わせています。' );
+		this.text3 = new IntroText( this.scene.getObjectByName( 'Text3' ) as THREE.Object3D, this.commonUniforms, 'Junniの哲学を見てみませんか？' );
 
 		/*-------------------------------
 			Scene
@@ -120,8 +127,11 @@ export class Intro {
 			if ( percentage == 1.0 ) {
 
 				await this.logo.start();
+				await this.text1.start();
+				await this.text2.start();
+				await this.text3.start();
 
-				await this.introText.switchVisibility( true );
+				this.emitEvent( 'finishIntro' );
 
 			}
 
