@@ -100,7 +100,11 @@ export class MainScene extends ORE.BaseLayer {
 				tex.wrapS = THREE.RepeatWrapping;
 
 			} },
+			{ name: 'lensDirt', path: './assets/textures/lens-dirt.png', type: 'tex', timing: 'sub', onLoad: ( tex: THREE.Texture ) => {
 
+				tex.wrapS = THREE.RepeatWrapping;
+
+			} },
 		] } );
 
 		this.gManager.assetManager.addEventListener( 'loadMustAssets', ( e ) => {

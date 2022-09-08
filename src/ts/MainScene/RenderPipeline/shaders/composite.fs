@@ -13,6 +13,7 @@ uniform float uVignet;
 uniform float uBrightness;
 uniform float uGlitch;
 uniform sampler2D uNoiseTex;
+uniform sampler2D uLensDirt;
 
 #pragma glslify: random = require( './random.glsl' );
 
@@ -94,14 +95,21 @@ void main(){
 
 	}
 
+	vec4 lensDirt = texture2D( uLensDirt, vUv );
 
 	vec2 mipUV;
-
+	vec3 bloom;
+	float bloomWeight;
+	
 	#pragma unroll_loop_start
 	for ( int i = 0; i < RENDER_COUNT; i ++ ) {
 
 		mipUV = getMipmapUV( uv, float( UNROLLED_LOOP_INDEX ) );
-		color += textureBicubic( uBloomTex, mipUV, uBloomMipmapResolution ).xyz * uBrightness * float( UNROLLED_LOOP_INDEX ) / float( RENDER_COUNT );
+		bloomWeight = float( UNROLLED_LOOP_INDEX ) / float( RENDER_COUNT );
+		
+		bloom = textureBicubic( uBloomTex, mipUV, uBloomMipmapResolution ).xyz * uBrightness * bloomWeight;
+		color += bloom;
+		color += bloom * lensDirt.xyz * bloomWeight;
 		
 	}
 	#pragma unroll_loop_end

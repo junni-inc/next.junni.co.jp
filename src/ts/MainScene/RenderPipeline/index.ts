@@ -172,6 +172,8 @@ export class RenderPipeline {
 			} ),
 		}, new MipmapGeometry( this.bloomRenderCount ) );
 
+		let gaussWeightNum = 5;
+
 		this.bloomBlurPP = new ORE.PostProcessing( this.renderer, {
 			fragmentShader: bloomBlurFrag,
 			uniforms: ORE.UniformsLib.mergeUniforms( this.commonUniforms, {
@@ -180,7 +182,7 @@ export class RenderPipeline {
 				},
 				blurRange: window.gManager.animator.add( {
 					name: 'blurRange',
-					initValue: 1,
+					initValue: 2.28,
 					easing: ORE.Easings.easeOutCubic,
 					userData: {
 						pane: {
@@ -189,8 +191,47 @@ export class RenderPipeline {
 						}
 					}
 				} ),
+				uWeights: {
+					value: ( ()=>{
+
+						let weight = new Array( gaussWeightNum );
+
+						// https://wgld.org/d/webgl/w057.html
+						let t = 0.0;
+						let d = 100;
+						for ( let i = 0; i < weight.length; i ++ ) {
+
+							let r = 1.0 + 2.0 * i;
+							let w = Math.exp( - 0.5 * ( r * r ) / d );
+							weight[ i ] = w;
+
+							if ( i > 0 ) {
+
+								w *= 2.0;
+
+							}
+
+							t += w;
+
+						}
+
+						for ( let i = 0; i < weight.length; i ++ ) {
+
+							weight[ i ] /= t;
+
+						}
+
+						console.log( weight );
+
+						return weight;
+
+					} )()
+				},
 				direction: { value: false },
 			} ),
+			defines: {
+				GAUSS_WEIGHTS: gaussWeightNum
+			}
 		} );
 
 		/*------------------------
@@ -266,7 +307,8 @@ export class RenderPipeline {
 							max: 1
 						}
 					}
-				} )
+				} ),
+				uLensDirt: window.gManager.assetManager.getTex( 'lensDirt' )
 			}, this.commonUniforms ),
 			defines: {
 				RENDER_COUNT: this.bloomRenderCount.toString()
@@ -321,6 +363,14 @@ export class RenderPipeline {
 		}, this.renderTargets.bloomRT1 );
 
 		let uni = this.bloomBlurPP.effect.material.uniforms;
+
+		uni.direction.value = false;
+		uni.backbuffer.value = this.renderTargets.bloomRT1.texture;
+		this.bloomBlurPP.render( null, this.renderTargets.bloomRT2 );
+
+		uni.direction.value = true;
+		uni.backbuffer.value = this.renderTargets.bloomRT2.texture;
+		this.bloomBlurPP.render( null, this.renderTargets.bloomRT1 );
 
 		uni.direction.value = false;
 		uni.backbuffer.value = this.renderTargets.bloomRT1.texture;

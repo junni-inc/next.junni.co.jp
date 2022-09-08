@@ -44,6 +44,10 @@ void main( void ) {
 	-------------------------------*/
 
 	vec3 objectNormal = vec3( normal );
+	
+	#include <skinbase_vertex>
+	#include <skinnormal_vertex>
+	
 	vec3 transformedNormal = normalMatrix * objectNormal;
 	vec4 flipedTangent = tangent;
 	flipedTangent.w *= -1.0;
@@ -53,8 +57,6 @@ void main( void ) {
 	// 	flipedTangent *= -1.0;
 	// #endif
 
-	#include <skinbase_vertex>
-	#include <skinnormal_vertex>
 	
 	vec3 normal = normalize( transformedNormal );
 	vec3 tangent = normalize( ( modelViewMatrix * vec4( flipedTangent.xyz, 0.0 ) ).xyz );
