@@ -291,27 +291,4 @@ export class Section4 extends Section {
 
 	}
 
-	// public createInterval() {
-
-	// this.clearInterval();
-
-	// this.intervalTimer = window.setInterval( () => {
-
-	// 	this.switchText();
-
-	// }, 5000 );
-
-	// }
-
-	// public clearInterval() {
-
-	// 	if ( this.intervalTimer ) {
-
-	// 		window.clearInterval( this.intervalTimer );
-	// 		this.intervalTimer = null;
-
-	// 	}
-
-	// }
-
 }

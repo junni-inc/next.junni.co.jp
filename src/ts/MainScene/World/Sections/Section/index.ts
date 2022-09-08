@@ -61,7 +61,7 @@ export class Section extends THREE.Object3D {
 
 	// state
 
-	protected sectionVisibility: boolean = false;
+	public sectionVisibility: boolean = false;
 	protected viewing: ViewingState = 'ready';
 
 	// pp param

@@ -144,7 +144,11 @@ export class World extends THREE.Object3D {
 
 		window.setInterval( () => {
 
-			this.baku.jump();
+			if ( this.section4.sectionVisibility ) {
+
+				this.baku.jump();
+
+			}
 
 		}, 3000 );
 
