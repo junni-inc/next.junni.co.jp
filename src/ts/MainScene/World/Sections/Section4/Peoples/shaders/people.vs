@@ -88,8 +88,8 @@ void main( void ) {
 	p *= (vAlpha);
 
     vec3 pos = vec3( 0.0 );
-	pos.xz = texture2D( dataPos, computeUV).xz;
-	pos.y += sin( linearstep( 0.0, 1.0, -length( pos.xz ) * 0.1 + uTextSwitch * 3.0 + computeUV.x * 0.2 ) * PI ) * 0.5;
+	pos.xyz = texture2D( dataPos, computeUV).xyz;
+	// pos.y += sin( linearstep( 0.0, 1.0, -length( pos.xz ) * 0.1 + uTextSwitch * 3.0 + computeUV.x * 0.2 ) * PI ) * 0.5;
 	pos.y += (posYOffset) * 12.0;
 	pos.xz *= rotate( sin(computeUV.y * 20.0 + time * 0.6 + posYOffset ) * posYOffset * 0.2 );
 

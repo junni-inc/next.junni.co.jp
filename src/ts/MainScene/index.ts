@@ -118,6 +118,13 @@ export class MainScene extends ORE.BaseLayer {
 
 		} );
 
+		/*-------------------------------
+			CameraController
+		-------------------------------*/
+
+		this.cameraController = new CameraController( this.camera );
+		window.cameraController = this.cameraController;
+
 	}
 
 	private initScene() {
@@ -133,14 +140,6 @@ export class MainScene extends ORE.BaseLayer {
 			this.renderPipeline = new RenderPipeline( this.renderer, this.commonUniforms );
 
 		}
-
-		/*-------------------------------
-			CameraController
-		-------------------------------*/
-
-		this.scene.add( this.camera );
-
-		this.cameraController = new CameraController( this.camera );
 
 		/*-------------------------------
 			World

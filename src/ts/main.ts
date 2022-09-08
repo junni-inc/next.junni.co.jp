@@ -4,12 +4,14 @@ import { MainScene } from './MainScene';
 import { GlobalManager } from './MainScene/GlobalManager';
 import { AssetManager } from './MainScene/GlobalManager/AssetManager';
 import { Subtitles } from './MainScene/Subtitle';
+import { CameraController } from './MainScene/CameraController';
 
 declare global {
 	interface Window {
 		gManager: GlobalManager;
 		assetManager: AssetManager;
 		subtitles: Subtitles;
+		cameraController: CameraController;
 		isIE: boolean;
 		isSP: boolean;
 		mainScene: MainScene;

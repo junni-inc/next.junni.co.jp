@@ -9,6 +9,8 @@ varying vec3 vViewPos;
 varying vec3 vWorldPos;
 varying vec2 vHighPrecisionZW;
 
+uniform float time;
+
 #ifdef IS_LINE
 
 	uniform float uLine;
@@ -58,7 +60,7 @@ void main( void ) {
 	
 	#include <skinning_vertex>
 
-	vec3 pos = transformed;
+	vec3 pos = transformed;	
 	vec4 worldPos = modelMatrix * vec4( pos, 1.0 );
 	vec4 mvPosition = viewMatrix * worldPos;
 	

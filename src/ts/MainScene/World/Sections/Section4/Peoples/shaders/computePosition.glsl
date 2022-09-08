@@ -8,5 +8,7 @@ void main() {
 	vec3 vel = texture2D( dataVel, uv ).xyz;
 
 	pos += vel;
+	pos.y = max( 0.0, pos.y );
+	
 	gl_FragColor = vec4(pos,1.0);
 }

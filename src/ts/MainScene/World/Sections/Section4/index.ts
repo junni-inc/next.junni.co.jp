@@ -250,22 +250,22 @@ export class Section4 extends Section {
 
 		} );
 
-		if ( this.sectionVisibility ) {
+		// if ( this.sectionVisibility ) {
 
-			this.createInterval();
+		// 	this.createInterval();
 
-		} else {
+		// } else {
 
-			this.clearInterval();
+		// 	this.clearInterval();
 
-		}
+		// }
 
 	}
 
 	private intervalTimer: number | null = null;
 	private currentTextIndex: number = 0;
 
-	private switchText() {
+	public switchText() {
 
 		this.animator.setValue( 'sec4TextSwtich', 0 );
 		this.animator.animate( 'sec4TextSwtich', 1, 1 );
@@ -283,7 +283,7 @@ export class Section4 extends Section {
 
 				item.switchText( this.currentTextIndex );
 
-			}, 50 * index );
+			}, 50 * index + 100.0 );
 
 		} );
 
@@ -291,27 +291,27 @@ export class Section4 extends Section {
 
 	}
 
-	public createInterval() {
+	// public createInterval() {
 
-		this.clearInterval();
+	// this.clearInterval();
 
-		this.intervalTimer = window.setInterval( () => {
+	// this.intervalTimer = window.setInterval( () => {
 
-			this.switchText();
+	// 	this.switchText();
 
-		}, 5000 );
+	// }, 5000 );
 
-	}
+	// }
 
-	public clearInterval() {
+	// public clearInterval() {
 
-		if ( this.intervalTimer ) {
+	// 	if ( this.intervalTimer ) {
 
-			window.clearInterval( this.intervalTimer );
-			this.intervalTimer = null;
+	// 		window.clearInterval( this.intervalTimer );
+	// 		this.intervalTimer = null;
 
-		}
+	// 	}
 
-	}
+	// }
 
 }

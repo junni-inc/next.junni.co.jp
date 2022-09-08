@@ -19,6 +19,10 @@ export class Baku extends THREE.Object3D {
 	private animationClipNameList: string[] = [];
 	private animationActions: { [name:string]: THREE.AnimationAction} = {};
 
+	// state
+
+	private jumping: boolean = false;
+
 	private manager: THREE.LoadingManager;
 	private commonUniforms: ORE.Uniforms;
 
@@ -39,6 +43,7 @@ export class Baku extends THREE.Object3D {
 			uSceneTex: {
 				value: null
 			},
+			uNoiseTex: window.gManager.assetManager.getTex( 'noise' ),
 			winResolution: {
 				value: new THREE.Vector2()
 			},
@@ -180,17 +185,11 @@ export class Baku extends THREE.Object3D {
 				let action = this.animationMixer.clipAction( this.animations[ i ] );
 				this.animationActions[ clip.name ] = action;
 
-				if ( action ) {
-
-					action.play();
-
-				}
-
 			}
 
 			if ( this.currentAnimationSection ) {
 
-				this.changeAction( this.currentAnimationSection );
+				this.changeSectionAction( this.currentAnimationSection );
 
 			}
 
@@ -211,16 +210,36 @@ export class Baku extends THREE.Object3D {
 
 	}
 
-	public changeAction( actionName: string ) {
+	private playingSectionAction: THREE.AnimationAction | null = null;
+
+	public changeSectionAction( sectionName: string ) {
+
+		let action = this.animationActions[ sectionName ];
+		let lastSectionAction = this.playingSectionAction;
+		this.playingSectionAction = action;
+
+		if ( action ) {
+
+			action.play();
+
+		}
 
 		for ( let i = 0; i < this.animationClipNameList.length; i ++ ) {
 
 			let name = this.animationClipNameList[ i ];
-			this.animator.animate( 'BakuWeight/' + name, name == actionName ? 1 : 0 );
+			this.animator.animate( 'BakuWeight/' + name, name == sectionName ? 1 : 0, 1.0, () =>{
+
+				if ( lastSectionAction && lastSectionAction.getClip().name == name ) {
+
+					lastSectionAction.stop();
+
+				}
+
+			} );
 
 		}
 
-		this.currentAnimationSection = actionName;
+		this.currentAnimationSection = sectionName;
 
 	}
 
@@ -262,6 +281,52 @@ export class Baku extends THREE.Object3D {
 			this.rotation.z -= ( this.animator.get<number>( 'bakuRotate' ) || 0 ) * 6.0;
 
 		}
+
+	}
+
+	public jump() {
+
+		if ( this.jumping ) return;
+
+		this.jumping = true;
+
+		let action = this.animationActions[ "section_4_jump" ];
+		action.reset();
+		action.loop = THREE.LoopOnce;
+		action.play();
+
+		this.animator.setValue( 'BakuWeight/section_4_jump', 1 );
+
+		if ( this.animationMixer ) {
+
+			let onFinished = ( e: any ) => {
+
+				let action = e.action as THREE.AnimationAction;
+				let clip = action.getClip();
+
+				if ( clip.name == 'section_4_jump' ) {
+
+					this.animator.animate( 'BakuWeight/section_4_jump', 0, 0.5 );
+
+					this.jumping = false;
+
+					if ( this.animationMixer ) {
+
+						this.animationMixer.addEventListener( 'finished', onFinished );
+
+					}
+
+				}
+
+			};
+
+			this.animationMixer.addEventListener( 'finished', onFinished );
+
+		}
+
+		this.dispatchEvent( {
+			type: 'jump'
+		} );
 
 	}
 
