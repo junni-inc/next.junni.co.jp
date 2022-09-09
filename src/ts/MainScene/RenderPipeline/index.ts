@@ -221,8 +221,6 @@ export class RenderPipeline {
 
 						}
 
-						console.log( weight );
-
 						return weight;
 
 					} )()

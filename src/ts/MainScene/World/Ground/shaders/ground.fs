@@ -36,6 +36,15 @@ uniform vec3 uColor;
 uniform float uReflection;
 uniform float uVisibility;
 
+uniform float uVisibleIllust;
+uniform float uVisibleGrid;
+
+uniform sampler2D uIllustTex;
+uniform sampler2D uGridTex;
+
+uniform sampler2D uRandomTex;
+uniform sampler2D uNoiseTex;
+
 /*-------------------------------
 	Textures
 -------------------------------*/
@@ -85,23 +94,10 @@ uniform float uVisibility;
 	uniform float metalness;
 
 #endif
-#ifdef USE_EMISSION_MAP
 
-	uniform sampler2D emissionMap;
-
-#else
-
-	uniform vec3 emission;
-
-#endif
-
-#ifdef IS_REFLECTIONPLANE
-
-	uniform sampler2D reflectionTex;
-	uniform vec2 renderResolution;
-	uniform vec2 mipMapResolution;
-	
-#endif
+uniform sampler2D reflectionTex;
+uniform vec2 renderResolution;
+uniform vec2 mipMapResolution;
 
 /*-------------------------------
 	Types
@@ -265,7 +261,7 @@ struct Material {
 
 	#endif
 
-	#define SHADOW_SAMPLE_COUNT 8
+	#define SHADOW_SAMPLE_COUNT 4
 
 	vec2 poissonDisk[ SHADOW_SAMPLE_COUNT ];
 
@@ -354,65 +350,11 @@ varying vec3 vViewNormal;
 varying vec3 vViewPos;
 varying vec3 vWorldPos;
 
-float ggx( float dNH, float roughness ) {
-	
-	float a2 = roughness * roughness;
-	a2 = a2 * a2;
-	float dNH2 = dNH * dNH;
-
-	if( dNH2 <= 0.0 ) return 0.0;
-
-	return a2 / ( PI * pow( dNH2 * ( a2 - 1.0 ) + 1.0, 2.0) );
-
-}
-
-vec3 lambert( vec3 diffuseColor ) {
-
-	return diffuseColor / PI;
-
-}
-
-float gSchlick( float d, float k ) {
-
-	if( d == 0.0 ) return 0.0;
-
-	return d / ( d * ( 1.0 - k ) + k );
-	
-}
-
-float gSmith( float dNV, float dNL, float roughness ) {
-
-	float k = clamp( roughness * sqrt( 2.0 / PI ), 0.0, 1.0 );
-
-	return gSchlick( dNV, k ) * gSchlick( dNL, k );
-	
-}
-
 float fresnel( float d ) {
 	
 	float f0 = 0.04;
 
 	return f0 + ( 1.0 - f0 ) * pow( 1.0 - d, 5.0 );
-
-}
-
-vec3 RE( Geometry geo, Material mat, Light light) {
-
-
-	vec3 lightDir = normalize( light.direction );
-	vec3 halfVec = normalize( geo.viewDir + lightDir );
-
-	float dLH = clamp( dot( lightDir, halfVec ), 0.0, 1.0 );
-	float dNH = clamp( dot( geo.normal, halfVec ), 0.0, 1.0 );
-	float dNV = clamp( dot( geo.normal, geo.viewDir ), 0.0, 1.0 );
-	float dNL = clamp( dot( geo.normal, lightDir), 0.0, 1.0 );
-
-	vec3 irradiance = light.color * dNL;
-
-	vec3 color = mix( #000, vec3( 0.2 ), dNL - random(gl_FragCoord.xy * 0.001) * 0.15 );
-
-
-	return color;
 
 }
 
@@ -428,60 +370,22 @@ void main( void ) {
 
 	Material mat;
 
-	#ifdef USE_MAP
-
-		vec4 color = LinearTosRGB( texture2D( map, vUv ) );
-		mat.albedo = color.xyz;
-		mat.opacity = color.w;
-
-	#else
-
-		mat.albedo = vec3( 1.0, 1.0, 1.0 );
-		mat.opacity = 1.0;
-	
-	#endif
-
 	mat.albedo = uColor;
+	mat.albedo *= 
+		mix( vec3( 1.0 ), texture2D( uGridTex, vUv * 4.0 * vec2( uVisibleGrid * 0.5 + 0.5, 1.0 ) ).xyz, uVisibleGrid ) *
+		mix( vec3( 1.0 ), texture2D( uIllustTex, vUv ).xyz, step( 0.0, - texture2D( uNoiseTex, vUv * 2.0 ).x + uVisibleIllust * 1.0 ) );
+		
+	mat.albedo *= 0.95 + 0.05 * texture2D( uRandomTex, vUv * 3.0 ).x;
 
-	#ifdef USE_ROUGHNESS_MAP
-
-		mat.roughness = texture2D( roughnessMap, vUv ).y;
-
-	#else
-
-		mat.roughness = roughness;
-	
-	#endif
-
-	#ifdef USE_METALNESS_MAP
-
-		mat.metalness = texture2D( metalnessMap, vUv ).z;
-
-	#else
-
-		mat.metalness = metalness;
-	
-	#endif
-
+	mat.opacity = uVisibility;
+	mat.roughness = texture2D( roughnessMap, vUv ).y;
 	mat.metalness = 0.0;
-
-	#ifdef USE_ALPHA_MAP
-
-		mat.opacity = texture2D( alphaMap, vUv ).x;
-
-	#else
-
-		mat.opacity *= opacity;
-
-	#endif
-	
-	mat.opacity *= uVisibility;
 
 	mat.diffuseColor = mix( mat.albedo, vec3( 0.0, 0.0, 0.0 ), mat.metalness );
 	mat.specularColor = mix( vec3( 1.0, 1.0, 1.0 ), mat.albedo, mat.metalness );
 
 	// output
-	vec3 outColor = vec3( 0.0 );
+	vec3 outColor = vec3( mat.albedo );
 	float outOpacity = mat.opacity;
 	
 	/*-------------------------------
@@ -532,7 +436,7 @@ void main( void ) {
 	geo.normalWorld = normalize( ( vec4( geo.normal, 0.0 ) * viewMatrix ).xyz );
 
 	/*-------------------------------
-		Lighting
+		Shadow
 	-------------------------------*/
 
 	Light light;
@@ -544,41 +448,14 @@ void main( void ) {
 		#pragma unroll_loop_start
 			for ( int i = 0; i < NUM_DIR_LIGHTS; i ++ ) {
 
-				light.direction = directionalLights[ i ].direction;
-				light.color = directionalLights[ i ].color;
-				shadow = 1.0;
-
 				#if defined( USE_SHADOWMAP ) && UNROLLED_LOOP_INDEX < NUM_DIR_LIGHT_SHADOWS
 
-					shadow = getShadow( directionalShadowMap[ i ], directionalLightShadows[ i ].shadowMapSize, directionalLightShadows[ i ].shadowBias, vDirectionalShadowCoord[ i ] );
+					outColor *= 0.3 + 0.6 * getShadow( directionalShadowMap[ i ], directionalLightShadows[ i ].shadowMapSize, directionalLightShadows[ i ].shadowBias, vDirectionalShadowCoord[ i ] );
 
 				#endif
-
-				outColor += RE( geo, mat, light ) * (shadow * 1.0 + 0.0);
 				
 			}
 		#pragma unroll_loop_end
-
-	#endif
-
-	#if defined( USE_ENV_MAP ) || defined( IS_REFLECTIONPLANE )
-
-		float dNV = clamp( dot( geo.normal, geo.viewDir ), 0.0, 1.0 );
-		float EF = fresnel( dNV );
-
-	#endif
-
-	/*-------------------------------
-		Environment Lighting
-	-------------------------------*/
-
-	#ifdef USE_ENV_MAP
-
-		vec3 refDir = reflect( geo.viewDirWorld, geo.normalWorld );
-		refDir.x *= -1.0;
-	
-		vec4 envMapColor = textureCubeUV( envMap, geo.normalWorld, 1.0 ) * iblIntensity * envMapIntensity;
-		outColor += mat.diffuseColor * envMapColor.xyz * ( 1.0 - mat.metalness );
 
 	#endif
 
@@ -586,57 +463,32 @@ void main( void ) {
 		Reflection
 	-------------------------------*/
 	
-	#ifdef IS_REFLECTIONPLANE
+	float dNV = clamp( dot( geo.normal, geo.viewDir ), 0.0, 1.0 );
+	float EF = fresnel( dNV );
+
+	vec2 refUV = gl_FragCoord.xy / renderResolution;
+
+	refUV.x += geo.normal.x * 0.5;
+
+	float l = (mat.roughness ) * REF_MIPMAP_LEVEL;
+
+	float offset1 = floor( l );
+	float offset2 = offset1 + 1.0;
+	float blend = fract( l );
 	
-		vec2 refUV = gl_FragCoord.xy / renderResolution;
+	vec2 ruv1 = getRefMipmapUV( refUV, offset1 );
+	vec2 ruv2 = getRefMipmapUV( refUV, offset2 );
 
-		refUV.x += geo.normal.x * 0.5;
+	vec3 ref1 = textureBicubic( reflectionTex, ruv1, mipMapResolution ).xyz;
+	vec3 ref2 = textureBicubic( reflectionTex, ruv2, mipMapResolution ).xyz;
 
-		float l = (mat.roughness ) * REF_MIPMAP_LEVEL;
+	vec3 ref = mat.specularColor * mix( ref1, ref2, blend );
 
-		float offset1 = floor( l );
-		float offset2 = offset1 + 1.0;
-		float blend = fract( l );
-		
-		vec2 ruv1 = getRefMipmapUV( refUV, offset1 );
-		vec2 ruv2 = getRefMipmapUV( refUV, offset2 );
-
-		vec3 ref1 = textureBicubic( reflectionTex, ruv1, mipMapResolution ).xyz;
-		vec3 ref2 = textureBicubic( reflectionTex, ruv2, mipMapResolution ).xyz;
-
-		vec3 ref = mat.specularColor * mix( ref1, ref2, blend );
-
-		outColor = mix(
-			outColor,
-			ref,
-			EF * uReflection
-		);
-
-	#elif defined( USE_ENV_MAP )
-	
-		vec3 env = mat.specularColor * textureCubeUV( envMap, refDir, mat.roughness ).xyz * envMapIntensity;
-	
-		outColor = mix(
-			outColor + env * mat.metalness,
-			env,
-			EF
-		);
-	
-	#endif
-
-	/*-------------------------------
-		Emission
-	-------------------------------*/
-
-	#ifdef USE_EMISSION_MAP
-
-		outColor += LinearTosRGB( texture2D( emissionMap, vUv ) ).xyz;
-	
-	#else
-
-		outColor += emission;
-
-	#endif
+	outColor = mix(
+		outColor,
+		ref,
+		EF * uReflection
+	);
 
 	gl_FragColor = vec4( outColor, outOpacity );
 

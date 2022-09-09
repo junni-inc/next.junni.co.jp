@@ -15,6 +15,7 @@ type PhysicsObj = {
 
 import textVert from './shaders/text.vs';
 import textFrag from './shaders/text.fs';
+import { TileText } from './TileText';
 
 export class Section4 extends Section {
 
@@ -24,10 +25,18 @@ export class Section4 extends Section {
 	private cannonWorld: CANNON.World;
 	private groundBody?: CANNON.Body;
 
-	private textList: FallText[] = [];
+	private titleText?: TileText;
+	private tileText?: TileText;
 
 	private light?: THREE.DirectionalLight;
 
+	private textIndex: number = 0;
+	private textList: string[] = [
+		'surprise',
+		"emotion",
+		"story",
+		"awesome"
+	];
 
 	constructor( manager: THREE.LoadingManager, parentUniforms: ORE.Uniforms, renderer: THREE.WebGLRenderer ) {
 
@@ -81,7 +90,7 @@ export class Section4 extends Section {
 		this.light2Data = {
 			position: new THREE.Vector3( 5.0, 10.7, 20 ),
 			targetPosition: new THREE.Vector3( - 1.7, - 6.7, 12 ),
-			intensity: 0
+			intensity: 0.2
 		};
 
 	}
@@ -180,30 +189,48 @@ export class Section4 extends Section {
 			Text
 		-------------------------------*/
 
-		let textRoot = scene.getObjectByName( 'FallTexts' );
-		let textAssets = scene.getObjectByName( 'TextAssets' ) as THREE.Object3D;
+		// let textRoot = scene.getObjectByName( 'FallTexts' );
+		// let textAssets = scene.getObjectByName( 'TextAssets' ) as THREE.Object3D;
 
-		if ( textRoot && textAssets ) {
+		// if ( textRoot && textAssets ) {
 
-			textRoot.children.concat().forEach( ( item, index ) => {
+		// 	textRoot.children.concat().forEach( ( item, index ) => {
 
-				let text = new FallText( item as THREE.Mesh, textAssets.getObjectByName( 'Text' + ( index + 1 ) ) as THREE.Object3D, this.commonUniforms, ground );
-				// ground.add( text.root );
-				this.cannonWorld.addBody( text.body );
-				this.textList.push( text );
+		// 		let text = new FallText( item as THREE.Mesh, textAssets.getObjectByName( 'Text' + ( index + 1 ) ) as THREE.Object3D, this.commonUniforms, ground );
+		// 		// ground.add( text.root );
+		// 		this.cannonWorld.addBody( text.body );
+		// 		this.textList.push( text );
 
-			} );
+		// 	} );
 
-		}
+		// }
 
 		/*-------------------------------
 			Peoples
 		-------------------------------*/
 
-		this.peoples = new Peoples( this.renderer, 26, this.commonUniforms, ground.getObjectByName( 'Avoids' ) as THREE.Object3D, this.textList );
+		this.peoples = new Peoples( this.renderer, 26, this.commonUniforms, ground.getObjectByName( 'Avoids' ) as THREE.Object3D, [] );
 		this.peoples.switchVisibility( this.sectionVisibility, 2 );
 		this.peoples.position.y += 0.5;
 		ground.add( this.peoples );
+
+		/*-------------------------------
+			Text
+		-------------------------------*/
+
+		// title
+
+		this.titleText = new TileText( this.commonUniforms );
+		this.titleText.position.set( - 4.2, 4.0, - 1.0 );
+		this.titleText.scale.setScalar( 1.0 );
+		this.titleText.setText( 'making' );
+		ground.add( this.titleText );
+
+
+		this.tileText = new TileText( this.commonUniforms );
+		this.tileText.position.set( 0.0, 5.0, 3.3 );
+		this.tileText.scale.setScalar( 1.0 );
+		ground.add( this.tileText );
 
 	}
 
@@ -211,11 +238,11 @@ export class Section4 extends Section {
 
 		// this.cannonWorld.step( deltaTime );
 
-		this.textList.forEach( item => {
+		// this.textList.forEach( item => {
 
-			item.update();
+		// 	item.update();
 
-		} );
+		// } );
 
 		if ( this.peoples ) {
 
@@ -244,26 +271,13 @@ export class Section4 extends Section {
 
 		}
 
-		this.textList.forEach( item => {
+		// this.textList.forEach( item => {
 
-			item.switchVisibility( this.sectionVisibility );
+		// 	item.switchVisibility( this.sectionVisibility );
 
-		} );
-
-		// if ( this.sectionVisibility ) {
-
-		// 	this.createInterval();
-
-		// } else {
-
-		// 	this.clearInterval();
-
-		// }
+		// } );
 
 	}
-
-	private intervalTimer: number | null = null;
-	private currentTextIndex: number = 0;
 
 	public switchText() {
 
@@ -277,17 +291,23 @@ export class Section4 extends Section {
 
 		} );
 
-		this.textList.forEach( ( item, index ) => {
+		// this.textList.forEach( ( item, index ) => {
 
-			setTimeout( () => {
+		// 	setTimeout( () => {
 
-				item.switchText( this.currentTextIndex );
+		// 		item.switchText( this.currentTextIndex );
 
-			}, 50 * index + 100.0 );
+		// 	}, 50 * index + 100.0 );
 
-		} );
+		// } );
 
-		this.currentTextIndex = ( this.currentTextIndex + 1 ) % 3;
+		if ( this.tileText ) {
+
+			this.tileText.setText( this.textList[ this.textIndex ] );
+
+		}
+
+		this.textIndex = ( this.textIndex + 1 ) % this.textList.length;
 
 	}
 

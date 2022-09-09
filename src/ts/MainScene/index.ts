@@ -105,6 +105,26 @@ export class MainScene extends ORE.BaseLayer {
 				tex.wrapS = THREE.RepeatWrapping;
 
 			} },
+			{ name: 'groundIllust', path: './assets/textures/illust.jpg', type: 'tex', timing: 'sub', onLoad: ( tex: THREE.Texture ) => {
+
+				tex.wrapS = THREE.RepeatWrapping;
+				tex.wrapT = THREE.RepeatWrapping;
+
+			} },
+			{ name: 'groundGrid', path: './assets/textures/grid.jpg', type: 'tex', timing: 'sub', onLoad: ( tex: THREE.Texture ) => {
+
+				tex.wrapS = THREE.RepeatWrapping;
+				tex.wrapT = THREE.RepeatWrapping;
+
+			} },
+			{ name: 'random', path: './assets/textures/random.png', type: 'tex', timing: 'sub', onLoad: ( tex: THREE.Texture ) => {
+
+				tex.wrapS = THREE.RepeatWrapping;
+				tex.wrapT = THREE.RepeatWrapping;
+				tex.minFilter = THREE.NearestFilter;
+				tex.magFilter = THREE.NearestFilter;
+
+			} },
 		] } );
 
 		this.gManager.assetManager.addEventListener( 'loadMustAssets', ( e ) => {

@@ -17,12 +17,27 @@ export class Ground extends PowerReflectionMesh {
 		let animator = window.gManager.animator;
 
 		let uni = ORE.UniformsLib.mergeUniforms( parentUniforms, {
+			uIllustTex: window.gManager.assetManager.getTex( 'groundIllust' ),
+			uGridTex: window.gManager.assetManager.getTex( 'groundGrid' ),
+			uRandomTex: window.gManager.assetManager.getTex( 'random' ),
+			uNoiseTex: window.gManager.assetManager.getTex( 'noise' ),
 		} );
 
 		uni.uColor = animator.add( {
 			name: 'groundColor',
 			initValue: new THREE.Vector3( 0.0, 0.0, 0.0 ),
 			easing: ORE.Easings.easeOutCubic
+		} );
+
+		uni.uVisibleIllust = animator.add( {
+			name: 'groundIllustVisibility',
+			initValue: 0,
+			easing: ORE.Easings.linear
+		} );
+
+		uni.uVisibleGrid = animator.add( {
+			name: 'groundGridVisibility',
+			initValue: 0,
 		} );
 
 		uni.uReflection = animator.add( {
@@ -56,11 +71,14 @@ export class Ground extends PowerReflectionMesh {
 
 	}
 
+	private timer: number | null = null;
+
 	public changeSection( sectionIndex: number ) {
 
 		let reflection = 0.0;
 		let color = new THREE.Vector3();
 		let visible = false;
+		let illustVisibility = false;
 
 		if ( sectionIndex == 2.0 ) {
 
@@ -70,7 +88,8 @@ export class Ground extends PowerReflectionMesh {
 
 		if ( sectionIndex == 3.0 ) {
 
-			color.set( 1.0, 1.0, 1.0 );
+			color.setScalar( 0.95 );
+			illustVisibility = true;
 
 		}
 
@@ -82,8 +101,31 @@ export class Ground extends PowerReflectionMesh {
 
 		if ( visible ) this.visible = true;
 
+		// material
+
 		this.animator.animate( 'groundReflection', reflection );
 		this.animator.animate( 'groundColor', color );
+
+		// illust
+
+		this.animator.animate( 'groundGridVisibility', illustVisibility ? 1 : 0, 1.5 );
+
+		if ( this.timer ) {
+
+			window.clearTimeout( this.timer );
+
+		}
+
+		this.timer = window.setTimeout( () => {
+
+			this.animator.animate( 'groundIllustVisibility', illustVisibility ? 1 : 0, illustVisibility ? 2 : 1 );
+
+			this.timer = null;
+
+		}, illustVisibility ? 500 : 0 );
+
+		// visibility
+
 		this.animator.animate( 'groundVisibility', visible ? 1 : 0, 1, () => {
 
 			this.visible = visible;
