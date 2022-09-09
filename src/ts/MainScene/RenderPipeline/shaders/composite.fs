@@ -12,10 +12,29 @@ uniform vec2 uBloomMipmapResolution;
 uniform float uVignet;
 uniform float uBrightness;
 uniform float uGlitch;
+
+uniform float uFilmNoise;
+
 uniform sampler2D uNoiseTex;
-uniform sampler2D uLensDirt;
+uniform sampler2D uLensDirtTex;
+uniform sampler2D uFilmNoiseTex;
 
 #pragma glslify: random = require( './random.glsl' );
+
+vec2 spriteUVSelector( vec2 uv, vec2 tile, float frames, float time ) {
+
+	float t = floor(frames * mod( time, 1.0 ) );
+
+	uv.x += mod(t, tile.x);
+	uv.y -= floor(t / tile.x);
+
+	uv.y -= 1.0;
+	uv /= tile;
+	uv.y += 1.0;
+	
+	return uv;
+	
+}
 
 vec2 getMipmapUV( vec2 uv, float level ) {
 
@@ -80,7 +99,7 @@ void main(){
 
 	if( uGlitch > 0.5 ) {
 
-		vec2 n = vec2( (texture2D( uNoiseTex, vec2( uv.y * .04, time * 3.0 ) ).x - 0.5) * 0.5, 0.0 ) * 0.6;
+		vec2 n = vec2( ( texture2D( uNoiseTex, vec2( uv.y * .04, time * 3.0 ) ).x - 0.5 ) * 0.5, 0.0 ) * 0.6;
 		vec2 texUvR = uv + n;
 		vec2 texUvG = uv + n * 0.9;
 		vec2 texUvB = uv + n * 0.8;
@@ -95,7 +114,7 @@ void main(){
 
 	}
 
-	vec4 lensDirt = texture2D( uLensDirt, vUv );
+	vec4 lensDirt = texture2D( uLensDirtTex, vUv );
 
 	vec2 mipUV;
 	vec3 bloom;
@@ -115,6 +134,8 @@ void main(){
 	#pragma unroll_loop_end
 
 	color *= mix( 1.0, smoothstep( 2.0, 0.8, length( cuv ) ), uVignet );
+
+	color *= mix( 1.0, texture2D( uFilmNoiseTex, spriteUVSelector( vUv, vec2( 2.0, 4.0 ), 8.0, time * 2.0 ) ).x * 0.9, uFilmNoise );
 
 	gl_FragColor = vec4( color, 1.0 );
 

@@ -19,7 +19,8 @@ import { MipmapGeometry } from './MipMapGeometry';
 
 export type PPParam = {
 	bloomBrightness?: number,
-	vignet?: number
+	vignet?: number,
+	filmNoise?: number,
 }
 
 export class RenderPipeline {
@@ -296,6 +297,7 @@ export class RenderPipeline {
 			fragmentShader: compo,
 			uniforms: ORE.UniformsLib.mergeUniforms( {
 				uNoiseTex: window.gManager.assetManager.getTex( 'noise' ),
+				uFilmNoiseTex: window.gManager.assetManager.getTex( 'filmNoise' ),
 				uGlitch: window.gManager.animator.add( {
 					name: 'sceneGlitch',
 					initValue: 0,
@@ -306,7 +308,17 @@ export class RenderPipeline {
 						}
 					}
 				} ),
-				uLensDirt: window.gManager.assetManager.getTex( 'lensDirt' )
+				uFilmNoise: window.gManager.animator.add( {
+					name: 'filmNoise',
+					initValue: 0,
+					userData: {
+						pane: {
+							min: 0,
+							max: 1
+						}
+					}
+				} ),
+				uLensDirtTex: window.gManager.assetManager.getTex( 'lensDirt' ),
 			}, this.commonUniforms ),
 			defines: {
 				RENDER_COUNT: this.bloomRenderCount.toString()
@@ -332,7 +344,7 @@ export class RenderPipeline {
 			userData: {
 				pane: {
 					min: 0,
-					max: 1
+					max: 2
 				}
 			}
 		} );
@@ -439,6 +451,12 @@ export class RenderPipeline {
 		if ( param.vignet !== undefined ) {
 
 			this.animator.animate( 'vignet', param.vignet );
+
+		}
+
+		if ( param.filmNoise !== undefined ) {
+
+			this.animator.animate( 'filmNoise', param.filmNoise );
 
 		}
 

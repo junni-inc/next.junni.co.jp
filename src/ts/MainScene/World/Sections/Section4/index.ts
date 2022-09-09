@@ -15,6 +15,9 @@ type PhysicsObj = {
 
 import textVert from './shaders/text.vs';
 import textFrag from './shaders/text.fs';
+
+import makingVert from './shaders/making.vs';
+
 import { TileText } from './TileText';
 
 export class Section4 extends Section {
@@ -46,6 +49,7 @@ export class Section4 extends Section {
 
 		this.bakuMaterialType = 'line';
 		this.ppParam.vignet = 1.5;
+		this.ppParam.filmNoise = 1.0;
 
 		// params
 
@@ -220,15 +224,18 @@ export class Section4 extends Section {
 
 		// title
 
-		this.titleText = new TileText( this.commonUniforms );
-		this.titleText.position.set( - 4.2, 4.0, - 1.0 );
+		this.titleText = new TileText( this.commonUniforms, {
+			vertexShader: makingVert
+		} );
+
+		this.titleText.position.set( - 4.8, 3.5, - 0.7 );
 		this.titleText.scale.setScalar( 1.0 );
 		this.titleText.setText( 'making' );
 		ground.add( this.titleText );
 
 
 		this.tileText = new TileText( this.commonUniforms );
-		this.tileText.position.set( 0.0, 5.0, 3.3 );
+		this.tileText.position.set( 0.0, 3.0, 3.5 );
 		this.tileText.scale.setScalar( 1.0 );
 		ground.add( this.tileText );
 

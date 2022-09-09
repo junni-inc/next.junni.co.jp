@@ -15,7 +15,7 @@ export class TileTextMesh extends THREE.Mesh<THREE.BufferGeometry, THREE.ShaderM
 	private bgMesh: THREE.Mesh;
 	private animatorId?: string;
 
-	constructor( char: string, info: TileTextInfo, texture: THREE.Texture, height: number = 1, uniforms?: ORE.Uniforms, animatorId?: string ) {
+	constructor( char: string, info: TileTextInfo, texture: THREE.Texture, height: number = 1, uniforms?: ORE.Uniforms, animatorId?: string, materialOption?: THREE.ShaderMaterialParameters ) {
 
 		if ( animatorId === undefined ) {
 
@@ -60,6 +60,7 @@ export class TileTextMesh extends THREE.Mesh<THREE.BufferGeometry, THREE.ShaderM
 			transparent: true,
 			side: THREE.DoubleSide,
 			uniforms: uni,
+			...materialOption,
 		} );
 
 		super( geo, mat );
@@ -99,7 +100,8 @@ export class TileTextMesh extends THREE.Mesh<THREE.BufferGeometry, THREE.ShaderM
 			uniforms: uni,
 			defines: {
 				IS_BG: ''
-			}
+			},
+			...materialOption,
 		} ) );
 
 		this.bgMesh.position.set( 0, 0, - 0.15 );

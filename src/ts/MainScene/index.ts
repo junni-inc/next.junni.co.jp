@@ -125,6 +125,12 @@ export class MainScene extends ORE.BaseLayer {
 				tex.magFilter = THREE.NearestFilter;
 
 			} },
+			{ name: 'filmNoise', path: './assets/textures/film-noise.jpg', type: 'tex', timing: 'sub', onLoad: ( tex: THREE.Texture ) => {
+
+				tex.wrapS = THREE.RepeatWrapping;
+				tex.wrapT = THREE.RepeatWrapping;
+
+			} },
 		] } );
 
 		this.gManager.assetManager.addEventListener( 'loadMustAssets', ( e ) => {

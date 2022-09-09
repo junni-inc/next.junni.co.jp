@@ -69,6 +69,7 @@ export class Section extends THREE.Object3D {
 	public ppParam: PPParam = {
 		bloomBrightness: 0,
 		vignet: 0,
+		filmNoise: 0,
 	};
 
 	// baku material

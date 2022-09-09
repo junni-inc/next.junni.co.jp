@@ -1,6 +1,7 @@
 uniform vec2 uTile;
 uniform float uTextSelector;
 uniform float uVisibility;
+uniform float time;
 
 varying vec2 vUv;
 
@@ -31,9 +32,9 @@ void main( void ) {
 
 	vec3 pos = position;
 	pos.xy *= rotate( -uVisibility * TPI );
+	pos.y += sin( - time + modelViewMatrix[3][0] ) * 0.2;
 
 	pos *= uVisibility;
-
 
 	if( uVisibility > 1.0 ) {
 

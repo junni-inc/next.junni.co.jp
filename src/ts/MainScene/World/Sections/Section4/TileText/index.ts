@@ -13,7 +13,9 @@ export class TileText extends THREE.Object3D {
 	private meshList: TileTextMesh[] = [];
 	private totalTextMeshWidth: number = 0.0;
 
-	constructor( parentUniforms?: ORE.Uniforms ) {
+	private materialOption?: THREE.ShaderMaterialParameters;
+
+	constructor( parentUniforms?: ORE.Uniforms, materialOption?: THREE.ShaderMaterialParameters ) {
 
 		super();
 
@@ -21,6 +23,8 @@ export class TileText extends THREE.Object3D {
 		} );
 
 		this.meshList = [];
+
+		this.materialOption = materialOption;
 
 	}
 
@@ -48,7 +52,7 @@ export class TileText extends THREE.Object3D {
 
 			if ( char != '_' ) {
 
-				let textMesh = new TileTextMesh( char, fontData, texture, 1.0, this.commonUniforms );
+				let textMesh = new TileTextMesh( char, fontData, texture, 1.0, this.commonUniforms, undefined, this.materialOption );
 				this.add( textMesh );
 				this.meshList.push( textMesh );
 				this.totalTextMeshWidth += textMesh.size.x;
