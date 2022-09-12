@@ -261,9 +261,9 @@ export class Baku extends THREE.Object3D {
 
 				}
 
-				if ( name == 'section_3' ) {
+				// 無理やりループ
+				if ( action.loop != THREE.LoopOnce ) {
 
-					// 無理やりループ
 					if ( action.time > 3.33333333333 ) {
 
 						action.time = 0;
@@ -295,7 +295,8 @@ export class Baku extends THREE.Object3D {
 		action.loop = THREE.LoopOnce;
 		action.play();
 
-		this.animator.setValue( 'BakuWeight/section_4_jump', 1 );
+		this.animator.animate( 'BakuWeight/section_4', 0, 0.1 );
+		this.animator.animate( 'BakuWeight/section_4_jump', 1.0, 0.1 );
 
 		if ( this.animationMixer ) {
 
@@ -306,7 +307,8 @@ export class Baku extends THREE.Object3D {
 
 				if ( clip.name == 'section_4_jump' ) {
 
-					this.animator.animate( 'BakuWeight/section_4_jump', 0, 0.5 );
+					this.animator.animate( 'BakuWeight/section_4', 1.0, 1.0 );
+					this.animator.animate( 'BakuWeight/section_4_jump', 0.0, 1.0 );
 
 					this.jumping = false;
 

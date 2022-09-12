@@ -150,7 +150,7 @@ export class World extends THREE.Object3D {
 
 			}
 
-		}, 3000 );
+		}, 8000 );
 
 		/*-------------------------------
 			Sections

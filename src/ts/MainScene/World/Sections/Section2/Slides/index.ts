@@ -35,28 +35,82 @@ export class Slides {
 
 		this.root = root;
 
-		let originGeo = new THREE.PlaneBufferGeometry( 30.0, 1.0, );
+		let res = 64;
+
+		let posArray: number[] = [];
+		let indexArray: number[] = [];
+		let uvArray: number[] = [];
+
+		let radius = 9.0;
+		let height = 1.6;
+
+		for ( let i = 0; i <= res; i ++ ) {
+
+			let theta = i / res * Math.PI * 2.0 + Math.PI / 4.0;
+
+			let x = Math.cos( theta ) * radius;
+			let z = Math.sin( theta ) * radius;
+
+			posArray.push( x, height / 2, z );
+			posArray.push( x, - height / 2, z );
+
+			if ( i < res ) {
+
+				indexArray.push( i * 2.0 + 0.0 );
+				indexArray.push( i * 2.0 + 1.0 );
+				indexArray.push( ( i + 1 ) * 2.0 );
+
+				indexArray.push( i * 2.0 + 1.0 );
+				indexArray.push( ( i + 1 ) * 2.0 + 1.0 );
+				indexArray.push( ( i + 1 ) * 2.0 + 0.0 );
+
+			}
+
+			let uvx = i / res;
+
+			uvArray.push( uvx, 1.0 );
+			uvArray.push( uvx, 0.0 );
+
+		}
 
 		let offsetPosArray = [];
+		let scaleArray = [];
 		let rndArray = [];
 
-		let num = 30;
+		let num = 50;
+
+		let posY = 0.0;
 
 		for ( let i = 0; i < num; i ++ ) {
 
-			offsetPosArray.push( 0.0, ( i - num / 2 ) * 0.9, 0.0 );
+			let scale = 0.2 + 0.8 * Math.random();
+			let scaleH = scale / 2;
+
+			let h = height * 0.80;
+
+			posY -= scaleH * h;
+			offsetPosArray.push( 0.0, posY, 0.0 );
+			posY -= scaleH * h;
+
+			scaleArray.push( scale );
 			rndArray.push( Math.random() );
 			rndArray.push( Math.random() );
 
 		}
 
+		for ( let i = 0; i < num; i ++ ) {
+
+			offsetPosArray[ i * 3.0 + 1 ] -= posY / 2;
+
+		}
+
 		let geo = new THREE.InstancedBufferGeometry();
-		geo.setAttribute( 'position', originGeo.getAttribute( 'position' ) );
-		geo.setAttribute( 'uv', originGeo.getAttribute( 'uv' ) );
-		geo.setAttribute( 'normal', originGeo.getAttribute( 'normal' ) );
+		geo.setAttribute( 'position', new THREE.BufferAttribute( new Float32Array( posArray ), 3 ) );
+		geo.setAttribute( 'uv', new THREE.BufferAttribute( new Float32Array( uvArray ), 2 ) );
 		geo.setAttribute( 'offsetPos', new THREE.InstancedBufferAttribute( new Float32Array( offsetPosArray ), 3 ) );
+		geo.setAttribute( 'scale', new THREE.InstancedBufferAttribute( new Float32Array( scaleArray ), 1 ) );
 		geo.setAttribute( 'rnd', new THREE.InstancedBufferAttribute( new Float32Array( rndArray ), 2 ) );
-		geo.setIndex( originGeo.getIndex() );
+		geo.setIndex( new THREE.BufferAttribute( new Uint8Array( indexArray ), 1 ) );
 
 		let mat = new THREE.ShaderMaterial( {
 			fragmentShader: slideFrag,

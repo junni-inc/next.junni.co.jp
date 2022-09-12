@@ -26,7 +26,7 @@ export class Section2 extends Section {
 		this.elm = document.querySelector( '.section2' ) as HTMLElement;
 
 		this.ppParam.bloomBrightness = 0;
-		this.ppParam.vignet = 1.0;
+		this.ppParam.vignet = 1.5;
 
 		this.bakuMaterialType = 'grass';
 
