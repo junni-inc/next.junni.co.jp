@@ -7,6 +7,7 @@ import { Objects } from './Objects';
 import { Comrades } from './Comrades';
 import { Wind } from './Wind';
 import { Particle } from './Particle';
+import { Road } from './Road';
 
 export class Section6 extends Section {
 
@@ -15,11 +16,11 @@ export class Section6 extends Section {
 	private comrades?: Comrades;
 	private wind?: Wind;
 	private particle?: Particle;
+	private road?: Road;
 
 	constructor( manager: THREE.LoadingManager, parentUniforms: ORE.Uniforms ) {
 
 		super( manager, 'section_6', parentUniforms );
-
 
 		this.elm = document.querySelector( '.section6' );
 
@@ -50,6 +51,8 @@ export class Section6 extends Section {
 
 		let scene = gltf.scene;
 		this.add( scene );
+
+		let bakuContainer = ( this.getObjectByName( 'Baku' ) as THREE.Object3D );
 
 		/*-------------------------------
 			Comrades
@@ -87,6 +90,17 @@ export class Section6 extends Section {
 
 		}
 
+		/*-------------------------------
+			Road
+		-------------------------------*/
+
+		this.road = new Road( this.commonUniforms );
+		this.road.quaternion.copy( ( this.getObjectByName( 'Baku' ) as THREE.Object3D ).quaternion );
+		this.road.position.copy( ( this.getObjectByName( 'Baku' ) as THREE.Object3D ).position );
+		this.road.rotateY( Math.PI / 2 );
+		this.road.switchVisibility( this.sectionVisibility );
+		this.add( this.road );
+
 	}
 
 	private speed: number = 0.0;
@@ -109,6 +123,8 @@ export class Section6 extends Section {
 		if ( this.comrades ) this.comrades.update( deltaTime );
 
 		if ( this.particle ) this.particle.update( deltaTime );
+
+
 
 	}
 
@@ -134,6 +150,7 @@ export class Section6 extends Section {
 
 		if ( this.wind ) this.wind.switchVisibility( this.sectionVisibility );
 		if ( this.comrades ) this.comrades.switchVisibility( this.sectionVisibility );
+		if ( this.road ) this.road.switchVisibility( this.sectionVisibility );
 
 	}
 

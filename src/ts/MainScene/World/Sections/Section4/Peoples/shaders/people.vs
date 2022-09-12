@@ -86,6 +86,7 @@ void main( void ) {
 	
     vec3 p = position;
 	p *= (vAlpha);
+	p.xz *= rotate( posYOffset * 10.0);
 
     vec3 pos = vec3( 0.0 );
 	pos.xyz = texture2D( dataPos, computeUV).xyz;

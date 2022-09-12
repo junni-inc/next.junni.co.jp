@@ -6,6 +6,7 @@ varying vec2 vUv;
 
 #pragma glslify: hsv2rgb = require('./hsv2rgb.glsl' )
 #pragma glslify: random = require('./random.glsl' )
+#define linearstep(edge0, edge1, x) min(max(((x) - (edge0)) / ((edge1) - (edge0)), 0.0), 1.0)
 
 void main( void ) {
 
@@ -14,7 +15,22 @@ void main( void ) {
 	vec3 sec3 = vec3( 0.0 );
 	vec3 sec4 = vec3( 1.0 );
 	vec3 sec5 = vec3( smoothstep( 0.0, 1.0, vUv.y ) * 0.5 );
-	vec3 sec6 = vec3( smoothstep( 0.0, 1.0, vUv.y ) * 0.01 );
+
+	vec3 sec6 = vec3(
+		exp( - linearstep( 1.0, 0.5, vUv.y + 0.00) * 10.0 ) * 0.6,
+		exp( - linearstep( 1.0, 0.5, vUv.y + 0.015) * 10.0 ) * 0.6,
+		exp( - linearstep( 1.0, 0.5, vUv.y + 0.03) * 10.0 ) * 0.6
+	);
+
+	sec6 += vec3(
+		exp( -linearstep( 1.0, 0.99, vUv.y) * 5.0 )
+	);
+	sec6 += vec3(
+		sin( vUv.y * 15.0 - 1.0 + time ) * 0.1,
+		sin( vUv.y * 15.0 - 0.5 + time ) * 0.1,
+		sin( vUv.y * 15.0 - 0.0 + time ) * 0.1
+	);
+
 	// vec3 sec6 = sec1;
 
 	vec3 color = vec3( 0.0 );

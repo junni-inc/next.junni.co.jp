@@ -7,7 +7,7 @@ import particlesFrag from './shaders/particle.fs';
 export class Particle extends THREE.Points {
 
 	private animator: ORE.Animator;
-	private commonUniforms: ORE.Uniforms;
+	public commonUniforms: ORE.Uniforms;
 
 	constructor( parentUniforms?: ORE.Uniforms ) {
 
@@ -111,7 +111,7 @@ export class Particle extends THREE.Points {
 
 		this.animator.setEasing( 'particleTimeScale', ORE.Easings.easeOutCubic );
 
-		this.animator.animate( 'cameraFovOffset', 40, 1 );
+		this.animator.animate( 'cameraFovOffset', 15, 1 );
 		this.animator.animate( 'cameraShake', 0.15, 0.8 );
 		this.animator.animate( 'cameraShakeTimeScale', 8, 0.8 );
 
