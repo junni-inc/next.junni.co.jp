@@ -25,6 +25,7 @@ export class CameraController {
 
 	// state
 
+	private time: number = 0;
 	private shakeTime: number = 0;
 
 	private posData = {
@@ -101,6 +102,17 @@ export class CameraController {
 			}
 		} );
 
+		this.animator.add( {
+			name: 'cameraMove',
+			initValue: 0,
+			userData: {
+				pane: {
+					min: 0,
+					max: 1
+				}
+			}
+		} );
+
 		this.cursorPos = new THREE.Vector2();
 		this.cursorPosDelay = new THREE.Vector2();
 		this.cursorPosDelayVel = new THREE.Vector2();
@@ -129,6 +141,8 @@ export class CameraController {
 	public update( deltaTime: number ) {
 
 		deltaTime = Math.min( 0.3, deltaTime ) * 0.3;
+
+		this.time += deltaTime;
 
 		/*------------------------
 			update hover
@@ -160,6 +174,17 @@ export class CameraController {
 		if ( fovOffset > 0 ) {
 
 			this.camera.position.add( new THREE.Vector3( 0.0, 0.0, - fovOffset * 0.05 ).applyQuaternion( this.camera.quaternion ) );
+
+		}
+
+		let cameraMove = this.animator.get<number>( 'cameraMove' ) || 0;
+
+		if ( cameraMove ) {
+
+			let x = Math.sin( this.time ) * 1.5 * cameraMove * 0.0;
+			let y = Math.cos( this.time * 1.3 ) * 0.1 * cameraMove;
+
+			this.camera.position.add( new THREE.Vector3( x, y, 0.0 ) );
 
 		}
 
@@ -236,6 +261,12 @@ export class CameraController {
 			this.animator.animate( 'particleTimeScale', 1, 4 );
 
 		} );
+
+	}
+
+	public switchCameraMove( enable: boolean ) {
+
+		this.animator.animate( 'cameraMove', enable ? 1 : 0, 3 );
 
 	}
 

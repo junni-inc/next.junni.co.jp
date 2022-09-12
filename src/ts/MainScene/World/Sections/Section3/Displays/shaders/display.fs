@@ -11,6 +11,8 @@ uniform float uTimeMod;
 uniform sampler2D uNoiseTex;
 uniform sampler2D uDisplayTex;
 
+uniform float uSectionVisibility;
+
 #pragma glslify: random = require('./random.glsl' )
 
 void main( void ) {
@@ -48,6 +50,6 @@ void main( void ) {
 	// ビカビカ
 	color *= step( 0.0, sin( vUv2.y * 5.0 - time * 80.0 ) ) * 0.05 + 0.95;
 
-	gl_FragColor = vec4( color, 1.0 );
+	gl_FragColor = vec4( color, uSectionVisibility );
 
 }

@@ -4,6 +4,7 @@ varying float vBrightness;
 
 uniform float time;
 uniform float uTimeMod;
+uniform float uVisibility;
 
 #pragma glslify: random = require('./random.glsl' )
 
@@ -28,7 +29,7 @@ void main( void ) {
 		vec3 envMapColor = textureCube( uEnvMap, refDir ).xyz;
 		vec3 color = envMapColor * 0.2;
 
-		gl_FragColor = vec4( color, 1.0 );
+		gl_FragColor = vec4( color, uVisibility );
 
 		return;
 
@@ -36,7 +37,7 @@ void main( void ) {
 
 		vec3 color = vec3( 1.0 ) * vBrightness;
 		
-		gl_FragColor = vec4( color, 1.0 );
+		gl_FragColor = vec4( color, uVisibility );
 
 	#endif
 

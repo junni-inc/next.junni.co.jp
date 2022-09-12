@@ -6,11 +6,13 @@ import { Displays } from './Displays';
 import { Lights } from './Lights';
 import { BackText } from './BackText';
 import { CursorLight } from './CursorLight';
+import { Wire } from './Wire';
 
 export class Section3 extends Section {
 
 	private displays?: Displays;
 	private lights?: Lights;
+	private wire?: Wire;
 	private directionLightList: THREE.DirectionalLight[] = [];
 	private backText?: BackText;
 	private cursorLight: CursorLight;
@@ -74,12 +76,21 @@ export class Section3 extends Section {
 		-------------------------------*/
 
 		this.displays = new Displays( this.getObjectByName( 'Displays' ) as THREE.Object3D, this.commonUniforms );
+		this.displays.switchVisibility( this.sectionVisibility );
 
 		/*-------------------------------
 			Lights
 		-------------------------------*/
 
 		this.lights = new Lights( this.getObjectByName( 'Lights' ) as THREE.Object3D, this.commonUniforms );
+		this.lights.switchVisibility( this.sectionVisibility );
+
+		/*-------------------------------
+			Wire
+		-------------------------------*/
+
+		this.wire = new Wire( this.getObjectByName( 'Wire' )as THREE.Mesh, this.commonUniforms );
+		this.wire.switchVisibility( this.sectionVisibility );
 
 		/*-------------------------------
 			BackText
@@ -95,6 +106,7 @@ export class Section3 extends Section {
 		super.update( deltaTime );
 
 		this.cursorLight.update( deltaTime );
+		this.cursorLight.intensity = this.animator.get( 'sectionVisibility' + this.sectionName ) || 0;
 
 	}
 
@@ -119,7 +131,25 @@ export class Section3 extends Section {
 
 		if ( this.backText ) this.backText.switchVisibility( this.sectionVisibility );
 
-		this.visible = this.sectionVisibility;
+		window.cameraController.switchCameraMove( this.sectionVisibility );
+
+		if ( this.lights ) {
+
+			this.lights.switchVisibility( this.sectionVisibility );
+
+		}
+
+		if ( this.wire ) {
+
+			this.wire.switchVisibility( this.sectionVisibility );
+
+		}
+
+		if ( this.displays ) {
+
+			this.displays.switchVisibility( this.sectionVisibility );
+
+		}
 
 	}
 
