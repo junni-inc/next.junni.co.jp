@@ -15,7 +15,6 @@ export class LogoPart {
 	private time = 0.0;
 	private offset: number = 0.0;
 
-
 	constructor( mesh: THREE.Mesh, offset: number, parentUniforms: ORE.Uniforms ) {
 
 		this.offset = offset;

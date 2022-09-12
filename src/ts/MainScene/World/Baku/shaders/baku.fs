@@ -141,6 +141,19 @@ struct Material {
 
 #endif
 
+#if NUM_POINT_LIGHTS > 0
+
+	struct PointLight {
+		vec3 position;
+		vec3 color;
+		float distance;
+		float decay;
+	};
+
+	uniform PointLight pointLights[ NUM_POINT_LIGHTS ];
+
+#endif
+
 /*-------------------------------
 	Shadow
 -------------------------------*/
@@ -488,6 +501,37 @@ void main( void ) {
 				outColor += RE( geo, mat, light ) * shadow;
 				
 			}
+		#pragma unroll_loop_end
+
+	#endif
+
+	#if NUM_POINT_LIGHTS > 0
+
+		PointLight pLight;
+
+		#pragma unroll_loop_start
+
+			for ( int i = 0; i < NUM_POINT_LIGHTS; i ++ ) {
+
+				pLight = pointLights[ i ];
+
+				vec3 v = pLight.position - geo.pos;
+				float d = length( v );
+				light.direction = normalize( v );
+		
+				light.color = pLight.color ;
+
+				if( pLight.distance > 0.0 && pLight.decay > 0.0 ) {
+
+					float attenuation = pow( clamp( -d / pLight.distance + 1.0, 0.0, 1.0 ), pLight.decay );
+					light.color *= attenuation;
+
+				}
+
+				outColor += RE( geo, mat, light );
+				
+			}
+			
 		#pragma unroll_loop_end
 
 	#endif

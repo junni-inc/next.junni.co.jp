@@ -5,6 +5,7 @@ import { GLTF } from 'three/examples/jsm/loaders/GLTFLoader';
 import { Displays } from './Displays';
 import { Lights } from './Lights';
 import { BackText } from './BackText';
+import { CursorLight } from './CursorLight';
 
 export class Section3 extends Section {
 
@@ -12,6 +13,7 @@ export class Section3 extends Section {
 	private lights?: Lights;
 	private directionLightList: THREE.DirectionalLight[] = [];
 	private backText?: BackText;
+	private cursorLight: CursorLight;
 
 	constructor( manager: THREE.LoadingManager, parentUniforms: ORE.Uniforms ) {
 
@@ -36,6 +38,11 @@ export class Section3 extends Section {
 			position: new THREE.Vector3( - 3.0, - 11.0, - 3.0 ),
 			targetPosition: new THREE.Vector3( 0, - 11.0, 0 ),
 		};
+
+		// cursorLight
+
+		this.cursorLight = new CursorLight();
+		this.add( this.cursorLight );
 
 		/*-------------------------------
 			EnvMap
@@ -87,6 +94,8 @@ export class Section3 extends Section {
 
 		super.update( deltaTime );
 
+		this.cursorLight.update( deltaTime );
+
 	}
 
 	public resize( info: ORE.LayerInfo ) {
@@ -113,5 +122,12 @@ export class Section3 extends Section {
 		this.visible = this.sectionVisibility;
 
 	}
+
+	public hover( args: ORE.TouchEventArgs ) {
+
+		this.cursorLight.hover( args );
+
+	}
+
 
 }
