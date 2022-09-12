@@ -1,5 +1,5 @@
 @use "../global/" as *;
-@import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Noto+Sans&family=Noto+Sans+JP&family=Jura&family=Play&family=Noto+Serif&family=PT+Mono&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Noto+Sans&family=Noto+Sans+JP&family=Jura&family=Play&family=Noto+Serif&family=PT+Mono&family=Roboto+Serif:ital,opsz,wght@1,8..144,300&display=swap');
 
 $notosans: 'Noto Sans JP', 'Noto Sans', sans-serif;
 $notoserif: 'Noto Serif', serif;
@@ -7,6 +7,7 @@ $bebas: 'Bebas Neue', cursive;
 $jura: 'Jura', sans-serif;
 $play: 'Play', sans-serif;
 $ptmono: 'PT Mono', monospace;
+$tobotoSerif: 'Roboto Serif', serif;
 
 body {
 	width: 100%;
@@ -281,7 +282,7 @@ body {
 		}
 		
 		&-head {
-			font-family: $ptmono;
+			font-family: $tobotoSerif;
 			font-size: 2.5vw;
 			font-weight: normal;
 			color: #fff;
