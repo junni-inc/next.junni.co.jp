@@ -47,7 +47,7 @@ export class Section4 extends Section {
 
 		this.renderer = renderer;
 
-		this.bakuMaterialType = 'line';
+		this.bakuParam.materialType = 'line';
 		this.ppParam.vignet = 1.5;
 		this.ppParam.filmNoise = 1.0;
 

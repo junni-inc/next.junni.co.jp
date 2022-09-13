@@ -233,7 +233,8 @@ export class World extends THREE.Object3D {
 
 		// baku
 
-		this.baku.changeMaterial( section.bakuMaterialType );
+		this.baku.changeRotateSpeed( section.bakuParam.rotateSpeed );
+		this.baku.changeMaterial( section.bakuParam.materialType );
 		this.baku.changeSectionAction( section.sectionName );
 		// this.baku.textLing.switchVisibility( sectionIndex == 4 );
 

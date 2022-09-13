@@ -315,7 +315,6 @@ export class MainScene extends ORE.BaseLayer {
 
 			}
 
-
 		}
 
 		if ( this.renderPipeline ) {

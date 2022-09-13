@@ -23,9 +23,10 @@ export class Section5 extends Section {
 
 		this.elm = document.querySelector( '.section5' ) as HTMLElement;
 
-		this.bakuMaterialType = 'normal';
+		this.bakuParam.materialType = 'normal';
+		this.bakuParam.rotateSpeed = 0.18;
 		this.ppParam.bloomBrightness = 1.0;
-		this.cameraRange.set( 0.0, 0.0 );
+		this.cameraRange.set( 0.02, 0.02 );
 
 		/*-------------------------------
 			Lights
@@ -83,13 +84,17 @@ export class Section5 extends Section {
 
 	public update( deltaTime: number ): void {
 
-		// this.bakuTransform.rotation.multiply( new THREE.Quaternion().setFromAxisAngle( new THREE.Vector3( 0.0, 0.0, 1.0 ), deltaTime * 0.1 ) );
+		if ( this.sectionVisibility ) {
+			// this.bakuTransform.rotation.multiply( new THREE.Quaternion().setFromAxisAngle( new THREE.Vector3( 0.0, 0.0, 1.0 ), deltaTime * 0.1 ) );
+		}
 
 		let baku = this.getObjectByName( 'Baku' ) as THREE.Object3D;
 
 		if ( baku ) {
 
+
 			baku.rotateZ( - deltaTime * 0.1 );
+
 
 		}
 

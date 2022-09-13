@@ -7,7 +7,7 @@ import bakuFrag from './shaders/baku.fs';
 import bakuVert from './shaders/baku.vs';
 import passThroughFrag from './shaders/passThrough.fs';
 
-export type BakuMaterialType = 'normal' | 'grass' | 'line'
+export type BakuMaterialType = 'normal' | 'glass' | 'line'
 
 export class Baku extends THREE.Object3D {
 
@@ -26,6 +26,7 @@ export class Baku extends THREE.Object3D {
 	private manager: THREE.LoadingManager;
 	private commonUniforms: ORE.Uniforms;
 
+	private container: THREE.Object3D;
 	private mesh?: PowerMesh;
 	protected meshLine?: THREE.SkinnedMesh<THREE.BufferGeometry, THREE.ShaderMaterial>;
 
@@ -78,8 +79,19 @@ export class Baku extends THREE.Object3D {
 		} );
 
 		this.animator.add( {
-			name: 'bakuRotate',
+			name: 'bakuIntroRotate',
 			initValue: 1,
+			easing: ORE.Easings.easeOutCubic
+		} );
+
+		this.animator.add( {
+			name: 'bakuRotateSpeed',
+			initValue: 0.0,
+		} );
+
+		this.animator.add( {
+			name: 'bakuRotateValue',
+			initValue: 0,
 			easing: ORE.Easings.easeOutCubic
 		} );
 
@@ -88,6 +100,13 @@ export class Baku extends THREE.Object3D {
 		-------------------------------*/
 
 		this.sceneRenderTarget = new THREE.WebGLRenderTarget( 1, 1 );
+
+		/*-------------------------------
+			container
+		-------------------------------*/
+
+		this.container = new THREE.Object3D();
+		this.add( this.container );
 
 		/*-------------------------------
 			Load
@@ -99,7 +118,7 @@ export class Baku extends THREE.Object3D {
 
 			let bakuWrap = gltf.scene.getObjectByName( "baku_amature" ) as THREE.Object3D;
 
-			this.add( bakuWrap );
+			this.container.add( bakuWrap );
 
 			/*-------------------------------
 				MainMesh
@@ -155,7 +174,7 @@ export class Baku extends THREE.Object3D {
 
 			this.meshLine = new THREE.SkinnedMesh( this.mesh.geometry, lineMat );
 			this.meshLine.skeleton = this.mesh.skeleton;
-			// this.add( this.meshLine );
+			// this.container.add( this.meshLine );
 
 			/*-------------------------------
 				animation
@@ -205,7 +224,7 @@ export class Baku extends THREE.Object3D {
 
 	public changeMaterial( type: BakuMaterialType ) {
 
-		this.animator.animate( 'bakuTransparent', type == 'grass' ? 1 : 0, 1 );
+		this.animator.animate( 'bakuTransparent', type == 'glass' ? 1 : 0, 1 );
 		this.animator.animate( 'bakuLine', type == 'line' ? 1 : 0, 1 );
 
 	}
@@ -278,9 +297,18 @@ export class Baku extends THREE.Object3D {
 
 		if ( this.mesh ) {
 
-			this.rotation.z -= ( this.animator.get<number>( 'bakuRotate' ) || 0 ) * 6.0;
+			this.rotation.z -= ( this.animator.get<number>( 'bakuIntroRotate' ) ?? 0 ) * 3.0;
 
 		}
+
+		if ( ! this.animator.isAnimatingVariable( 'bakuRotateValue' ) ) {
+
+
+			this.animator.setValue( "bakuRotateValue", ( this.animator.get<number>( 'bakuRotateValue' ) ?? 0 ) + ( this.animator.get<number>( 'bakuRotateSpeed' ) ?? 0 ) * deltaTime );
+
+		}
+
+		this.container.rotation.z = this.animator.get<number>( 'bakuRotateValue' ) ?? 0;
 
 	}
 
@@ -332,9 +360,26 @@ export class Baku extends THREE.Object3D {
 
 	}
 
+	public changeRotateSpeed( speed: number ) {
+
+		if ( speed == 0.0 ) {
+
+			this.animator.setValue( 'bakuRotateSpeed', 0 );
+			this.animator.setValue( 'bakuRotateValue', ( this.container.rotation.z + Math.PI ) % ( Math.PI * 2.0 ) - Math.PI );
+			this.animator.animate( 'bakuRotateValue', 0 );
+
+			return;
+
+		}
+
+		this.animator.animate( 'bakuRotateSpeed', speed );
+
+
+	}
+
 	public show( duration: number = 1.0 ) {
 
-		this.animator.animate( 'bakuRotate', 0, duration );
+		this.animator.animate( 'bakuIntroRotate', 0, duration );
 
 	}
 

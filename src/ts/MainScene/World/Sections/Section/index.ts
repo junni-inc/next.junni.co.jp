@@ -74,7 +74,13 @@ export class Section extends THREE.Object3D {
 
 	// baku material
 
-	public bakuMaterialType: BakuMaterialType = 'normal';
+	public bakuParam: {
+		materialType: BakuMaterialType,
+		rotateSpeed: number
+	} = {
+			materialType: 'normal',
+			rotateSpeed: 0
+		};
 
 	// camera weight
 
