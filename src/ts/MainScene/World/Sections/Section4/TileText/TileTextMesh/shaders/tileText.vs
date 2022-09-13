@@ -1,6 +1,7 @@
 uniform vec2 uTile;
 uniform float uTextSelector;
 uniform float uVisibility;
+uniform float uTileTextGroupVisibility;
 uniform float time;
 
 varying vec2 vUv;
@@ -31,8 +32,13 @@ vec2 spriteUVSelector( vec2 uv, vec2 tile, float selector ) {
 void main( void ) {
 
 	vec3 pos = position;
+	
+	float invTileTextVisibility = 1.0 - uTileTextGroupVisibility;
+	pos.y += invTileTextVisibility;
+
 	pos.xy *= rotate( -uVisibility * TPI );
 	pos.y += sin( - time + modelViewMatrix[3][0] ) * 0.2;
+
 
 	pos *= uVisibility;
 
@@ -46,6 +52,7 @@ void main( void ) {
 	float jump = clamp( mod(uVisibility, 1.0), 0.0, 1.0 );
 
 	pos.y += sin( jump * PI );
+	pos.y += ( 1.0 - uVisibility );
 
 	vec4 mvPosition = modelViewMatrix * vec4( pos, 1.0 );
 	gl_Position = projectionMatrix * mvPosition;

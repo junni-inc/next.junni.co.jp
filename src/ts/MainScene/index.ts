@@ -7,17 +7,20 @@ import { CameraController } from './CameraController';
 import { World } from './World';
 import { Scroller } from './Scroller';
 import { Subtitles } from './Subtitle';
+import { Header } from './Header';
+import { Footer } from './Footer';
 
 export class MainScene extends ORE.BaseLayer {
-
 
 	private gManager?: GlobalManager;
 	private renderPipeline?: RenderPipeline;
 	private cameraController?: CameraController;
 	private scroller: Scroller;
 
-	private subtitles: Subtitles;
 	private world?: World;
+	private subtitles: Subtitles;
+	private header: Header;
+	private footer: Footer;
 
 	private canScroll: boolean = false;
 
@@ -49,7 +52,7 @@ export class MainScene extends ORE.BaseLayer {
 
 				if ( this.renderPipeline ) this.renderPipeline.updateParam( section.ppParam );
 
-				this.world.bg.changeSection( sectionIndex );
+				this.footer.changeTimelineSection( sectionIndex + 1 );
 
 				document.body.setAttribute( 'data-section', ( sectionIndex + 1 ).toString() );
 
@@ -65,6 +68,24 @@ export class MainScene extends ORE.BaseLayer {
 
 		this.subtitles = new Subtitles();
 		window.subtitles = this.subtitles;
+
+		/*-------------------------------
+			Header
+		-------------------------------*/
+
+		this.header = new Header();
+
+		/*-------------------------------
+			Footer
+		-------------------------------*/
+
+		this.footer = new Footer();
+
+		this.footer.addListener( 'clickTimeline', ( section: number ) => {
+
+			this.scroller.move( section - 1.0, 2.0 );
+
+		} );
 
 	}
 
@@ -183,6 +204,12 @@ export class MainScene extends ORE.BaseLayer {
 
 			this.scroller.changeSectionNum( this.world.sections.length );
 
+			this.world.intro.addListener( 'showImaging', () => {
+
+				this.header.switchLogoVisibility( true );
+
+			} );
+
 			this.world.intro.addListener( 'finishIntro', () => {
 
 				this.splash();
@@ -235,6 +262,7 @@ export class MainScene extends ORE.BaseLayer {
 
 					if ( i > 0 && ! this.canScroll ) {
 
+						this.showHeaderFooter();
 						this.world.cancelIntro();
 						this.canScroll = true;
 
@@ -409,6 +437,16 @@ export class MainScene extends ORE.BaseLayer {
 			}, 1000 );
 
 		}
+
+		this.showHeaderFooter();
+
+	}
+
+	private showHeaderFooter() {
+
+		this.header.switchLogoVisibility( true );
+		this.footer.switchCopyVisibility( true );
+		this.footer.switchTimelineVisibility( true );
 
 	}
 

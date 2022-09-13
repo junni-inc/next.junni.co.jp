@@ -28,8 +28,8 @@ export class Section4 extends Section {
 	private cannonWorld: CANNON.World;
 	private groundBody?: CANNON.Body;
 
-	private titleText?: TileText;
-	private tileText?: TileText;
+	private title?: TileText;
+	private word?: TileText;
 
 	private light?: THREE.DirectionalLight;
 
@@ -224,20 +224,24 @@ export class Section4 extends Section {
 
 		// title
 
-		this.titleText = new TileText( this.commonUniforms, {
+		this.title = new TileText( this.commonUniforms, {
 			vertexShader: makingVert
 		} );
 
-		this.titleText.position.set( - 4.8, 3.5, - 0.7 );
-		this.titleText.scale.setScalar( 1.0 );
-		this.titleText.setText( 'making' );
-		ground.add( this.titleText );
+		this.title.position.set( - 4.8, 3.5, - 0.7 );
+		this.title.scale.setScalar( 1.0 );
+		this.title.setText( 'making' );
+		this.title.switchVisiblity( this.sectionVisibility );
+		ground.add( this.title );
 
 
-		this.tileText = new TileText( this.commonUniforms );
-		this.tileText.position.set( 0.0, 3.0, 3.5 );
-		this.tileText.scale.setScalar( 1.0 );
-		ground.add( this.tileText );
+		this.word = new TileText( this.commonUniforms );
+		this.word.position.set( 0.0, 3.0, 3.5 );
+		this.word.scale.setScalar( 1.0 );
+		this.word.switchVisiblity( this.sectionVisibility );
+		this.word.setText( this.textList[ 0 ] );
+		this.textIndex = 1;
+		ground.add( this.word );
 
 	}
 
@@ -278,11 +282,8 @@ export class Section4 extends Section {
 
 		}
 
-		// this.textList.forEach( item => {
-
-		// 	item.switchVisibility( this.sectionVisibility );
-
-		// } );
+		if ( this.title ) this.title.switchVisiblity( this.sectionVisibility );
+		if ( this.word ) this.word.switchVisiblity( this.sectionVisibility );
 
 	}
 
@@ -298,19 +299,9 @@ export class Section4 extends Section {
 
 		} );
 
-		// this.textList.forEach( ( item, index ) => {
+		if ( this.word ) {
 
-		// 	setTimeout( () => {
-
-		// 		item.switchText( this.currentTextIndex );
-
-		// 	}, 50 * index + 100.0 );
-
-		// } );
-
-		if ( this.tileText ) {
-
-			this.tileText.setText( this.textList[ this.textIndex ] );
+			this.word.setText( this.textList[ this.textIndex ] );
 
 		}
 

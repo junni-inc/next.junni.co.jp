@@ -1,12 +1,10 @@
 @use "../global/" as *;
-@import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Noto+Sans&family=Noto+Sans+JP&family=Jura&family=Play&family=Noto+Serif&family=PT+Mono&family=Roboto+Serif:ital,opsz,wght@1,8..144,300&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Noto+Sans&family=Noto+Sans+JP&family=Jura&family=Noto+Serif&family=Roboto+Serif:ital,opsz,wght@1,8..144,300&display=swap');
 
 $notosans: 'Noto Sans JP', 'Noto Sans', sans-serif;
 $notoserif: 'Noto Serif', serif;
 $bebas: 'Bebas Neue', cursive;
 $jura: 'Jura', sans-serif;
-$play: 'Play', sans-serif;
-$ptmono: 'PT Mono', monospace;
 $tobotoSerif: 'Roboto Serif', serif;
 
 body {
@@ -46,6 +44,15 @@ body {
 	z-index: 10;
 
 	&-logo {
+
+		opacity: 0;
+		transition: opacity 3.0s;
+		transition-delay: 0.5s;
+		
+		&[data-visible="true"] {
+			opacity: 1;
+		}
+		
 		svg {
 			width: 180px;
 		}
@@ -58,13 +65,98 @@ body {
 	height: 60px;
 	background-color: #000;
 	color: #fff;
+	padding: 0 3%;
+
 	display: flex;
 	align-items: center;
-	justify-content: center;
 	z-index: 10;
 
+	&-timeline {
+		position: absolute;
+		left: 3%;
+
+		display: flex;
+		justify-content: space-around;
+
+		opacity: 0;
+		transition: opacity 2s;
+		width: 20%;
+		max-width: 200px;
+
+		@include sp {
+			opacity: 0;
+			pointer-events: none;
+		}
+		
+		&[data-visible="true"] {
+			opacity: 1;
+		}
+		
+		&-item {
+			width: 20px;
+			cursor: pointer;
+			position: relative;
+		
+			display: flex;
+			align-items: center;
+			justify-content: center;
+
+			&::before {
+				content: "";
+				width: 100%;
+				padding-top: 100%;
+			}
+			
+			&::after {
+				content: "";
+				position: absolute;
+				width: 100%;
+				height: 100%;
+				border-radius: 50% 50%;
+				background-color: #fff;
+				transform: scale(0.3);
+				transition: transform 0.5s ease-out, background-color 0.5s ease-out;
+				z-index: 1;
+			}
+
+			&[data-state="ready" ] {
+				&::after {
+					background-color: #555;
+				}
+			}
+			
+			&[data-state="viewing" ] {
+				pointer-events: none;
+				&::after {
+					transform: scale(0.6);
+				}
+			}
+
+			&:hover {
+				&::after {
+					transform: scale(0.5);
+				}
+			}
+		}
+
+	}
+
 	&-copyright {
+		position: absolute;
+		left: 50%;
+		transform: translateX(-50%);
+		opacity: 0;
+		transition: opacity 2s;
+
+		&[data-visible="true"] {
+			opacity: 1;
+		}
+		
 		font-family: $notosans;	
+		font-size: 13px;
+		font-weight: lighter;
+		letter-spacing: 0.2em;
+		color: #eee;
 	}
 }
 
@@ -237,7 +329,7 @@ body {
 			flex-direction: row-reverse;
 			justify-content: center;
 			justify-content: space-around;
-			align-items: start;
+			align-items: flex-start;
 			
 			// flex-direction: column;
 			// align-items: flex-start;

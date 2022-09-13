@@ -9,6 +9,8 @@ export type TileTextInfo = {
 
 export class TileText extends THREE.Object3D {
 
+	private animator: ORE.Animator;
+
 	private commonUniforms: ORE.Uniforms;
 	private meshList: TileTextMesh[] = [];
 	private totalTextMeshWidth: number = 0.0;
@@ -20,6 +22,14 @@ export class TileText extends THREE.Object3D {
 		super();
 
 		this.commonUniforms = ORE.UniformsLib.mergeUniforms( parentUniforms, {
+		} );
+
+		this.animator = window.gManager.animator;
+
+		this.commonUniforms.uTileTextGroupVisibility = this.animator.add( {
+			name: 'visibility' + this.uuid,
+			initValue: 0,
+			easing: ORE.Easings.easeOutCubic
 		} );
 
 		this.meshList = [];
@@ -108,6 +118,18 @@ export class TileText extends THREE.Object3D {
 		} );
 
 		return Promise.all( [ prmFontData, prmTexture ] );
+
+	}
+
+	public switchVisiblity( visible: boolean ) {
+
+		if ( visible ) this.visible = true;
+
+		this.animator.animate( 'visibility' + this.uuid, visible ? 1 : 0, 1.0, () => {
+
+			if ( ! visible ) this.visible = false;
+
+		} );
 
 	}
 

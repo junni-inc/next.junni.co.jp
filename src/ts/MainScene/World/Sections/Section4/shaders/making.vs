@@ -1,6 +1,7 @@
 uniform vec2 uTile;
 uniform float uTextSelector;
 uniform float uVisibility;
+uniform float uTileTextGroupVisibility;
 uniform float time;
 
 varying vec2 vUv;
@@ -32,6 +33,9 @@ void main( void ) {
 
 	vec3 pos = position;
 
+	float invTileTextVisibility = 1.0 - uTileTextGroupVisibility;
+	pos.y += invTileTextVisibility;
+	
 	pos.y += sin( - time + modelViewMatrix[3][0] ) * 0.2;
 	pos *= uVisibility;
 

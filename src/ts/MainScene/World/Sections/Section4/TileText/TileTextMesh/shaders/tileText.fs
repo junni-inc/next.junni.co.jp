@@ -1,4 +1,5 @@
 uniform sampler2D uTex;
+uniform float uTileTextGroupVisibility;
 varying vec2 vUv;
 
 #include <packing>
@@ -25,24 +26,24 @@ void main( void ) {
 
 	#ifdef IS_BG
 
-		gl_FragColor = vec4( 0.0, 0.0, 0.0, 1.0 );
+		gl_FragColor = vec4( 0.0, 0.0, 0.0, uTileTextGroupVisibility );
 		return;
 
 	#else
 
 		if( col.x > 0.0 ) {
 
-			gl_FragColor = vec4( 1.0 );
+			gl_FragColor = vec4( 1.0, 1.0, 1.0, uTileTextGroupVisibility );
 			return;
 			
 		} else if( col.y > 0.0 ) {
 
-			gl_FragColor = vec4( 0.0, 0.0, 0.0, 1.0 );
+			gl_FragColor = vec4( 0.0, 0.0, 0.0, uTileTextGroupVisibility );
 			return;
 			
 		} else if( col.z > 0.0 ) {
 			
-			gl_FragColor = vec4( 0.0, 0.0, 0.0, 1.0 );
+			gl_FragColor = vec4( 0.0, 0.0, 0.0, uTileTextGroupVisibility );
 			return;
 			
 		}

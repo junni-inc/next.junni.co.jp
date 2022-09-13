@@ -155,7 +155,10 @@ export class Intro extends EventEmitter {
 				if ( this.paused ) return;
 
 				await this.logo.start();
+
+				this.emitEvent( 'showImaging' );
 				await this.text1.start();
+
 				await this.text2.start();
 				await this.text3.start();
 

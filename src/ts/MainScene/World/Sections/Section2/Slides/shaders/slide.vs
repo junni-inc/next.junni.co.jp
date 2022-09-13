@@ -13,6 +13,7 @@ varying float vAlpha;
 varying vec2 vRnd;
 
 #pragma glslify: import('./constants.glsl' )
+#pragma glslify: rotate = require('./rotate.glsl' )
 
 void main( void ) {
 
