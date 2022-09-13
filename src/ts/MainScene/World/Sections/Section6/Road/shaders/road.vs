@@ -7,7 +7,7 @@ void main( void ) {
 
 	vec3 pos = position;
 	pos.z *= uv.x;
-	pos.z += sin( uv.x * 5.0 - time ) * 1.0;
+	pos.z += sin( uv.x * 5.0 - time ) * (uv.x) * 2.0;
 
 	vec4 mvPosition = modelViewMatrix * vec4( pos, 1.0 );
 	gl_Position = projectionMatrix * mvPosition;
