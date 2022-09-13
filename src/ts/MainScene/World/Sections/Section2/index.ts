@@ -28,7 +28,7 @@ export class Section2 extends Section {
 		this.ppParam.bloomBrightness = 0;
 		this.ppParam.vignet = 1.5;
 
-		this.bakuMaterialType = 'grass';
+		this.bakuParam.materialType = 'glass';
 
 		/*-------------------------------
 			Light
