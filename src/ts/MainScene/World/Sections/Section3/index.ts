@@ -116,16 +116,7 @@ export class Section3 extends Section {
 
 	}
 
-	private textTimer: number | null = null;
-
 	public switchViewingState( viewing: ViewingState ): void {
-
-		if ( this.textTimer ) {
-
-			window.clearTimeout( this.textTimer );
-			this.textTimer = null;
-
-		}
 
 		super.switchViewingState( viewing );
 

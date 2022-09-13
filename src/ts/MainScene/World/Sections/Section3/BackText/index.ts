@@ -64,7 +64,7 @@ export class BackText {
 
 		}
 
-		let wait = visible ? 1500 : 0;
+		let wait = visible ? 1000 : 0;
 
 		this.timer = window.setTimeout( () => {
 
