@@ -68,7 +68,8 @@ export class Lights {
 
 		this.animator.add( {
 			name: 'light1Position',
-			initValue: new THREE.Vector3()
+			initValue: new THREE.Vector3(),
+			easing: ORE.Easings.easeOutCubic
 		} );
 
 		this.animator.add( {

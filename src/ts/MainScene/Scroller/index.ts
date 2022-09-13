@@ -105,6 +105,8 @@ export class Scroller extends EventEmitter {
 
 				}
 
+				this.touchStartContent = null;
+
 			} else {
 
 				if ( this.velocity > 0 ) {
