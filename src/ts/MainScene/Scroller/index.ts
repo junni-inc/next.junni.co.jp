@@ -3,24 +3,29 @@ import EventEmitter from 'wolfy87-eventemitter';
 
 export class Scroller extends EventEmitter {
 
-	public enable: boolean = true;
-	public value: number = 0;
+	private animator: ORE.Animator;
 
-	private selectingContentPos: number = 0;
-	private touchStartContentPos: number = 0;
-	private moveVelocity: number = 0;
-
-	public currentContent: number = - 1;
 	private sectionNum: number = 0;
 
-	private animator: ORE.Animator;
-	private wheelStop: boolean = false;
-	private isAnimating: boolean = false;
+	public value: number = 0;
+	private velocity: number = 0;
+	private velocityVelocity: number = 0;
+
+	private touchStartContent: number | null = null;
+	public currentContent: number = 0;
+	private gravitiContent: number = 0;
+
+	// wheel
+
+	private wheelTime: number = - 1;
+	private wheelDeltaMem: number = 0;
+
+	// touch
 
 	private isTouching: boolean = false;
 	private touchStartPos: number = 0;
 	public touchMove: number = 0;
-	public touchMoveDiff: number = 0.0;
+	public touchMoveDiff: number = 0;
 
 	constructor() {
 
@@ -34,7 +39,7 @@ export class Scroller extends EventEmitter {
 
 		this.animator = new ORE.Animator();
 		this.animator.add( {
-			name: 'contentSelectorValue',
+			name: 'value',
 			initValue: 0,
 			easing: ORE.Easings.easeInOutCubic
 		} );
@@ -46,26 +51,17 @@ export class Scroller extends EventEmitter {
 		this.sectionNum = contentNum;
 		this.reset();
 
-		this.emitEvent( 'changeSelectingSection', [ this.selectingContentPos ] );
-
-	}
-
-	public setCurrentContent( contentNum: number ) {
-
-		this.value = contentNum;
-		this.currentContent = contentNum;
+		this.emitEvent( 'changeSelectingSection', [ this.gravitiContent ] );
 
 	}
 
 	private reset() {
 
 		this.value = 0;
-		this.selectingContentPos = 0;
-		this.touchStartContentPos = 0;
-		this.moveVelocity = 0;
+		this.gravitiContent = 0;
+		this.touchStartContent = 0;
+		this.velocity = 0;
 		this.currentContent = 0;
-		this.wheelStop = false;
-		this.isAnimating = false;
 		this.isTouching = false;
 		this.touchStartPos = 0;
 		this.touchMove = 0;
@@ -76,62 +72,68 @@ export class Scroller extends EventEmitter {
 
 		this.animator.update( deltaTime );
 
-		let selectingMem = this.selectingContentPos;
+		let selectingMem = this.gravitiContent;
 
-		if ( this.isAnimating ) {
+		if ( this.animator.isAnimatingVariable( 'value' ) ) {
 
-			this.value = this.animator.get<number>( 'contentSelectorValue' ) || 0;
+			// auto
 
-			this.selectingContentPos = Math.round( this.value );
+			this.value = this.animator.get<number>( 'value' ) || 0;
+
+			this.gravitiContent = Math.round( this.value );
 
 		} else if ( this.isTouching ) {
+
+			// touch
 
 			this.value = this.touchStartPos + this.touchMove;
 
 		} else {
 
-			this.value += this.moveVelocity;
+			// inertia
 
-			this.calcVelocity( deltaTime );
+			if ( this.touchStartContent ) {
 
-		}
+				if ( this.gravitiContent == this.touchStartContent ) {
 
-		this.checkCurrentContent();
+					if ( Math.abs( this.touchMoveDiff ) > 0.1 ) {
 
-		if ( this.selectingContentPos != selectingMem ) {
+						this.gravitiContent += Math.sign( this.touchMoveDiff );
+						this.touchMoveDiff = 0.0;
 
-			this.emitEvent( 'changeSelectingSection', [ this.selectingContentPos ] );
+					}
 
-		}
+				}
 
-	}
+			} else {
 
-	private calcVelocity( deltaTime: number ) {
+				if ( this.velocity > 0 ) {
 
-		if ( this.selectingContentPos == this.touchStartContentPos ) {
+					this.gravitiContent = Math.round( this.value + 0.45 );
 
-			let diff = this.touchMoveDiff;
+				} else {
 
-			if ( Math.abs( diff ) > 0.1 ) {
+					this.gravitiContent = Math.round( this.value - 0.45 );
 
-				this.selectingContentPos += Math.sign( diff );
-				this.selectingContentPos = Math.max( 0.0, Math.min( this.sectionNum - 1, this.selectingContentPos ) );
-				this.touchMoveDiff = 0.0;
+				}
 
 			}
 
+			this.gravitiContent = Math.max( 0.0, Math.min( this.sectionNum - 1, this.gravitiContent ) );
+
+			let gravity = this.gravitiContent - this.value;
+
+			this.velocityVelocity += gravity * deltaTime * 0.3;
+			this.velocityVelocity *= 1.0 - deltaTime * 10.0;
+
+			this.velocity += this.velocityVelocity * 10.0 * deltaTime;
+			this.velocity *= 1.0 - deltaTime * 8.0;
+
+			this.value += this.velocity;
+
 		}
 
-		let diff = this.selectingContentPos - this.value;
-
-		this.moveVelocity += diff * deltaTime * 0.3;
-		this.moveVelocity *= 0.85;
-
-		this.touchMoveDiff *= 0.95;
-
-	}
-
-	private checkCurrentContent() {
+		// calc current content
 
 		let nearest = Math.round( this.value );
 
@@ -139,114 +141,98 @@ export class Scroller extends EventEmitter {
 
 			this.currentContent = nearest;
 
-			this.wheelStop = true;
+			this.velocityVelocity = 0.0;
 
 			this.emitEvent( 'changeCurrentContent', [ this.currentContent ] );
 
 		}
 
+		if ( this.gravitiContent != selectingMem ) {
+
+			this.emitEvent( 'changeSelectingSection', [ this.gravitiContent ] );
+
+		}
+
 	}
+
+	/*-------------------------------
+		Mouse
+	-------------------------------*/
+
+	public addVelocity( delta: number ) {
+
+		let now = new Date().getTime();
+		let wheelDeltaTime = now - this.wheelTime;
+
+		let wheelDeltaDelta = Math.abs( delta ) - Math.abs( this.wheelDeltaMem );
+
+		this.wheelTime = now;
+		this.wheelDeltaMem = delta;
+
+		if ( wheelDeltaTime < 100 && wheelDeltaDelta < 0.0 ) {
+
+			return;
+
+		}
+
+		this.velocityVelocity += delta;
+
+	}
+
+	/*-------------------------------
+		Mobile
+	-------------------------------*/
 
 	public catch() {
 
-		if ( ! this.enable ) return;
-
-		this.touchStartPos = this.value;
-		this.touchStartContentPos = this.isAnimating ? - 1 : Math.round( this.value );
-
-		this.touchMove = 0;
+		if ( this.animator.isAnimatingVariable( 'value' ) ) return;
 
 		this.isTouching = true;
-		this.isAnimating = false;
 
+		this.touchStartPos = this.value;
+		this.touchStartContent = Math.round( this.value );
+
+		this.touchMove = 0;
 		this.touchMoveDiff = 0;
 
 	}
 
 	public drag( delta: number ) {
 
-		if ( ! this.enable || ! this.isTouching ) return;
+		if ( ! this.isTouching ) return;
+
+		if ( this.animator.isAnimatingVariable( 'value' ) ) return;
 
 		let d = delta * 0.0005;
 
 		this.touchMove -= d;
-
 		this.touchMoveDiff -= d * 5.0;
 
 	}
 
 	public release( delta: number ) {
 
-		if ( ! this.enable || ! this.isTouching ) return;
+		if ( this.animator.isAnimatingVariable( 'value' ) ) return;
+
+		if ( ! this.isTouching ) return;
 
 		this.isTouching = false;
 
-		this.moveVelocity -= delta * 0.0005;
+		this.velocity -= delta * 0.0005;
+
 
 	}
 
-	private wheelTime: number = - 1;
-	private wheelDeltaMem: number = 0;
-
-	public addVelocity( delta: number ) {
-
-		let currentTime = new Date().getTime();
-		let deltaTime = currentTime - this.wheelTime;
-		let wheelDeltaDelta = Math.abs( delta ) - Math.abs( this.wheelDeltaMem );
-		this.wheelTime = currentTime;
-		this.wheelDeltaMem = delta;
-
-		if ( deltaTime < 100 && wheelDeltaDelta < 0.0 ) {
-
-			return;
-
-		}
-
-		this.touchStartContentPos = this.isAnimating ? - 1 : Math.round( this.value );
-
-		this.moveVelocity += delta;
-
-		this.touchMoveDiff += delta * 4.0;
-
-	}
-
-	public next() {
-
-		if ( ! this.enable ) return;
-
-		if ( this.move( Math.round( this.value + 1.0 ) ) ) {
-
-			this.isAnimating = false;
-			this.moveVelocity += 0.005;
-
-		}
-
-	}
-
-	public prev() {
-
-		if ( ! this.enable ) return;
-
-		if ( this.move( Math.round( this.value - 1.0 ) ) ) {
-
-			this.isAnimating = false;
-			this.moveVelocity -= 0.005;
-
-		}
-
-	}
+	/*-------------------------------
+		API
+	-------------------------------*/
 
 	public move( value: number, duration: number = 1, onFinished?: () => void ) {
 
-		this.touchStartContentPos = - 1;
-		this.isAnimating = true;
+		this.animator.setValue( 'value', this.value );
+		this.animator.animate( 'value', value, duration, () => {
 
-		this.animator.setValue( 'contentSelectorValue', this.value );
-
-		this.animator.animate( 'contentSelectorValue', value, duration, () => {
-
-			this.isAnimating = false;
-			this.moveVelocity = 0;
+			this.velocity = 0;
 
 			if ( onFinished ) {
 
