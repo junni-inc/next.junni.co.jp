@@ -25,7 +25,7 @@ export class Section6 extends Section {
 		this.elm = document.querySelector( '.section6' );
 
 		this.bakuMaterialType = 'normal';
-		this.ppParam.bloomBrightness = 1.0;
+		this.ppParam.bloomBrightness = 2.0;
 
 		// this.ppParam.bloomBrightness = 0.0;
 

@@ -57,7 +57,7 @@ export class RenderPipeline {
 		this.animator = window.gManager.animator;
 		this.renderer = renderer;
 		this.bloomResolutionRatio = 0.5;
-		this.bloomRenderCount = 7;
+		this.bloomRenderCount = 5;
 
 		this.commonUniforms = ORE.UniformsLib.mergeUniforms( {
 			uBloomMipmapResolution: {
@@ -162,7 +162,7 @@ export class RenderPipeline {
 			Bloom
 		------------------------*/
 
-		this.bloomRenderCount = 5;
+		this.bloomRenderCount = 7;
 
 		this.bloomBrightPP = new ORE.PostProcessing( this.renderer, {
 			fragmentShader: bloomBrightFrag,
@@ -362,7 +362,7 @@ export class RenderPipeline {
 		this.renderer.render( scene, camera );
 		this.renderer.setRenderTarget( renderTargetMem );
 
-		this.renderer.autoClear = false;
+		this.renderer.autoClear = true;
 
 		/*------------------------
 			Bloom
@@ -389,6 +389,8 @@ export class RenderPipeline {
 		uni.direction.value = true;
 		uni.backbuffer.value = this.renderTargets.bloomRT2.texture;
 		this.bloomBlurPP.render( null, this.renderTargets.bloomRT1 );
+		// return;
+		// return;
 
 		/*------------------------
 			SMAA
@@ -431,7 +433,7 @@ export class RenderPipeline {
 		this.renderTargets.rt2.setSize( pixelWindowSize.x, pixelWindowSize.y );
 		this.renderTargets.rt3.setSize( pixelWindowSize.x, pixelWindowSize.y );
 
-		let bloomRTSize = new THREE.Vector2( pixelWindowSize.x * 1.5, pixelWindowSize.y );
+		let bloomRTSize = new THREE.Vector2( pixelWindowSize.x, pixelWindowSize.y );
 
 		this.renderTargets.bloomRT1.setSize( bloomRTSize.x, bloomRTSize.y );
 		this.renderTargets.bloomRT2.setSize( bloomRTSize.x, bloomRTSize.y );

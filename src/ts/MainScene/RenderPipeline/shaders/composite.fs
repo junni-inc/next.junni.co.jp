@@ -40,17 +40,15 @@ vec2 getMipmapUV( vec2 uv, float level ) {
 
 	vec2 ruv = uv;
 
+	float scale = 1.0 / pow( 2.0, level + 1.0 );
+
+	ruv *= scale;
+	ruv.y += scale;
+
 	if( level > 0.0 ) {
 
-		ruv.x *= 1.0 / ( 3.0 * ( pow( 2.0, level ) / 2.0 ) );
-		ruv.y *= 1.0 / ( pow( 2.0, level ) );
-		ruv.y += 1.0 / ( pow( 2.0, level ) );
-		ruv.x += 1.0 / 1.5;
-	
-	} else {
+		ruv.x += 1.0 - ( scale * 2.0 );
 
-		ruv.x /= 1.5;
-		
 	}
 
 	return ruv;
