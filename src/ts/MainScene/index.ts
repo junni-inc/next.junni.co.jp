@@ -9,6 +9,7 @@ import { Scroller } from './Scroller';
 import { Subtitles } from './Subtitle';
 import { Header } from './Header';
 import { Footer } from './Footer';
+import { Loading } from './Loading';
 
 export class MainScene extends ORE.BaseLayer {
 
@@ -21,6 +22,7 @@ export class MainScene extends ORE.BaseLayer {
 	private subtitles: Subtitles;
 	private header: Header;
 	private footer: Footer;
+	private loading: Loading;
 
 	private canScroll: boolean = false;
 
@@ -86,6 +88,12 @@ export class MainScene extends ORE.BaseLayer {
 			this.scroller.move( section - 1.0, 2.0 );
 
 		} );
+
+		/*-------------------------------
+			Loading
+		-------------------------------*/
+
+		this.loading = new Loading();
 
 	}
 
@@ -199,10 +207,14 @@ export class MainScene extends ORE.BaseLayer {
 		if ( this.renderer ) {
 
 			this.world = new World( this.renderer, this.scene, this.commonUniforms );
-			this.world.changeSection( 0 );
 			this.scene.add( this.world );
 
-			this.scroller.changeSectionNum( this.world.sections.length );
+			this.world.changeSection( 0 );
+			this.world.addEventListener( 'load', () => {
+
+				this.loading.switchVisibility( false );
+
+			} );
 
 			this.world.intro.addListener( 'showImaging', () => {
 
@@ -215,6 +227,8 @@ export class MainScene extends ORE.BaseLayer {
 				this.splash();
 
 			} );
+
+			this.scroller.changeSectionNum( this.world.sections.length );
 
 		}
 
@@ -265,6 +279,13 @@ export class MainScene extends ORE.BaseLayer {
 						this.showHeaderFooter();
 						this.world.cancelIntro();
 						this.canScroll = true;
+						this.loading.switchLogoVisibility( true );
+
+					}
+
+					if ( i == 0 ) {
+
+						this.loading.switchVisibility( false );
 
 					}
 
@@ -385,7 +406,7 @@ export class MainScene extends ORE.BaseLayer {
 
 	public onWheel( event: WheelEvent ): void {
 
-		if ( this.world ) {
+		if ( this.world && this.world.loaded ) {
 
 			if ( this.canScroll ) {
 

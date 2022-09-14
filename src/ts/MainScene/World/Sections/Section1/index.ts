@@ -113,6 +113,12 @@ export class Section1 extends Section {
 		this.bakuGoalPos.copy( this.bakuTransform.position );
 		this.bakuTransform.position.copy( this.bakuStartPos );
 
+		if ( this.splashed ) {
+
+			this.bakuTransform.position.copy( this.bakuGoalPos );
+
+		}
+
 		/*-------------------------------
 			Logo
 		-------------------------------*/
@@ -165,7 +171,6 @@ export class Section1 extends Section {
 	}
 
 	public update( deltaTime: number ): void {
-
 
 		if ( this.wall.visible ) {
 
