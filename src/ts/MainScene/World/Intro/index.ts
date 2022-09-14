@@ -209,6 +209,7 @@ export class Intro extends EventEmitter {
 		this.renderTarget.setSize( info.size.canvasPixelSize.x, info.size.canvasPixelSize.y );
 
 		this.camera.aspect = info.size.canvasAspectRatio;
+		this.camera.fov = 38 + info.size.portraitWeight * 30.0;
 		this.camera.updateProjectionMatrix();
 
 	}

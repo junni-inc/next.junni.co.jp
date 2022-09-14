@@ -6,7 +6,6 @@ import { GLTF } from 'three/examples/jsm/loaders/GLTFLoader';
 import { Section, ViewingState } from '../Section';
 import { Wall } from './Wall';
 import { BakuCollision } from './BakuCollision';
-import { Objects } from './Objects';
 import { Logo } from './Logo';
 import { Crosses } from './Crosses';
 import { Gradation } from './Gradation';
@@ -22,18 +21,24 @@ export class Section1 extends Section {
 	private cannonWorld: CANNON.World;
 	private bakuCollision: BakuCollision;
 
-	private sceneRoot?: THREE.Object3D;
+	// objects
 
 	public wall: Wall;
 	private logo?: Logo;
-	private objects?: Objects;
 	private crosses?: Crosses;
 	private gradation?: Gradation;
 	private lines?: Lines;
 	private slashes?: Slashes;
 	private dots?: Dots;
 
-	public splashed: boolean = false; //ここがtrueにならないとswitchVisivilityがきかない
+	// layout
+
+	private layoutControllerList: ORE.LayoutController[] = [];
+
+	// state
+
+	private layerInfo: ORE.LayerInfo | null = null;
+	public splashed: boolean = false; //ここがtrueにならないとswitchVisivilityがきかない( splash後にボヨンしたいから )
 
 	constructor( manager: THREE.LoadingManager, parentUniforms: ORE.Uniforms ) {
 
@@ -127,17 +132,21 @@ export class Section1 extends Section {
 		this.logo.switchVisibility( this.sectionVisibility );
 
 		/*-------------------------------
-			Objects
-		-------------------------------*/
-
-		this.objects = new Objects( scene.getObjectByName( 'Objects' ) as THREE.Object3D, this.commonUniforms );
-
-		/*-------------------------------
 			crosses
 		-------------------------------*/
 
 		this.crosses = new Crosses( this.getObjectByName( 'Crosses' ) as THREE.Object3D, this.commonUniforms );
 		this.crosses.switchVisibility( this.sectionVisibility );
+
+		this.layoutControllerList.push( new ORE.LayoutController( this.crosses.root.getObjectByName( 'Cross_Right' )!, {
+			position: new THREE.Vector3( - 0.3, 0.4, 0.0 ),
+			scale: 0.8
+		} ) );
+
+		this.layoutControllerList.push( new ORE.LayoutController( this.crosses.root.getObjectByName( 'Cross_Left' )!, {
+			position: new THREE.Vector3( 0.4, - 0.6, 0.0 ),
+			scale: 0.8
+		} ) );
 
 		/*-------------------------------
 			Gradations
@@ -146,6 +155,17 @@ export class Section1 extends Section {
 		this.gradation = new Gradation( this.getObjectByName( 'Gradations' ) as THREE.Object3D, this.commonUniforms );
 		this.gradation.switchVisibility( this.sectionVisibility );
 
+		this.layoutControllerList.push( new ORE.LayoutController( this.gradation.root.getObjectByName( 'Gradation_RightTop' )!, {
+			position: new THREE.Vector3( - 3.0, 2.0, 0.0 )
+		} ) );
+
+		this.layoutControllerList.push( new ORE.LayoutController( this.gradation.root.getObjectByName( 'Gradation_LeftBottom' )!, {
+			position: new THREE.Vector3( 3.0, - 4.0, 0.0 )
+		} ) );
+
+		this.layoutControllerList.push( new ORE.LayoutController( this.gradation.root.getObjectByName( 'Gradation_RightBottom' )!, {
+			position: new THREE.Vector3( - 2.0, - 3.0, 0.0 )
+		} ) );
 
 		/*-------------------------------
 			Lines
@@ -153,6 +173,11 @@ export class Section1 extends Section {
 
 		this.lines = new Lines( this.getObjectByName( 'Lines' ) as THREE.Object3D, this.commonUniforms );
 		this.lines.switchVisibility( this.viewing );
+
+		this.layoutControllerList.push( new ORE.LayoutController( this.lines.root, {
+			scale: 0.6,
+			position: new THREE.Vector3( 0.0, - 0.2, 0.0 )
+		} ) );
 
 		/*-------------------------------
 			Slash
@@ -167,6 +192,26 @@ export class Section1 extends Section {
 
 		this.dots = new Dots( this.getObjectByName( 'Dots' ) as THREE.Object3D, this.commonUniforms );
 		this.dots.switchVisibility( this.sectionVisibility );
+
+		this.layoutControllerList.push( new ORE.LayoutController( this.dots.root.getObjectByName( 'Dots_RightTop' )!, {
+			position: new THREE.Vector3( - 5.0, 3, 0.0 )
+		} ) );
+
+		this.layoutControllerList.push( new ORE.LayoutController( this.dots.root.getObjectByName( 'Dots_RightBottom' )!, {
+			position: new THREE.Vector3( - 2.0, - 1.5, 0.0 )
+		} ) );
+
+		this.layoutControllerList.push( new ORE.LayoutController( this.dots.root.getObjectByName( 'Dots_LeftBottom' )!, {
+			position: new THREE.Vector3( 3.0, - 3.5, 0.0 )
+		} ) );
+
+		// resize
+
+		if ( this.layerInfo ) {
+
+			this.resize( this.layerInfo );
+
+		}
 
 	}
 
@@ -228,7 +273,34 @@ export class Section1 extends Section {
 
 	}
 
+
 	public resize( info: ORE.LayerInfo ) {
+
+		this.layerInfo = info;
+
+		// baku layout
+
+		let baku = this.getObjectByName( 'Baku' );
+
+		if ( baku ) {
+
+			this.bakuGoalPos.copy( baku.position.clone().add( new THREE.Vector3( info.size.portraitWeight * 0.2, 0.0, 0.0 ) ) );
+			this.bakuTransform.position.copy( this.bakuStartPos.clone().lerp( this.bakuGoalPos, this.animator.get<number>( 'bakuSplash' ) || 0 ) );
+
+		}
+
+		// object layout
+
+		this.layoutControllerList.forEach( item => {
+
+			item.updateTransform( info.size.portraitWeight );
+
+		} );
+
+		// logo layout
+
+		if ( this.logo ) this.logo.resize( this.layerInfo );
+
 
 	}
 

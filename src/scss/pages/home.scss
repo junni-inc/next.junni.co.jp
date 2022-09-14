@@ -508,6 +508,10 @@ body {
 	}
 
 	$this: &;
+
+	@include sp {
+		right: 40px;
+	}
 	
 	&:hover {
 		#{$this}-inner {

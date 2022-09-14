@@ -42,6 +42,26 @@ export class Logo {
 
 		} );
 
+		this.meshList.find( item => item.mesh.name == 'LogoPart_1' )!.spTransform = {
+			position: new THREE.Vector3( 1, 1.3, 0.0 )
+		};
+
+		this.meshList.find( item => item.mesh.name == 'LogoPart_2' )!.spTransform = {
+			position: new THREE.Vector3( 1.5, 0.3, 0.0 )
+		};
+
+		this.meshList.find( item => item.mesh.name == 'LogoPart_3' )!.spTransform = {
+			position: new THREE.Vector3( - 0.7, 0.5, 0.0 )
+		};
+
+		this.meshList.find( item => item.mesh.name == 'LogoPart_4' )!.spTransform = {
+			position: new THREE.Vector3( - 1.5, - 2.3, 0.0 )
+		};
+
+		this.meshList.find( item => item.mesh.name == 'LogoPart_5' )!.spTransform = {
+			position: new THREE.Vector3( - 2.0, - 3.0, 0.0 )
+		};
+
 	}
 
 	public update( deltaTime: number ) {
@@ -73,6 +93,16 @@ export class Logo {
 		this.animator.animate( 'sec1LogoVisibility', visible ? 1 : 0, 1, () => {
 
 			if ( ! visible ) this.root.visible = false;
+
+		} );
+
+	}
+
+	public resize( info: ORE.LayerInfo ) {
+
+		this.meshList.forEach( item=> {
+
+			item.resize( info );
 
 		} );
 

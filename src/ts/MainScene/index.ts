@@ -402,7 +402,6 @@ export class MainScene extends ORE.BaseLayer {
 
 		}
 
-
 	}
 
 	public onWheel( event: WheelEvent ): void {

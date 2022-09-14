@@ -333,7 +333,6 @@ export class World extends THREE.Object3D {
 		if ( this.splashed ) return;
 
 		this.splashed = true;
-
 		this.section1.wall.init( camera );
 		this.section1.splash();
 
@@ -344,6 +343,13 @@ export class World extends THREE.Object3D {
 			this.section1.switchViewingState( "viewing" );
 
 		}, 500 );
+
+		setTimeout( () => {
+
+			this.section1.wall.dispose();
+
+		}, 1500 );
+
 
 	}
 
