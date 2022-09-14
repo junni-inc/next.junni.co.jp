@@ -21,6 +21,8 @@ export class Logo extends EventEmitter {
 	private isMesh: THREE.Mesh;
 	private imagingMesh: THREE.Mesh;
 
+	private canceled: boolean = false;
+
 	constructor( logoMesh: THREE.Mesh, parentUniforms: ORE.Uniforms ) {
 
 		super();
@@ -140,6 +142,8 @@ export class Logo extends EventEmitter {
 
 		setTimeout( () => {
 
+			if ( this.canceled ) return;
+
 			window.subtitles.show( '私たちは想像します。', 0.8 );
 
 			this.emitEvent( 'showImaging' );
@@ -163,6 +167,12 @@ export class Logo extends EventEmitter {
 		this.isMesh.visible = false;
 		this.lineMesh.visible = false;
 		this.imagingMesh.visible = false;
+
+	}
+
+	public cancel() {
+
+		this.canceled = true;
 
 	}
 

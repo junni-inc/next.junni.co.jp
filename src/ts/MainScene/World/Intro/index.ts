@@ -5,12 +5,15 @@ import { CameraController } from './CameraController';
 import { IntroGrid } from './IntroGrid';
 import { IntroText } from './IntroText';
 import EventEmitter from 'wolfy87-eventemitter';
+import { IntroUI } from './IntroUI';
 
 export class Intro extends EventEmitter {
 
 	private commonUniforms: ORE.Uniforms;
 
 	private animator: ORE.Animator;
+
+	private ui: IntroUI;
 
 	private renderer: THREE.WebGLRenderer;
 	public scene: THREE.Scene;
@@ -27,7 +30,7 @@ export class Intro extends EventEmitter {
 	private dirLight: THREE.DirectionalLight;
 	private aLight: THREE.AmbientLight;
 
-	public paused: boolean = false;
+	public finished: boolean = false;
 
 	constructor( renderer: THREE.WebGLRenderer, introObj: THREE.Object3D, parentUniforms: ORE.Uniforms ) {
 
@@ -47,6 +50,19 @@ export class Intro extends EventEmitter {
 		this.scene.add( introObj );
 
 		this.commonUniforms = ORE.UniformsLib.mergeUniforms( parentUniforms, {
+		} );
+
+		/*-------------------------------
+			UI
+		-------------------------------*/
+
+		this.ui = new IntroUI();
+
+		this.ui.addListener( 'skip', () => {
+
+			this.skip();
+			this.emitEvent( 'finish' );
+
 		} );
 
 		/*-------------------------------
@@ -126,7 +142,7 @@ export class Intro extends EventEmitter {
 
 	public update( deltaTime: number ) {
 
-		if ( this.paused ) return;
+		if ( this.finished ) return;
 
 		this.logo.update( deltaTime );
 
@@ -152,17 +168,35 @@ export class Intro extends EventEmitter {
 
 			if ( percentage == 1.0 ) {
 
-				if ( this.paused ) return;
+				if ( this.finished ) return;
+
+				this.ui.switchSkipVisibility( true );
 
 				await this.logo.start();
 
+				if ( this.finished ) return;
+
 				this.emitEvent( 'showImaging' );
+
 				await this.text1.start();
 
+				if ( this.finished ) return;
+
 				await this.text2.start();
+
+				if ( this.finished ) return;
+
+				setTimeout( () => {
+
+					this.ui.switchSkipVisibility( false );
+
+				}, 1000 );
+
 				await this.text3.start();
 
-				this.emitEvent( 'finishIntro' );
+				this.finished = true;
+
+				this.emitEvent( 'finish' );
 
 			}
 
@@ -176,6 +210,14 @@ export class Intro extends EventEmitter {
 
 		this.camera.aspect = info.size.canvasAspectRatio;
 		this.camera.updateProjectionMatrix();
+
+	}
+
+	public skip() {
+
+		this.finished = true;
+
+		this.logo.cancel();
 
 	}
 

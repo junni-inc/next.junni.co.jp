@@ -5,7 +5,7 @@ $notosans: 'Noto Sans JP', 'Noto Sans', sans-serif;
 $notoserif: 'Noto Serif', serif;
 $bebas: 'Bebas Neue', cursive;
 $jura: 'Jura', sans-serif;
-$tobotoSerif: 'Roboto Serif', serif;
+$robotoSerif: 'Roboto Serif', serif;
 
 body {
 	width: 100%;
@@ -374,7 +374,7 @@ body {
 		}
 		
 		&-head {
-			font-family: $tobotoSerif;
+			font-family: $robotoSerif;
 			font-size: 2.5vw;
 			font-weight: normal;
 			color: #fff;
@@ -438,6 +438,87 @@ body {
 
 		svg {
 			width: 100%;
+		}
+	}
+}
+
+.intro-skip {
+	position: absolute;
+	right: 55px;
+	bottom: 15px;
+	color: #fff;
+
+	transform: translateX(250%);
+	transition: transform .8s;
+
+	pointer-events: none;
+
+	&[data-skipVisible="true"] {
+		
+		transform: translateX(0);
+		cursor: pointer;
+		pointer-events: auto;
+		
+	}
+
+	$this: &;
+	
+	&:hover {
+		#{$this}-inner {
+			@keyframes jump {
+				0% {
+					transform: translateY( 0);
+					animation-timing-function: ease-out;
+				}
+				50% {
+					transform: translateY( -10px );
+					animation-timing-function: ease-in;
+				}
+				100% {
+					transform: translateY( 0);
+				}
+			}
+			
+			animation: jump 0.2s 0s 1 normal;
+		}
+	}
+	
+	&-inner {
+		position: relative;
+	}
+	
+	&-txt {
+		position: absolute;
+		width: 100%;
+
+		&-item {
+			position: absolute;
+			left: 40%;
+			bottom: 100%;
+
+			opacity: 0;
+
+			&.skip {
+				[data-skipTxt="skip"] & {
+					opacity: 1;
+				}
+			}
+			
+			&.ok {
+				[data-skipTxt="ok"] & {
+					opacity: 1;
+				}
+			}
+			
+		}
+	}
+
+	&-baku {
+
+		transition: transform .5s;
+
+		[data-skipVisible="false"] & {
+			transform: scaleX(-1);
 		}
 	}
 }

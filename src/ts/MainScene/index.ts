@@ -222,7 +222,7 @@ export class MainScene extends ORE.BaseLayer {
 
 			} );
 
-			this.world.intro.addListener( 'finishIntro', () => {
+			this.world.intro.addListener( 'finish', () => {
 
 				this.splash();
 
@@ -254,7 +254,7 @@ export class MainScene extends ORE.BaseLayer {
 
 		};
 
-		const onChangeHash = ( e?: Event ) => {
+		const onChangeHash = () => {
 
 			let hash = window.location.hash;
 
@@ -274,18 +274,19 @@ export class MainScene extends ORE.BaseLayer {
 
 					} );
 
-					if ( i > 0 && ! this.canScroll ) {
+					if ( ! this.world.splashed ) {
 
-						this.showHeaderFooter();
-						this.world.cancelIntro();
-						this.canScroll = true;
-						this.loading.switchLogoVisibility( true );
+						if ( i == 0 ) {
 
-					}
+							this.loading.switchVisibility( false );
 
-					if ( i == 0 ) {
+						} else {
 
-						this.loading.switchVisibility( false );
+							this.showHeaderFooter();
+							this.world.cancelIntro();
+							this.loading.switchLogoVisibility( true );
+
+						}
 
 					}
 
@@ -340,7 +341,7 @@ export class MainScene extends ORE.BaseLayer {
 
 		if ( this.renderPipeline ) {
 
-			if ( this.world && ! this.world.intro.paused ) {
+			if ( this.world && ! this.world.intro.finished ) {
 
 				this.renderPipeline.render( this.world.intro.scene, this.world.intro.camera );
 				return;
@@ -406,18 +407,10 @@ export class MainScene extends ORE.BaseLayer {
 
 	public onWheel( event: WheelEvent ): void {
 
-		if ( this.world && this.world.loaded ) {
+		if ( this.world && this.world.splashed ) {
 
-			if ( this.canScroll ) {
-
-				this.scroller.addVelocity( event.deltaY * 0.00005 );
-				this.world.section6.wheel( event );
-
-			} else {
-
-				this.splash();
-
-			}
+			this.scroller.addVelocity( event.deltaY * 0.00005 );
+			this.world.section6.wheel( event );
 
 		}
 
@@ -425,22 +418,31 @@ export class MainScene extends ORE.BaseLayer {
 
 	public onTouchStart( args: ORE.TouchEventArgs ) {
 
-		this.scroller.catch();
+		if ( this.world && this.world.splashed ) {
+
+			this.scroller.catch();
+
+		}
 
 	}
 
 	public onTouchMove( args: ORE.TouchEventArgs ) {
 
-		if ( this.canScroll ) {
+		if ( this.world && this.world.splashed ) {
 
 			this.scroller.drag( args.delta.y );
 
-		} else {
-
-			this.splash();
-
 		}
 
+	}
+
+	public onTouchEnd( args: ORE.TouchEventArgs ) {
+
+		if ( this.world && this.world.splashed ) {
+
+			this.scroller.release( args.delta.y );
+
+		}
 
 	}
 
@@ -470,10 +472,5 @@ export class MainScene extends ORE.BaseLayer {
 
 	}
 
-	public onTouchEnd( args: ORE.TouchEventArgs ) {
-
-		this.scroller.release( args.delta.y );
-
-	}
 
 }

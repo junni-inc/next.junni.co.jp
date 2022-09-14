@@ -53,7 +53,7 @@ export class World extends THREE.Object3D {
 	// state
 
 	public loaded: boolean = false;
-	private splashed: boolean = false;
+	public splashed: boolean = false;
 
 	constructor( renderer: THREE.WebGLRenderer, scene: THREE.Scene, parentUniforms: ORE.Uniforms ) {
 
@@ -334,7 +334,6 @@ export class World extends THREE.Object3D {
 
 		this.splashed = true;
 
-		this.intro.paused = true;
 		this.section1.wall.init( camera );
 		this.section1.splash();
 
@@ -353,7 +352,7 @@ export class World extends THREE.Object3D {
 		if ( this.splashed ) return;
 
 		this.splashed = true;
-		this.intro.paused = true;
+		this.intro.skip();
 		this.section1.wall.dispose();
 		this.section1.splash();
 		this.baku.show( 0 );
