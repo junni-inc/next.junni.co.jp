@@ -52,7 +52,8 @@ export class World extends THREE.Object3D {
 
 	// state
 
-	private splashed: boolean = false;
+	public loaded: boolean = false;
+	public splashed: boolean = false;
 
 	constructor( renderer: THREE.WebGLRenderer, scene: THREE.Scene, parentUniforms: ORE.Uniforms ) {
 
@@ -77,6 +78,12 @@ export class World extends THREE.Object3D {
 
 				if ( percentage == 1.0 ) {
 
+					this.loaded = true;
+
+					/*-------------------------------
+						コンパイル走るといいな～
+					-------------------------------*/
+
 					let camera = new THREE.OrthographicCamera( - 100, 100, 100, - 100, 0.01, 1000.0 );
 					camera.position.set( 0, 0, 500 );
 
@@ -96,6 +103,12 @@ export class World extends THREE.Object3D {
 						visibility.push( section.visible );
 						section.visible = visibility.shift() || false;
 
+					} );
+
+					// -----------------------------------
+
+					this.dispatchEvent( {
+						type: 'load',
 					} );
 
 				}
@@ -236,7 +249,6 @@ export class World extends THREE.Object3D {
 		this.baku.changeRotateSpeed( section.bakuParam.rotateSpeed );
 		this.baku.changeMaterial( section.bakuParam.materialType );
 		this.baku.changeSectionAction( section.sectionName );
-		// this.baku.textLing.switchVisibility( sectionIndex == 4 );
 
 		//  bg
 
@@ -321,8 +333,6 @@ export class World extends THREE.Object3D {
 		if ( this.splashed ) return;
 
 		this.splashed = true;
-
-		this.intro.paused = true;
 		this.section1.wall.init( camera );
 		this.section1.splash();
 
@@ -334,6 +344,13 @@ export class World extends THREE.Object3D {
 
 		}, 500 );
 
+		setTimeout( () => {
+
+			this.section1.wall.dispose();
+
+		}, 1500 );
+
+
 	}
 
 	public cancelIntro() {
@@ -341,11 +358,11 @@ export class World extends THREE.Object3D {
 		if ( this.splashed ) return;
 
 		this.splashed = true;
-
-		this.intro.paused = true;
+		this.intro.skip();
 		this.section1.wall.dispose();
 		this.section1.splash();
 		this.baku.show( 0 );
+
 
 	}
 

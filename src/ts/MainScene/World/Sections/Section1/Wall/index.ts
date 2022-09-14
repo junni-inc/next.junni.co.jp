@@ -46,7 +46,6 @@ export class Wall extends THREE.Object3D {
 			initValue: 1,
 		} );
 
-
 	}
 
 	public setTex( texture: THREE.Texture ) {

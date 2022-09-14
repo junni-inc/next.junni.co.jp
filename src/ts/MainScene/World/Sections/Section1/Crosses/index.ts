@@ -6,7 +6,7 @@ export class Crosses {
 
 	private animator: ORE.Animator;
 
-	private root: THREE.Object3D;
+	public root: THREE.Object3D;
 	private commonUniforms: ORE.Uniforms;
 	private crossList: Cross[] = [];
 
@@ -30,11 +30,12 @@ export class Crosses {
 			easing: ORE.Easings.linear
 		} );
 
-		root.children.forEach( ( item, i ) => {
+		root.children.concat().forEach( ( item, i ) => {
 
 			let origin = item as THREE.Mesh;
 
 			let cross = new Cross( origin, this.commonUniforms );
+			cross.name = item.name;
 
 			setTimeout( () => {
 
@@ -51,6 +52,7 @@ export class Crosses {
 			if ( origin.parent ) {
 
 				origin.parent.add( cross );
+				origin.parent.remove( origin );
 				origin.visible = false;
 
 			}

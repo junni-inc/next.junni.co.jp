@@ -9,7 +9,7 @@ export class Lines {
 
 	private animator: ORE.Animator;
 	private commonUniforms: ORE.Uniforms;
-	private root: THREE.Object3D;
+	public root: THREE.Object3D;
 
 	constructor( root: THREE.Object3D, parentUniforms: ORE.Uniforms ) {
 

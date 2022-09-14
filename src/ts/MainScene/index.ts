@@ -9,6 +9,7 @@ import { Scroller } from './Scroller';
 import { Subtitles } from './Subtitle';
 import { Header } from './Header';
 import { Footer } from './Footer';
+import { Loading } from './Loading';
 
 export class MainScene extends ORE.BaseLayer {
 
@@ -21,6 +22,7 @@ export class MainScene extends ORE.BaseLayer {
 	private subtitles: Subtitles;
 	private header: Header;
 	private footer: Footer;
+	private loading: Loading;
 
 	private canScroll: boolean = false;
 
@@ -86,6 +88,12 @@ export class MainScene extends ORE.BaseLayer {
 			this.scroller.move( section - 1.0, 2.0 );
 
 		} );
+
+		/*-------------------------------
+			Loading
+		-------------------------------*/
+
+		this.loading = new Loading();
 
 	}
 
@@ -199,10 +207,14 @@ export class MainScene extends ORE.BaseLayer {
 		if ( this.renderer ) {
 
 			this.world = new World( this.renderer, this.scene, this.commonUniforms );
-			this.world.changeSection( 0 );
 			this.scene.add( this.world );
 
-			this.scroller.changeSectionNum( this.world.sections.length );
+			this.world.changeSection( 0 );
+			this.world.addEventListener( 'load', () => {
+
+				this.loading.switchVisibility( false );
+
+			} );
 
 			this.world.intro.addListener( 'showImaging', () => {
 
@@ -210,11 +222,13 @@ export class MainScene extends ORE.BaseLayer {
 
 			} );
 
-			this.world.intro.addListener( 'finishIntro', () => {
+			this.world.intro.addListener( 'finish', () => {
 
 				this.splash();
 
 			} );
+
+			this.scroller.changeSectionNum( this.world.sections.length );
 
 		}
 
@@ -240,7 +254,7 @@ export class MainScene extends ORE.BaseLayer {
 
 		};
 
-		const onChangeHash = ( e?: Event ) => {
+		const onChangeHash = () => {
 
 			let hash = window.location.hash;
 
@@ -260,11 +274,19 @@ export class MainScene extends ORE.BaseLayer {
 
 					} );
 
-					if ( i > 0 && ! this.canScroll ) {
+					if ( ! this.world.splashed ) {
 
-						this.showHeaderFooter();
-						this.world.cancelIntro();
-						this.canScroll = true;
+						if ( i == 0 ) {
+
+							this.loading.switchVisibility( false );
+
+						} else {
+
+							this.showHeaderFooter();
+							this.world.cancelIntro();
+							this.loading.switchLogoVisibility( true );
+
+						}
 
 					}
 
@@ -319,7 +341,7 @@ export class MainScene extends ORE.BaseLayer {
 
 		if ( this.renderPipeline ) {
 
-			if ( this.world && ! this.world.intro.paused ) {
+			if ( this.world && ! this.world.intro.finished ) {
 
 				this.renderPipeline.render( this.world.intro.scene, this.world.intro.camera );
 				return;
@@ -380,23 +402,14 @@ export class MainScene extends ORE.BaseLayer {
 
 		}
 
-
 	}
 
 	public onWheel( event: WheelEvent ): void {
 
-		if ( this.world ) {
+		if ( this.world && this.world.splashed ) {
 
-			if ( this.canScroll ) {
-
-				this.scroller.addVelocity( event.deltaY * 0.00005 );
-				this.world.section6.wheel( event );
-
-			} else {
-
-				this.splash();
-
-			}
+			this.scroller.addVelocity( event.deltaY * 0.00005 );
+			this.world.section6.wheel( event );
 
 		}
 
@@ -404,22 +417,31 @@ export class MainScene extends ORE.BaseLayer {
 
 	public onTouchStart( args: ORE.TouchEventArgs ) {
 
-		this.scroller.catch();
+		if ( this.world && this.world.splashed ) {
+
+			this.scroller.catch();
+
+		}
 
 	}
 
 	public onTouchMove( args: ORE.TouchEventArgs ) {
 
-		if ( this.canScroll ) {
+		if ( this.world && this.world.splashed ) {
 
 			this.scroller.drag( args.delta.y );
 
-		} else {
-
-			this.splash();
-
 		}
 
+	}
+
+	public onTouchEnd( args: ORE.TouchEventArgs ) {
+
+		if ( this.world && this.world.splashed ) {
+
+			this.scroller.release( args.delta.y );
+
+		}
 
 	}
 
@@ -449,10 +471,5 @@ export class MainScene extends ORE.BaseLayer {
 
 	}
 
-	public onTouchEnd( args: ORE.TouchEventArgs ) {
-
-		this.scroller.release( args.delta.y );
-
-	}
 
 }
