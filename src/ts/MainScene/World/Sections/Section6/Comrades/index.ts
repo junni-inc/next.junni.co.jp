@@ -6,7 +6,7 @@ import { Comrade } from './Comrade';
 export class Comrades extends EventEmitter {
 
 	private commonUniforms: ORE.Uniforms;
-	private root: THREE.Object3D;
+	public root: THREE.Object3D;
 	private origin: THREE.SkinnedMesh;
 	private comradeList: Comrade[] = [];
 

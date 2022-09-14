@@ -432,8 +432,14 @@ body {
 		left: 50%;
 		bottom: 30px;
 		transform: translateX(-50%);
-		display: flex;
+		
+		width: 60%;
+		max-width: 300px;
 
+		display: flex;
+		justify-content: space-around;
+		align-items: center;
+		
 		opacity: 0;
 		transition: opacity 1s;
 		
@@ -445,8 +451,15 @@ body {
 		}
 		
 		&-item {
-			padding: 0 20px;
+			padding: 0 10px;
+			a {
+				display: block;
+			}
+			svg {
+				width: 100%;
+			}
 		}
+
 
 	}
 }

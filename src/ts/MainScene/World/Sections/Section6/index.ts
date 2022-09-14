@@ -18,6 +18,13 @@ export class Section6 extends Section {
 	private particle?: Particle;
 	private road?: Road;
 
+	// sp
+
+	private cameraBasePos: THREE.Vector3 | null = null;
+	private cameraBaseFov: number | null = null;
+
+	private layoutControllerList: ORE.LayoutController[] = [];
+
 	constructor( manager: THREE.LoadingManager, parentUniforms: ORE.Uniforms ) {
 
 		super( manager, 'section_6', parentUniforms );
@@ -63,14 +70,37 @@ export class Section6 extends Section {
 		let scene = gltf.scene;
 		this.add( scene );
 
-		let bakuContainer = ( this.getObjectByName( 'Baku' ) as THREE.Object3D );
-
 		/*-------------------------------
 			Comrades
 		-------------------------------*/
 
 		this.comrades = new Comrades( this.getObjectByName( 'Comrades' ) as THREE.Object3D, this.getObjectByName( "Comrades_Origin_Wrap" ) as THREE.SkinnedMesh, gltf.animations, this.commonUniforms );
 		this.comrades.switchVisibility( this.sectionVisibility );
+
+		this.layoutControllerList.push( new ORE.LayoutController( this.comrades.root.getObjectByName( 'Comrade_1' )!, {
+			position: new THREE.Vector3( - 1.0, - 2.5, 0.5 )
+		} ) );
+
+
+		this.layoutControllerList.push( new ORE.LayoutController( this.comrades.root.getObjectByName( 'Comrade_2' )!, {
+			position: new THREE.Vector3( 3.5, - 1.5, 0.5 )
+		} ) );
+
+		this.layoutControllerList.push( new ORE.LayoutController( this.comrades.root.getObjectByName( 'Comrade_3' )!, {
+			position: new THREE.Vector3( - 1.0, 2.0, 0.8 )
+		} ) );
+
+		this.layoutControllerList.push( new ORE.LayoutController( this.comrades.root.getObjectByName( 'Comrade_4' )!, {
+			position: new THREE.Vector3( - 1.0, 8.0, 0.0 )
+		} ) );
+
+		this.layoutControllerList.push( new ORE.LayoutController( this.comrades.root.getObjectByName( 'Comrade_5' )!, {
+			position: new THREE.Vector3( 0.0, 2.0, 0.0 )
+		} ) );
+
+		this.layoutControllerList.push( new ORE.LayoutController( this.comrades.root.getObjectByName( 'Comrade_6' )!, {
+			position: new THREE.Vector3( 0.0, 2.0, 0.0 )
+		} ) );
 
 		/*-------------------------------
 			Wind
@@ -95,12 +125,6 @@ export class Section6 extends Section {
 		this.particle.switchVisibility( this.sectionVisibility );
 		this.add( this.particle );
 
-		if ( this.info ) {
-
-			this.particle.resize( this.info );
-
-		}
-
 		/*-------------------------------
 			Road
 		-------------------------------*/
@@ -111,6 +135,21 @@ export class Section6 extends Section {
 		this.road.rotateY( Math.PI / 2 );
 		this.road.switchVisibility( this.sectionVisibility );
 		this.add( this.road );
+
+		/*-------------------------------
+			Camera base
+		-------------------------------*/
+
+		this.cameraBasePos = this.cameraTransform.position.clone();
+		this.cameraBaseFov = this.cameraTransform.fov;
+
+		// resize
+
+		if ( this.info ) {
+
+			this.resize( this.info );
+
+		}
 
 	}
 
@@ -124,18 +163,13 @@ export class Section6 extends Section {
 
 		}
 
-
 	}
 
 	public update( deltaTime: number ): void {
 
-		// this.bakuTransform.rotation.multiply( new THREE.Quaternion().setFromAxisAngle( new THREE.Vector3( 0.0, 0.0, 1.0 ), deltaTime * 0.5 ) );
-
 		if ( this.comrades ) this.comrades.update( deltaTime );
 
 		if ( this.particle ) this.particle.update( deltaTime );
-
-
 
 	}
 
@@ -174,6 +208,24 @@ export class Section6 extends Section {
 			this.particle.resize( info );
 
 		}
+
+		if ( this.cameraBasePos ) {
+
+			this.cameraTransform.position.copy( this.cameraBasePos.clone().add( new THREE.Vector3( info.size.portraitWeight * 1.0, 0.0, 0.0 ) ) );
+
+		}
+
+		if ( this.cameraBaseFov ) {
+
+			this.cameraTransform.fov = this.cameraBaseFov + info.size.portraitWeight * 20;
+
+		}
+
+		this.layoutControllerList.forEach( item => {
+
+			item.updateTransform( info.size.portraitWeight );
+
+		} );
 
 	}
 
