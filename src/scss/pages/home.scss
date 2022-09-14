@@ -32,6 +32,23 @@ body {
 	left: 0;
 	top: 0;
 	pointer-events: none;
+	
+	&[data-visible="true"] {
+		pointer-events: auto;
+	}
+	
+	&-wrap {
+		position: relative;
+		flex: 1;
+		canvas {
+			position: absolute;
+			width: 100%;
+			height: 100%;
+			left: 0;
+			top: 0;
+			z-index: 0;
+		}
+	}
 }
 
 .header {
@@ -42,6 +59,10 @@ body {
 	align-items: center;
 	justify-content: center;
 	z-index: 10;
+
+	@include sp {
+		height: 60px;
+	}
 
 	&-logo {
 
@@ -55,7 +76,13 @@ body {
 		
 		svg {
 			width: 180px;
+			
+			@include sp {
+				width: 135px;
+			}
+
 		}
+
 	}
 }
 
@@ -69,7 +96,13 @@ body {
 
 	display: flex;
 	align-items: center;
+	justify-content: space-between;
 	z-index: 10;
+
+	@include sp {
+		height: 50px;
+		padding: 0 5%;
+	}
 
 	&-timeline {
 		position: absolute;
@@ -84,8 +117,10 @@ body {
 		max-width: 200px;
 
 		@include sp {
-			opacity: 0;
-			pointer-events: none;
+			position: relative;
+			flex: 1;
+			left: unset;
+			padding-right: 2vw;
 		}
 		
 		&[data-visible="true"] {
@@ -147,16 +182,25 @@ body {
 		transform: translateX(-50%);
 		opacity: 0;
 		transition: opacity 2s;
+		
+		font-family: $notosans;	
+		font-size: 0.7vw;
+		font-weight: lighter;
+		letter-spacing: 0.2em;
+		color: #eee;
 
 		&[data-visible="true"] {
 			opacity: 1;
 		}
-		
-		font-family: $notosans;	
-		font-size: 13px;
-		font-weight: lighter;
-		letter-spacing: 0.2em;
-		color: #eee;
+
+		@include sp {
+			position: relative;
+			left:  unset;
+			transform: translateX(0);
+			font-size: 9px;
+			letter-spacing: 0.05em ;
+			padding-left: 2vw;
+		}
 	}
 }
 
@@ -169,6 +213,7 @@ body {
 	justify-content: center;
 	align-items: center;
 	flex-direction: column;
+	pointer-events: none;
 
 	&-text {
 		display: inline-block;
@@ -176,25 +221,17 @@ body {
 		padding: 5px 10px;
 		text-align: center;
 		font-family: $notosans;
+		font-size: 15px;
+		user-select: none;
 
 		&[data-visible="false"] {
 			opacity: 0;
 			transition: opacity .5s;
 		}
-	}
-}
 
-.section {
-	&-wrap {
-		position: relative;
-		flex: 1;
-		canvas {
-			position: absolute;
-			width: 100%;
-			height: 100%;
-			left: 0;
-			top: 0;
-			z-index: 0;
+
+		@include sp {
+			font-size: 12px;
 		}
 	}
 }
@@ -285,8 +322,8 @@ body {
 	}
 }
 
-
 .section5 {
+	
 	width: 100%;
 	height: 100%;
 	display: flex;
@@ -301,12 +338,6 @@ body {
 	&[data-visible="true"] {
 		opacity: 1;
 	}
-}
-
-.section5 {
-	
-	width: 100%;
-	height: 100%;
 	
 	&-content {
 		width: 100%;
@@ -317,14 +348,15 @@ body {
 		flex-direction: row-reverse;
 		justify-content: space-around;
 
-		// flex-direction: column;
-		// padding-top: 0vh;
-
-	
 	}
 	
 	&-text {
+		
 		&-wrap {
+		 	
+			pointer-events: none;
+			user-select: none;
+			
 			display: flex;
 			flex-direction: row-reverse;
 			justify-content: center;
@@ -379,6 +411,19 @@ body {
 			font-weight: normal;
 			color: #fff;
 			margin-bottom: 50px;
+
+			@include sp{
+				font-size: 6.0vw;
+				line-height: 1.8em;
+			}
+		}
+
+		&-link {
+			width: 30%;
+			max-width: 150px;
+			svg {
+				width: 100%;
+			}
 		}
 	}
 	
@@ -399,10 +444,10 @@ body {
 			
 		}
 		
-		
 		&-item {
 			padding: 0 20px;
 		}
+
 	}
 }
 
@@ -452,6 +497,7 @@ body {
 	transition: transform .8s;
 
 	pointer-events: none;
+	-webkit-tap-highlight-color: transparent;
 
 	&[data-skipVisible="true"] {
 		
