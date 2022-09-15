@@ -11,6 +11,8 @@ import { Header } from './Header';
 import { Footer } from './Footer';
 import { Loading } from './Loading';
 
+import { Lethargy } from 'lethargy';
+
 export class MainScene extends ORE.BaseLayer {
 
 	private gManager?: GlobalManager;
@@ -24,6 +26,9 @@ export class MainScene extends ORE.BaseLayer {
 	private footer: Footer;
 	private loading: Loading;
 
+	private lethargy: any;
+	private memDelta: number = 0.0;
+	private riseDelta: boolean = false;
 	private canScroll: boolean = false;
 
 	constructor() {
@@ -63,6 +68,8 @@ export class MainScene extends ORE.BaseLayer {
 			}
 
 		} );
+
+		this.lethargy = new Lethargy();
 
 		/*-------------------------------
 			Subtitles
@@ -404,12 +411,49 @@ export class MainScene extends ORE.BaseLayer {
 
 	}
 
-	public onWheel( event: WheelEvent ): void {
+	private optimizedWheel( event: WheelEvent ) {
 
 		if ( this.world && this.world.splashed ) {
 
 			this.scroller.addVelocity( event.deltaY * 0.00005 );
 			this.world.section6.wheel( event );
+
+		}
+
+	}
+
+	public onWheel( event: WheelEvent ): void {
+
+		if ( this.lethargy.check( event ) !== false ) {
+
+			this.optimizedWheel( event );
+
+		} else {
+
+			let d = event.deltaY - this.memDelta;
+
+			if ( Math.abs( d ) > 50 ) {
+
+				this.memDelta = d;
+				this.optimizedWheel( event );
+				this.riseDelta = true;
+
+			} else if ( d == 0 ) {
+
+				if ( this.riseDelta ) {
+
+					this.optimizedWheel( event );
+
+				}
+
+			} else if ( d < 0 ) {
+
+				this.riseDelta = false;
+
+			}
+
+
+			this.memDelta = ( event.deltaY );
 
 		}
 

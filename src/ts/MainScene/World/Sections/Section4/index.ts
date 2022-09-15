@@ -1,17 +1,9 @@
 import * as THREE from 'three';
 import * as ORE from 'ore-three';
-import * as CANNON from 'cannon';
 
 import { Section, ViewingState } from '../Section';
 import { GLTF } from 'three/examples/jsm/loaders/GLTFLoader';
 import { Peoples } from './Peoples';
-import { FallText } from './FallText';
-
-type PhysicsObj = {
-	visual: THREE.Object3D;
-	body: CANNON.Body
-}
-
 
 import textVert from './shaders/text.vs';
 import textFrag from './shaders/text.fs';
@@ -25,9 +17,6 @@ export class Section4 extends Section {
 	private renderer: THREE.WebGLRenderer;
 	private peoples?: Peoples;
 
-	private cannonWorld: CANNON.World;
-	private groundBody?: CANNON.Body;
-
 	private title?: TileText;
 	private word?: TileText;
 
@@ -40,6 +29,12 @@ export class Section4 extends Section {
 		"story",
 		"awesome"
 	];
+
+	// layout
+
+	private baseFov: number = 0.0;
+	private layoutContorllerList: ORE.LayoutController[] = [];
+	private info: ORE.LayerInfo | null = null;
 
 	constructor( manager: THREE.LoadingManager, parentUniforms: ORE.Uniforms, renderer: THREE.WebGLRenderer ) {
 
@@ -68,14 +63,6 @@ export class Section4 extends Section {
 			initValue: 0,
 			easing: ORE.Easings.easeOutCubic
 		} );
-
-		/*-------------------------------
-			Cannon
-		-------------------------------*/
-
-		this.cannonWorld = new CANNON.World();
-		this.cannonWorld.iterations = 50;
-		this.cannonWorld.gravity = new CANNON.Vec3( 0.0, - 9.8, 0.0 );
 
 		/*-------------------------------
 			Light1
@@ -181,34 +168,6 @@ export class Section4 extends Section {
 		let ground = this.getObjectByName( 'Ground' ) as THREE.Mesh<any, THREE.MeshStandardMaterial>;
 		ground.material.visible = false;
 
-		let size = new THREE.Box3().setFromObject( ground ).getSize( new THREE.Vector3() );
-
-		let body = new CANNON.Body( { type: CANNON.Body.KINEMATIC } );
-		body.addShape( new CANNON.Box( new CANNON.Vec3( size.x / 2, size.y / 2, size.z / 2 ) ) );
-		body.position.set( 0, 0, 0 );
-
-		this.cannonWorld.addBody( body );
-
-		/*-------------------------------
-			Text
-		-------------------------------*/
-
-		// let textRoot = scene.getObjectByName( 'FallTexts' );
-		// let textAssets = scene.getObjectByName( 'TextAssets' ) as THREE.Object3D;
-
-		// if ( textRoot && textAssets ) {
-
-		// 	textRoot.children.concat().forEach( ( item, index ) => {
-
-		// 		let text = new FallText( item as THREE.Mesh, textAssets.getObjectByName( 'Text' + ( index + 1 ) ) as THREE.Object3D, this.commonUniforms, ground );
-		// 		// ground.add( text.root );
-		// 		this.cannonWorld.addBody( text.body );
-		// 		this.textList.push( text );
-
-		// 	} );
-
-		// }
-
 		/*-------------------------------
 			Peoples
 		-------------------------------*/
@@ -234,6 +193,12 @@ export class Section4 extends Section {
 		this.title.switchVisiblity( this.sectionVisibility );
 		ground.add( this.title );
 
+		this.layoutContorllerList.push( new ORE.LayoutController( this.title, {
+			position: new THREE.Vector3( 3.5, 0.0, - 3.0 ),
+			scale: 1.3
+		} ) );
+
+		// words
 
 		this.word = new TileText( this.commonUniforms );
 		this.word.position.set( 0.0, 3.0, 3.5 );
@@ -243,17 +208,41 @@ export class Section4 extends Section {
 		this.textIndex = 1;
 		ground.add( this.word );
 
+		this.layoutContorllerList.push( new ORE.LayoutController( this.word, {
+			position: new THREE.Vector3( - 4.0, 0.0, 3.0 )
+		} ) );
+
+		/*-------------------------------
+			Layout
+		-------------------------------*/
+
+		this.baseFov = this.cameraTransform.fov;
+
+		// resize
+
+		if ( this.info ) {
+
+			this.resize( this.info );
+
+		}
+
+	}
+
+	public resize( info: ORE.LayerInfo ): void {
+
+		this.info = info;
+
+		this.cameraTransform.fov = this.baseFov - info.size.portraitWeight * 20.0;
+
+		this.layoutContorllerList.forEach( item => {
+
+			item.updateTransform( info.size.portraitWeight );
+
+		} );
+
 	}
 
 	public update( deltaTime: number ): void {
-
-		// this.cannonWorld.step( deltaTime );
-
-		// this.textList.forEach( item => {
-
-		// 	item.update();
-
-		// } );
 
 		if ( this.peoples ) {
 
