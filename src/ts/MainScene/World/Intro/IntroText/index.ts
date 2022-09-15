@@ -10,11 +10,13 @@ export class IntroText {
 	private commonUniforms: ORE.Uniforms;
 	private root: THREE.Object3D;
 	private text: string;
+	private elm?: HTMLElement;
 
-	constructor( root: THREE.Object3D, parentUniforms: ORE.Uniforms, text: string ) {
+	constructor( root: THREE.Object3D, parentUniforms: ORE.Uniforms, text: string, elm?: HTMLElement ) {
 
 		this.root = root;
 		this.text = text;
+		this.elm = elm;
 
 		this.commonUniforms = ORE.UniformsLib.mergeUniforms( parentUniforms, {
 		} );
@@ -66,11 +68,11 @@ export class IntroText {
 
 		} );
 
-		this.root.visible = false;
+		this.setVisible( false );
 
 	}
 
-	public async start() {
+	public async start( unRemovable?: boolean ) {
 
 		setTimeout( () => {
 
@@ -90,19 +92,70 @@ export class IntroText {
 
 		} );
 
-		await this.swithVisibility( false );
+		if ( ! unRemovable ) {
+
+			await this.swithVisibility( false );
+
+		} else {
+
+			if ( this.elm ) {
+
+				this.elm.setAttribute( 'data-visible', "false" );
+
+			}
+
+		}
 
 	}
 
 	public async swithVisibility( visible: boolean ) {
 
-		if ( visible ) this.root.visible = true;
+		if ( visible ) this.setVisible( true );
+
+		if ( this.elm ) {
+
+			this.elm.setAttribute( 'data-visible', visible ? 'true' : 'false' );
+
+		}
 
 		return this.animator.animate( 'introTextVisibility' + this.root.uuid, visible ? 1 : 0, 1, () => {
 
-			if ( ! visible ) this.root.visible = false;
+			if ( ! visible ) this.setVisible( false );
 
 		} );
+
+	}
+
+	private enable: boolean = false;
+	private visible: boolean = true;
+
+	public setEnable( enable: boolean ) {
+
+		this.enable = enable;
+
+		this.checkObjectVisible();
+
+	}
+
+	public setVisible( visible: boolean ) {
+
+		this.visible = visible;
+
+		this.checkObjectVisible();
+
+	}
+
+	private checkObjectVisible() {
+
+		if ( this.enable && this.visible ) {
+
+			this.root.visible = true;
+
+		} else {
+
+			this.root.visible = false;
+
+		}
 
 	}
 

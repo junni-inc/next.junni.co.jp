@@ -31,6 +31,7 @@ export class Intro extends EventEmitter {
 	private aLight: THREE.AmbientLight;
 
 	public finished: boolean = false;
+	private layoutControllerList: ORE.LayoutController[] = [];
 
 	constructor( renderer: THREE.WebGLRenderer, introObj: THREE.Object3D, parentUniforms: ORE.Uniforms ) {
 
@@ -62,6 +63,10 @@ export class Intro extends EventEmitter {
 
 			this.skip();
 			this.emitEvent( 'finish' );
+
+			this.text1.swithVisibility( false );
+			this.text2.swithVisibility( false );
+			this.text3.swithVisibility( false );
 
 		} );
 
@@ -103,9 +108,9 @@ export class Intro extends EventEmitter {
 			Text1
 		-------------------------------*/
 
-		this.text1 = new IntroText( this.scene.getObjectByName( 'Text1' ) as THREE.Object3D, this.commonUniforms, 'アイデアとテクノロジーで、世界をもっとワクワクさせ、ハッピーにしたい。' );
-		this.text2 = new IntroText( this.scene.getObjectByName( 'Text2' ) as THREE.Object3D, this.commonUniforms, 'そして、理想を現実に。そんな想いを込めて、みんなで力を合わせています。' );
-		this.text3 = new IntroText( this.scene.getObjectByName( 'Text3' ) as THREE.Object3D, this.commonUniforms, 'Junniの哲学を見てみませんか？' );
+		this.text1 = new IntroText( this.scene.getObjectByName( 'Text1' ) as THREE.Object3D, this.commonUniforms, 'アイデアとテクノロジーで、世界をもっとワクワクさせ、ハッピーにしたい。', document.querySelector( '.intro-text-item.introText1' ) as HTMLElement );
+		this.text2 = new IntroText( this.scene.getObjectByName( 'Text2' ) as THREE.Object3D, this.commonUniforms, 'そして、理想を現実に。そんな想いを込めて、みんなで力を合わせています。', document.querySelector( '.intro-text-item.introText2' ) as HTMLElement );
+		this.text3 = new IntroText( this.scene.getObjectByName( 'Text3' ) as THREE.Object3D, this.commonUniforms, 'Junniの哲学を見てみませんか？', document.querySelector( '.intro-text-item.introText3' ) as HTMLElement );
 
 		/*-------------------------------
 			Scene
@@ -131,6 +136,33 @@ export class Intro extends EventEmitter {
 		-------------------------------*/
 
 		this.cameraController = new CameraController( this.camera );
+
+		/*-------------------------------
+			Layout
+		-------------------------------*/
+
+		this.layoutControllerList.push( new ORE.LayoutController( this.scene.getObjectByName( 'Wave_Left' )!, {
+			position: new THREE.Vector3( 1.7, 0.4, 0.0 )
+		} ) );
+
+		this.layoutControllerList.push( new ORE.LayoutController( this.scene.getObjectByName( 'Cone' )!, {
+			position: new THREE.Vector3( 1.5, - 0.2, 0.0 ),
+			scale: 0.8
+		} ) );
+
+		this.layoutControllerList.push( new ORE.LayoutController( this.scene.getObjectByName( 'Wave_Right' )!, {
+			position: new THREE.Vector3( - 1.5, 0.0, 0.0 ),
+		} ) );
+
+		this.layoutControllerList.push( new ORE.LayoutController( this.scene.getObjectByName( 'Torus' )!, {
+			position: new THREE.Vector3( - 1.5, - 0.5, 0.0 ),
+			scale: 0.6
+		} ) );
+
+		this.layoutControllerList.push( new ORE.LayoutController( this.scene.getObjectByName( 'Cube' )!, {
+			position: new THREE.Vector3( - 1.0, - 0.5, 0.0 ),
+			scale: 0.6
+		} ) );
 
 	}
 
@@ -192,7 +224,7 @@ export class Intro extends EventEmitter {
 
 				}, 1000 );
 
-				await this.text3.start();
+				await this.text3.start( true );
 
 				this.finished = true;
 
@@ -209,8 +241,20 @@ export class Intro extends EventEmitter {
 		this.renderTarget.setSize( info.size.canvasPixelSize.x, info.size.canvasPixelSize.y );
 
 		this.camera.aspect = info.size.canvasAspectRatio;
-		this.camera.fov = 38 + info.size.portraitWeight * 30.0;
+		this.camera.fov = 38 + info.size.portraitWeight * 10.0;
 		this.camera.updateProjectionMatrix();
+
+		let isSP = info.size.windowSize.x <= 800;
+
+		this.text1.setEnable( ! isSP );
+		this.text2.setEnable( ! isSP );
+		this.text3.setEnable( ! isSP );
+
+		this.layoutControllerList.forEach( item => {
+
+			item.updateTransform( info.size.portraitWeight );
+
+		} );
 
 	}
 
