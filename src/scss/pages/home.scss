@@ -216,13 +216,17 @@ body {
 .subtitles {
 	position: absolute;
 	width: 100%;
-	bottom: 50px;
+	bottom: 60px;
 	color: #fff;
 	display: flex;
 	justify-content: center;
 	align-items: center;
 	flex-direction: column;
 	pointer-events: none;
+
+	@include sp {
+		bottom: 80px;
+	}
 
 	&-text {
 		display: inline-block;
@@ -240,7 +244,8 @@ body {
 
 
 		@include sp {
-			font-size: 12px;
+			font-size: 3vw;
+			
 		}
 	}
 }
@@ -425,7 +430,7 @@ body {
 			margin-bottom: 50px;
 
 			@include sp{
-				font-size: 6.0vw;
+				font-size: 7.0vw;
 				line-height: 1.8em;
 			}
 		}
@@ -444,7 +449,7 @@ body {
 				color: #fff;
 
 				@include sp{
-					font-size: 6.0vw;
+					font-size: 4.7vw;
 					line-height: 1.8em;
 				}
 				
