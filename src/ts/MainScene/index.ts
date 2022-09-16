@@ -498,7 +498,7 @@ export class MainScene extends ORE.BaseLayer {
 
 		if ( this.world && this.world.splashed ) {
 
-			this.scroller.release( args.delta.y );
+			this.scroller.release( args.delta.y * 2.0 );
 
 		}
 

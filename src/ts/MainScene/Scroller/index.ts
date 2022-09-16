@@ -96,7 +96,7 @@ export class Scroller extends EventEmitter {
 
 				if ( this.gravitiContent == this.touchStartContent ) {
 
-					if ( Math.abs( this.touchMoveDiff ) > 0.1 ) {
+					if ( Math.abs( this.touchMoveDiff ) > 0.05 ) {
 
 						this.gravitiContent += Math.sign( this.touchMoveDiff );
 						this.touchMoveDiff = 0.0;
@@ -126,7 +126,7 @@ export class Scroller extends EventEmitter {
 			let gravity = this.gravitiContent - this.value;
 
 			this.velocityVelocity += gravity * deltaTime * 0.3;
-			this.velocityVelocity *= 1.0 - deltaTime * 10.0;
+			this.velocityVelocity *= 0.86 * ( 1.0 - deltaTime * 2.0 );
 
 			this.velocity += this.velocityVelocity * 10.0 * deltaTime;
 			this.velocity *= 1.0 - deltaTime * 8.0;
