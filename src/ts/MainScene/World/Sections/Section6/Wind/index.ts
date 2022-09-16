@@ -59,9 +59,12 @@ export class Wind extends THREE.Mesh {
 
 		let animator = window.gManager.animator;
 
-		uni.visibility = animator.add( {
+		uni.uVisibility = animator.add( {
 			name: 'windVisibility' + animatorId,
 			initValue: 1,
+			userData: {
+				pane: {}
+			}
 		} );
 
 		let mat = new THREE.ShaderMaterial( {

@@ -4,11 +4,13 @@ import { Section, ViewingState } from '../Section';
 import { GLTF } from 'three/examples/jsm/loaders/GLTFLoader';
 import { Slides } from './Slides';
 import { Transparents } from './Transparents';
+import { Flexible } from './Flexible';
 
 export class Section2 extends Section {
 
 	private slides?: Slides;
 	private transparents?: Transparents;
+	private flexible?: Flexible;
 
 	constructor( manager: THREE.LoadingManager, parentUniforms: ORE.Uniforms ) {
 
@@ -60,6 +62,12 @@ export class Section2 extends Section {
 		-------------------------------*/
 
 		this.transparents = new Transparents( scene.getObjectByName( 'Transparents' ) as THREE.Object3D, this.commonUniforms );
+
+		/*-------------------------------
+			Flexible
+		-------------------------------*/
+
+		this.flexible = new Flexible( scene.getObjectByName( 'Flexible' ) as THREE.Mesh, this.commonUniforms );
 
 	}
 

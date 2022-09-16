@@ -4,7 +4,7 @@ uniform float time;
 uniform vec3 range;
 uniform float contentNum;
 uniform float particleSize;
-uniform float visibility;
+uniform float uVisibility;
 uniform float total;
 
 uniform sampler2D noiseTex;
@@ -39,10 +39,10 @@ void main( void ) {
 	vAlpha = smoothstep( hrange.z, hrange.z - 0.5, abs( oPos.z ) );
 	vAlpha *= smoothstep( hrange.y, hrange.y - 0.5, abs( oPos.y ) );
 
-	vAlpha *= visibility;
+	vAlpha *= uVisibility;
 
 	pos += oPos;
-	pos.y += texture2D( noiseTex, vec2(pos.x * 0.01 + oPos.y) ).x * 1.0;
+	pos.y += texture2D( noiseTex, vec2(pos.x * 0.007 + oPos.y) ).x * 1.0;
 
 	vec4 mvPosition = modelViewMatrix * vec4( pos, 1.0 );
 	gl_Position = projectionMatrix * mvPosition;

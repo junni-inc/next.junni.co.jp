@@ -33,6 +33,7 @@ export class Section4 extends Section {
 	// layout
 
 	private baseFov: number = 0.0;
+	private baseCameraTarget: THREE.Vector3 = new THREE.Vector3();
 	private layoutContorllerList: ORE.LayoutController[] = [];
 	private info: ORE.LayerInfo | null = null;
 
@@ -209,7 +210,7 @@ export class Section4 extends Section {
 		ground.add( this.word );
 
 		this.layoutContorllerList.push( new ORE.LayoutController( this.word, {
-			position: new THREE.Vector3( - 4.0, 0.0, 3.0 )
+			position: new THREE.Vector3( - 5.0, 0.0, 3.0 )
 		} ) );
 
 		/*-------------------------------
@@ -217,6 +218,8 @@ export class Section4 extends Section {
 		-------------------------------*/
 
 		this.baseFov = this.cameraTransform.fov;
+
+		this.baseCameraTarget.copy( this.cameraTransform.targetPosition );
 
 		// resize
 
@@ -233,6 +236,8 @@ export class Section4 extends Section {
 		this.info = info;
 
 		this.cameraTransform.fov = this.baseFov - info.size.portraitWeight * 20.0;
+
+		this.cameraTransform.targetPosition.copy( this.baseCameraTarget.clone().add( new THREE.Vector3( - 0.2, 0.0, 1.0 ).multiplyScalar( info.size.portraitWeight ) ) );
 
 		this.layoutContorllerList.forEach( item => {
 

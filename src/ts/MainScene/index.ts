@@ -26,10 +26,15 @@ export class MainScene extends ORE.BaseLayer {
 	private footer: Footer;
 	private loading: Loading;
 
+	// wheel
+
 	private lethargy: any;
 	private memDelta: number = 0.0;
 	private riseDelta: boolean = false;
-	private canScroll: boolean = false;
+
+	// content wrapper
+
+	private contentWrapperElm: HTMLElement;
 
 	constructor() {
 
@@ -40,6 +45,12 @@ export class MainScene extends ORE.BaseLayer {
 				value: 0
 			}
 		} );
+
+		/*-------------------------------
+			ContentWrapper
+		-------------------------------*/
+
+		this.contentWrapperElm = document.querySelector( '.content-wrapper' )!;
 
 		/*-------------------------------
 			Scroller
@@ -180,7 +191,9 @@ export class MainScene extends ORE.BaseLayer {
 			}
 
 			this.initScene();
+
 			this.onResize();
+
 
 		} );
 
@@ -365,6 +378,8 @@ export class MainScene extends ORE.BaseLayer {
 
 		super.onResize();
 
+		this.contentWrapperElm.style.height = window.innerHeight + 'px';
+
 		if ( this.cameraController ) {
 
 			this.cameraController.resize( this.info );
@@ -483,7 +498,7 @@ export class MainScene extends ORE.BaseLayer {
 
 		if ( this.world && this.world.splashed ) {
 
-			this.scroller.release( args.delta.y );
+			this.scroller.release( args.delta.y * 2.0 );
 
 		}
 
@@ -494,12 +509,6 @@ export class MainScene extends ORE.BaseLayer {
 		if ( this.world ) {
 
 			this.world.splash( this.camera );
-
-			setTimeout( () => {
-
-				this.canScroll = true;
-
-			}, 1000 );
 
 		}
 
