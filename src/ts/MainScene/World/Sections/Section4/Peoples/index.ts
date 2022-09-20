@@ -108,7 +108,8 @@ export class Peoples extends THREE.Mesh {
 			dataVel: {
 				value: null
 			},
-			tex: window.gManager.assetManager.getTex( 'human' )
+			tex: window.gManager.assetManager.getTex( 'human' ),
+			noiseTex: window.gManager.assetManager.getTex( 'noise' )
 		} );
 
 		/*-------------------------------

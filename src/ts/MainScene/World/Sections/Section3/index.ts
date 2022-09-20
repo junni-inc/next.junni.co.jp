@@ -47,25 +47,6 @@ export class Section3 extends Section {
 		this.cursorLight = new CursorLight();
 		this.add( this.cursorLight );
 
-		/*-------------------------------
-			EnvMap
-		-------------------------------*/
-
-		let cubemapLoader = new THREE.CubeTextureLoader();
-		cubemapLoader.load( [
-			'/assets/envmap/sec2/px.png',
-			'/assets/envmap/sec2/nx.png',
-			'/assets/envmap/sec2/py.png',
-			'/assets/envmap/sec2/ny.png',
-			'/assets/envmap/sec2/pz.png',
-			'/assets/envmap/sec2/nz.png',
-		], ( tex ) => {
-
-			this.commonUniforms.uEnvMap.value = tex;
-
-		} );
-
-
 	}
 
 	protected onLoadedGLTF( gltf: GLTF ): void {

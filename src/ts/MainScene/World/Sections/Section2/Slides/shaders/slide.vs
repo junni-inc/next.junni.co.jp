@@ -19,7 +19,7 @@ void main( void ) {
 
 	vec3 pos = position;
 	pos.y *= scale;
-	pos.y += sin( time * .15 + uv.x * TPI ) * 5.0;
+	pos.y += ( pos.x ) * 0.4;
 	pos += offsetPos;
 
 	vec4 mvPosition = modelViewMatrix * vec4( pos, 1.0 );

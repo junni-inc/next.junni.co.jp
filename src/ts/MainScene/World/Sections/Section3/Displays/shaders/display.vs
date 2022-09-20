@@ -36,7 +36,7 @@ void main( void ) {
 	vec4 mvPosition = modelViewMatrix * vec4( pos, 1.0 );
 	gl_Position = projectionMatrix * mvPosition;
 
-	float t = time + uOffset * 0.1;
+	float t = time + uOffset * 0.5;
 	vCount = floor(t / 1.0);
 	vFade = smoothstep( 0.85, 1.0, mod(t, 1.0) );
 

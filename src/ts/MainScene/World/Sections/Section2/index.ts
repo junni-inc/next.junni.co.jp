@@ -5,12 +5,14 @@ import { GLTF } from 'three/examples/jsm/loaders/GLTFLoader';
 import { Slides } from './Slides';
 import { Transparents } from './Transparents';
 import { Flexible } from './Flexible';
+import { Section2Title } from './Section2Title';
 
 export class Section2 extends Section {
 
 	private slides?: Slides;
 	private transparents?: Transparents;
 	private flexible?: Flexible;
+	private title?: Section2Title;
 
 	constructor( manager: THREE.LoadingManager, parentUniforms: ORE.Uniforms ) {
 
@@ -58,16 +60,18 @@ export class Section2 extends Section {
 		this.slides.switchVisibility( this.viewing );
 
 		/*-------------------------------
+			Titles
+		-------------------------------*/
+
+		this.title = new Section2Title( scene.getObjectByName( 'Title' ) as THREE.Mesh, this.commonUniforms );
+		this.title.switchVisibility( this.sectionVisibility );
+
+		/*-------------------------------
 			Transparent
 		-------------------------------*/
 
 		this.transparents = new Transparents( scene.getObjectByName( 'Transparents' ) as THREE.Object3D, this.commonUniforms );
-
-		/*-------------------------------
-			Flexible
-		-------------------------------*/
-
-		this.flexible = new Flexible( scene.getObjectByName( 'Flexible' ) as THREE.Mesh, this.commonUniforms );
+		this.transparents.switchVisibility( this.sectionVisibility );
 
 	}
 
@@ -78,6 +82,8 @@ export class Section2 extends Section {
 	}
 
 	public update( deltaTime: number ) {
+
+		if ( this.title ) this.title.update( deltaTime );
 
 	}
 
@@ -94,6 +100,8 @@ export class Section2 extends Section {
 		super.switchViewingState( viewing );
 
 		if ( this.slides ) this.slides.switchVisibility( viewing );
+		if ( this.title ) this.title.switchVisibility( this.sectionVisibility );
+		if ( this.transparents ) this.transparents.switchVisibility( this.sectionVisibility );
 
 	}
 

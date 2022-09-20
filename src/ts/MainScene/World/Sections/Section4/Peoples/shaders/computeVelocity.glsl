@@ -62,7 +62,7 @@ void main() {
 	vel += avoidVel;
 
 	// 中央へ寄る (なんかほっとくと右下行くから補正かけてる)
-	vec2 centerGravity = vec2( 0.0 ) - pos.xz - vec2( 1.0, 2.0 );
+	vec2 centerGravity = vec2( 0.0 ) - pos.xz - vec2( 1.2, 4.0 );
 	vel.xz += ( centerGravity ) * length(centerGravity) * 0.00003;
 
 	vel.xz = normalize( vel.xz ) * 0.02;

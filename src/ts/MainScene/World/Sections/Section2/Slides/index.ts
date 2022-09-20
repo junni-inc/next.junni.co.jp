@@ -83,7 +83,7 @@ export class Slides {
 
 		for ( let i = 0; i < num; i ++ ) {
 
-			let scale = 0.2 + 0.8 * Math.random();
+			let scale = 0.3 + 1.0 * Math.random();
 			let scaleH = scale / 2;
 
 			let h = height * 0.80;

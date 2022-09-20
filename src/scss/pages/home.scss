@@ -342,7 +342,7 @@ body {
 	flex-direction: column;
 	align-items: center;
 	justify-content: center;
-	background: rgba($color: #000000, $alpha: 0.2);
+	background: rgba($color: #000000, $alpha: 0.6);
 
 	opacity: 0;
 	transition: opacity 1.0s;
@@ -356,31 +356,40 @@ body {
 		max-width: 800px;
 		height: 100%;
 		padding: 20vh 0;
+		padding-top: 18vh;
 		
 		display: flex;
 		flex-direction: row-reverse;
 		justify-content: space-around;
 
+
+		@include sp {
+		padding: 25vh 0;
+		}
 	}
 	
 	&-text {
 
-		height: 500px;
+		height: 550px;
 		writing-mode: vertical-rl;
 		display: inline-block;
 		color: #fff;
 		font-family: $notosans;
 		padding: 0 10px;
+		font-size: 17px;
+		letter-spacing: 0.35em;
 		
 		
 		@include sp {
 			padding: 0 3px;		
+			font-size: 16px;
+			letter-spacing: 0.2em;
 		}
 		
 		span {
 			display: inline-block;
-			background-color: rgba($color: #000000, $alpha: 0.6);
-			padding: 10px 2px;
+			background-color: rgba($color: #000000, $alpha: 0.4);
+			padding: 10px 0px;
 		}
 
 		&-wrap {
