@@ -144,7 +144,7 @@ export class Logo extends EventEmitter {
 
 			if ( this.canceled ) return;
 
-			window.subtitles.show( '私たちは想像します。', 0.8 );
+			window.subtitles.show( 'わたしたちは、想像します。', 0.8 );
 
 			this.emitEvent( 'showImaging' );
 

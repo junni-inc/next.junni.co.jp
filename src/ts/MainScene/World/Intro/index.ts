@@ -108,9 +108,9 @@ export class Intro extends EventEmitter {
 			Text1
 		-------------------------------*/
 
-		this.text1 = new IntroText( this.scene.getObjectByName( 'Text1' ) as THREE.Object3D, this.commonUniforms, 'アイデアとテクノロジーで、世界をもっとワクワクさせ、ハッピーにしたい。', document.querySelector( '.intro-text-item.introText1' ) as HTMLElement );
-		this.text2 = new IntroText( this.scene.getObjectByName( 'Text2' ) as THREE.Object3D, this.commonUniforms, 'そして、理想を現実に。そんな想いを込めて、みんなで力を合わせています。', document.querySelector( '.intro-text-item.introText2' ) as HTMLElement );
-		this.text3 = new IntroText( this.scene.getObjectByName( 'Text3' ) as THREE.Object3D, this.commonUniforms, 'Junniの哲学を見てみませんか？', document.querySelector( '.intro-text-item.introText3' ) as HTMLElement );
+		this.text1 = new IntroText( this.scene.getObjectByName( 'Text1' ) as THREE.Object3D, this.commonUniforms, 'アイデアとテクノロジーで、世界をもっとハッピーでワクワクしたものに。', document.querySelector( '.intro-text-item.introText1' ) as HTMLElement );
+		this.text2 = new IntroText( this.scene.getObjectByName( 'Text2' ) as THREE.Object3D, this.commonUniforms, '理想を現実に。ジュニは、そんな思いで全員でものづくりを行っています。', document.querySelector( '.intro-text-item.introText2' ) as HTMLElement );
+		this.text3 = new IntroText( this.scene.getObjectByName( 'Text3' ) as THREE.Object3D, this.commonUniforms, 'そんなジュニのものづくりの理想を、少し、覗いてみませんか？', document.querySelector( '.intro-text-item.introText3' ) as HTMLElement );
 
 		/*-------------------------------
 			Scene

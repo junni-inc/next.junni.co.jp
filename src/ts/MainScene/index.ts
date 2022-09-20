@@ -376,9 +376,9 @@ export class MainScene extends ORE.BaseLayer {
 
 	public onResize() {
 
-		super.onResize();
-
 		this.contentWrapperElm.style.height = window.innerHeight + 'px';
+
+		super.onResize();
 
 		if ( this.cameraController ) {
 

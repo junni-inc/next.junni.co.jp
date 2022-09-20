@@ -120,7 +120,7 @@ void main( void ) {
 	vViewPos = -mvPosition.xyz;
 	vWorldPos = worldPos.xyz;
 	vType = posData.w * 0.0;
-	vType = 1.0;
+	vType = 0.0;
 	vComputeUV = computeUV;
 
 	#ifdef DEPTH
