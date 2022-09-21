@@ -62,7 +62,7 @@ export class Peoples extends THREE.Mesh {
 		} );
 
 		commonUniforms.uJump = animator.add( {
-			name: 'peopleJump',
+			name: 'peopleAscension',
 			initValue: 0,
 			easing: ORE.Easings.linear,
 		} );
@@ -315,7 +315,7 @@ export class Peoples extends THREE.Mesh {
 
 		if ( this.ascension == ascension ) return;
 
-		this.animator.animate( 'peopleJump', ascension ? 1 : 0, duration );
+		this.animator.animate( 'peopleAscension', ascension ? 1 : 0, duration );
 		this.ascension = ascension;
 
 	}
@@ -323,10 +323,10 @@ export class Peoples extends THREE.Mesh {
 	public jump() {
 
 		let styleArray = [ 0, 0, 0, 0 ];
-		styleArray[ this.styleIndex ] = 1.0;
 		this.styleIndex = ( this.styleIndex + 1 ) % styleArray.length;
+		styleArray[ this.styleIndex ] = 1.0;
 
-		this.animator.animate( 'peopleStyle', styleArray );
+		this.animator.animate( 'peopleStyle', styleArray, 0.2 );
 
 	}
 

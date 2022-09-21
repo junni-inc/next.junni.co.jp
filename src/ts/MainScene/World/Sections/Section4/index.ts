@@ -265,8 +265,8 @@ export class Section4 extends Section {
 
 			let passed = viewing == 'passed';
 
-			this.peoples.switchVisibility( this.sectionVisibility, passed ? 4 : 1.5 );
-			this.peoples.switchAscension( passed, passed ? 4 : 1.5 );
+			this.peoples.switchVisibility( this.sectionVisibility, passed ? 2 : 1.5 );
+			this.peoples.switchAscension( passed, passed ? 2 : 1.5 );
 
 		}
 
@@ -277,11 +277,14 @@ export class Section4 extends Section {
 
 	public switchText() {
 
-		if ( this.peoples ) this.peoples.jump();
+		setTimeout( () => {
+
+			if ( this.peoples ) this.peoples.jump();
+
+		}, 400 );
 
 		this.animator.setValue( 'sec4TextSwtich', 0 );
 		this.animator.animate( 'sec4TextSwtich', 1, 1 );
-
 
 		if ( this.word ) {
 

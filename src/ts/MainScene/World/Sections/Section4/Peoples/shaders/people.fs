@@ -3,6 +3,7 @@ uniform sampler2D noiseTex;
 
 uniform float uSectionVisibility;
 uniform float time;
+uniform float uPeopleStyle[4];
 
 varying vec2 vBaseUV;
 varying vec2 vUv;
@@ -44,10 +45,10 @@ void main( void ) {
 	vec3 col4 = vec3( floorTile.x == floorTile.y ? 1.0 : 0.2 );
 
 	vec3 col = vec3(0.0);
-	col.xyz = mix( col, col1, ( 1.0 - min( 1.0, abs( vType - 0.0 ) ) ) );
-	col.xyz = mix( col.xyz, col2, ( 1.0 - min( 1.0, abs( vType - 1.0 ) ) ) );
-	col.xyz = mix( col.xyz, col3, ( 1.0 - min( 1.0, abs( vType - 2.0 ) ) ) );
-	col.xyz = mix( col.xyz, col4, ( 1.0 - min( 1.0, abs( vType - 3.0 ) ) ) );
+	col += col1 * uPeopleStyle[0];
+	col += col2 * uPeopleStyle[1];
+	col += col3 * uPeopleStyle[2];
+	col += col4 * uPeopleStyle[3];
 
 	human.xyz = mix( human.xyz, col, step( 0.5, human.x - human.y ) );
 

@@ -79,8 +79,8 @@ vec2 spriteUVSelector( vec2 uv, vec2 tile, float frames, float time, float offse
 
 void main( void ) {
 
-	vAlpha = easeOutQuart( smoothstep( 0.0, 0.6, -computeUV.x + uVisibility * 1.6 ) );
-	float posYOffset = 1.0 - easeOutQuart( smoothstep( 0.0, 0.6, -computeUV.x + (1.0 - uJump) * 1.6 ) );
+	vAlpha = 1.0 - easeOutQuart( linearstep( 0.0, 1.0, -computeUV.x + ( 1.0 - uVisibility) * 2.0 ) );
+	float posYOffset = easeOutQuart( linearstep( 0.0, 1.0, -computeUV.x + uJump * 2.0 ) );
 
 	vec4 vel = texture2D( dataVel, computeUV );
 
@@ -90,13 +90,13 @@ void main( void ) {
 	
     vec3 p = position;
 	p *= (vAlpha);
-	p.xz *= rotate( posYOffset * 10.0);
+	p.xz *= rotate( posYOffset * 5.0);
 
 	vec4 posData = texture2D( dataPos, computeUV );
     vec3 pos = vec3( 0.0 );
 	pos.xyz = posData.xyz;
 	// pos.y += sin( linearstep( 0.0, 1.0, -length( pos.xz ) * 0.1 + uTextSwitch * 3.0 + computeUV.x * 0.2 ) * PI ) * 0.5;
-	pos.y += (posYOffset) * 12.0;
+	pos.y += (posYOffset) * 9.0 * computeUV.y;
 	pos.xz *= rotate( sin(computeUV.y * 20.0 + time * 0.6 + posYOffset ) * posYOffset * 0.2 );
 
 	vec4 worldPos = modelMatrix * vec4( p + pos, 1.0 );
