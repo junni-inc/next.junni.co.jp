@@ -7,6 +7,7 @@ import { Objects } from './Objects';
 import { TextRing } from './TextRing';
 import { Rings } from './Rings';
 import { Grid } from './Grid';
+import { Outro } from './Outro';
 
 export class Section5 extends Section {
 
@@ -14,6 +15,7 @@ export class Section5 extends Section {
 	private textring: TextRing;
 	private rings: Rings;
 	private grid: Grid;
+	private outro: Outro;
 
 	constructor( manager: THREE.LoadingManager, parentUniforms: ORE.Uniforms ) {
 
@@ -66,6 +68,12 @@ export class Section5 extends Section {
 
 		this.grid = new Grid( this.commonUniforms );
 
+		/*-------------------------------
+			Outro
+		-------------------------------*/
+
+		this.outro = new Outro();
+
 	}
 
 	protected onLoadedGLTF( gltf: GLTF ): void {
@@ -110,12 +118,28 @@ export class Section5 extends Section {
 
 	}
 
+	private outroTextTimer: number | null = null;
+
 	public switchViewingState( viewing: ViewingState ): void {
 
 		super.switchViewingState( viewing );
 
 		this.textring.switchVisibility( this.sectionVisibility );
 		this.rings.switchVisibility( this.sectionVisibility );
+
+		if ( this.outroTextTimer ) {
+
+			window.clearTimeout( this.outroTextTimer );
+			this.outroTextTimer = null;
+
+		}
+
+		this.outroTextTimer = window.setTimeout( () => {
+
+			this.outro.switchVisibility( this.sectionVisibility );
+			this.outroTextTimer = null;
+
+		}, this.sectionVisibility ? 2500 : 0 );
 
 	}
 
