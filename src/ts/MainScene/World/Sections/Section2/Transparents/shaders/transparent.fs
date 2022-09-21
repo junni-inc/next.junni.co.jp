@@ -2,6 +2,9 @@ varying vec2 vUv;
 varying vec3 vTangent;
 varying vec3 vBitangent;
 
+uniform vec3 uColor;
+uniform samplerCube uEnvMap;
+
 /*-------------------------------
 	Require
 -------------------------------*/
@@ -129,6 +132,26 @@ varying vec3 vViewNormal;
 varying vec3 vViewPos;
 varying vec3 vWorldPos;
 
+float ggx( float dNH, float roughness ) {
+	
+	float a2 = roughness * roughness;
+	a2 = a2 * a2;
+	float dNH2 = dNH * dNH;
+
+	if( dNH2 <= 0.0 ) return 0.0;
+
+	return a2 / ( PI * pow( dNH2 * ( a2 - 1.0 ) + 1.0, 2.0) );
+
+}
+
+float fresnel( float d ) {
+	
+	float f0 = 0.15;
+
+	return f0 + ( 1.0 - f0 ) * pow( 1.0 - d, 5.0 );
+
+}
+
 /*-------------------------------
 	Main
 -------------------------------*/
@@ -208,6 +231,10 @@ void main( void ) {
 
 	geo.normalWorld = normalize( ( vec4( geo.normal, 0.0 ) * viewMatrix ).xyz );
 
+	/*-------------------------------
+		Refract
+	-------------------------------*/
+
 	vec3 refractCol = vec3( 0.0 );
 	vec2 screenUv = gl_FragCoord.xy / winResolution.xy;
 	vec2 refractUv = screenUv;
@@ -216,15 +243,16 @@ void main( void ) {
 	vec2 refractUvG;
 	vec2 refractUvB;
 	float refractPower = 0.1;
+	vec2 refractNormal = geo.normal.xy * ( 1.0 - geo.normal.z * 0.9 );
 	
 	#pragma unroll_loop_start
 	for ( int i = 0; i < 16; i ++ ) {
 		
-		slide = float( UNROLLED_LOOP_INDEX ) / 16.0 * 0.01 + random( screenUv ) * 0.005;
+		slide = float( UNROLLED_LOOP_INDEX ) / 16.0 * 0.03 + random( screenUv ) * 0.007;
 
-		refractUvR = refractUv - geo.normal.xy * ( refractPower + slide * 1.0 );
-		refractUvG = refractUv - geo.normal.xy * ( refractPower + slide * 1.5 );
-		refractUvB = refractUv - geo.normal.xy * ( refractPower + slide * 2.0 );
+		refractUvR = refractUv - refractNormal * ( refractPower + slide * 1.0 );
+		refractUvG = refractUv - refractNormal * ( refractPower + slide * 2.0 );
+		refractUvB = refractUv - refractNormal * ( refractPower + slide * 3.0 );
 
 		refractCol.x += texture2D( uSceneTex, refractUvR ).x;
 		refractCol.y += texture2D( uSceneTex, refractUvG ).y;
@@ -233,8 +261,35 @@ void main( void ) {
 	}
 	#pragma unroll_loop_end
 	refractCol /= float( 16 );
+	// refractCol *= uColor;
 
-	outColor += refractCol;
+	outColor += (refractCol) * uColor;
+
+	/*-------------------------------
+		Specular
+	-------------------------------*/
+
+	vec3 lightDir = normalize( vec3( 1.0, 1.0, 1.0 ) );
+	vec3 halfVec = normalize( geo.viewDir + lightDir );
+
+	float dLH = clamp( dot( lightDir, halfVec ), 0.0, 1.0 );
+	float dNH = clamp( dot( geo.normal, halfVec ), 0.0, 1.0 );
+
+	outColor += ggx( dNH, 0.1  );
+
+	/*-------------------------------
+		Envmap
+	-------------------------------*/
+
+	float dNV = clamp( dot( geo.normal, geo.viewDir ), 0.0, 1.0 );
+	float EF = fresnel( dNV );
+	
+	vec3 refDir = reflect( geo.viewDirWorld, geo.normalWorld );
+	refDir.x *= -1.0;
+	
+	vec3 envMapColor = textureCube( uEnvMap, refDir ).xyz;
+
+	outColor += envMapColor * EF;
 
 	gl_FragColor = vec4( outColor, 1.0 );
 

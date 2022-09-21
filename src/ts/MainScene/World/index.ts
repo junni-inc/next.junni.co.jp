@@ -62,6 +62,9 @@ export class World extends THREE.Object3D {
 		this.scene = scene;
 
 		this.commonUniforms = ORE.UniformsLib.mergeUniforms( parentUniforms, {
+			uEnvMap: {
+				value: null
+			}
 		} );
 
 		/*-------------------------------
@@ -163,7 +166,7 @@ export class World extends THREE.Object3D {
 
 			}
 
-		}, 8000 );
+		}, 3500 );
 
 		/*-------------------------------
 			Sections
@@ -211,6 +214,25 @@ export class World extends THREE.Object3D {
 			this.section2.setSceneTex( this.baku.sceneRenderTarget.texture );
 
 		};
+
+		/*-------------------------------
+			EnvMap
+		-------------------------------*/
+
+		let cubemapLoader = new THREE.CubeTextureLoader();
+		cubemapLoader.load( [
+			'/assets/envmap/sec2/px.png',
+			'/assets/envmap/sec2/nx.png',
+			'/assets/envmap/sec2/py.png',
+			'/assets/envmap/sec2/ny.png',
+			'/assets/envmap/sec2/pz.png',
+			'/assets/envmap/sec2/nz.png',
+		], ( tex ) => {
+
+			this.commonUniforms.uEnvMap.value = tex;
+
+		} );
+
 
 	}
 

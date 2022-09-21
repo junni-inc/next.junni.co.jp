@@ -39,7 +39,6 @@ void main( void ) {
 	pos.xy *= rotate( -uVisibility * TPI );
 	pos.y += sin( - time + modelViewMatrix[3][0] ) * 0.2;
 
-
 	pos *= uVisibility;
 
 	if( uVisibility > 1.0 ) {

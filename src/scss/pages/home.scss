@@ -342,7 +342,7 @@ body {
 	flex-direction: column;
 	align-items: center;
 	justify-content: center;
-	background: rgba($color: #000000, $alpha: 0.2);
+	background: rgba($color: #000000, $alpha: 0.6);
 
 	opacity: 0;
 	transition: opacity 1.0s;
@@ -354,8 +354,6 @@ body {
 	&-content {
 		width: 90%;
 		max-width: 800px;
-		height: 100%;
-		padding: 20vh 0;
 		
 		display: flex;
 		flex-direction: row-reverse;
@@ -365,22 +363,28 @@ body {
 	
 	&-text {
 
-		height: 500px;
+		height: 50vh;
+		max-height: 100%;
 		writing-mode: vertical-rl;
 		display: inline-block;
 		color: #fff;
 		font-family: $notosans;
 		padding: 0 10px;
+		font-size: 17px;
+		letter-spacing: 0.35em;
 		
 		
 		@include sp {
 			padding: 0 3px;		
+			font-size: 16px;
+			letter-spacing: 0.2em;
+			height: 50vh;
 		}
 		
 		span {
 			display: inline-block;
-			background-color: rgba($color: #000000, $alpha: 0.6);
-			padding: 10px 2px;
+			background-color: rgba($color: #000000, $alpha: 0.4);
+			padding: 10px 0px;
 		}
 
 		&-wrap {
@@ -436,8 +440,6 @@ body {
 		}
 
 		&-link {
-
-			pointer-events: auto;
 
 			a {
 				position: relative;
@@ -633,7 +635,7 @@ body {
 			#{$this}-inner {
 				@keyframes jump {
 					0% {
-						transform: translateY( 0);
+						transform: translateY(0);
 						animation-timing-function: ease-out;
 					}
 					50% {
@@ -641,7 +643,7 @@ body {
 						animation-timing-function: ease-in;
 					}
 					100% {
-						transform: translateY( 0);
+						transform: translateY(0);
 					}
 				}
 				
@@ -656,6 +658,20 @@ body {
 		&-txt {
 			position: absolute;
 			width: 100%;
+
+			opacity: 0;
+			transform: rotate( -45deg ) scale(0);
+
+			transition: transform .5s cubic-bezier(.4,1.44,.74,1);
+			transition-delay: 1s;
+
+			
+			[data-skipVisible="true"] & {
+			
+				transform: rotate( 0 ) scale(1);
+				opacity: 1;
+				
+			}
 
 			&-item {
 				position: absolute;

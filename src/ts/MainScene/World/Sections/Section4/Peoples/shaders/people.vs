@@ -7,6 +7,7 @@ varying vec3 vViewNormal;
 varying vec3 vViewPos;
 varying vec3 vWorldPos;
 varying float vAlpha;
+varying float vType;
 
 uniform float time;
 
@@ -18,6 +19,9 @@ uniform sampler2D dataVel;
 uniform float aboutOffset;
 uniform vec2 dataSize;
 uniform float uTextSwitch;
+
+varying vec2 vBaseUV;
+varying vec2 vComputeUV;
 
 #pragma glslify: import('./constants.glsl' )
 #pragma glslify: atan2 = require('./atan2.glsl' )
@@ -88,8 +92,9 @@ void main( void ) {
 	p *= (vAlpha);
 	p.xz *= rotate( posYOffset * 10.0);
 
+	vec4 posData = texture2D( dataPos, computeUV );
     vec3 pos = vec3( 0.0 );
-	pos.xyz = texture2D( dataPos, computeUV).xyz;
+	pos.xyz = posData.xyz;
 	// pos.y += sin( linearstep( 0.0, 1.0, -length( pos.xz ) * 0.1 + uTextSwitch * 3.0 + computeUV.x * 0.2 ) * PI ) * 0.5;
 	pos.y += (posYOffset) * 12.0;
 	pos.xz *= rotate( sin(computeUV.y * 20.0 + time * 0.6 + posYOffset ) * posYOffset * 0.2 );
@@ -103,6 +108,9 @@ void main( void ) {
 	float offset = abs(vel.x) > 0.005 ? 16.0 : 0.0;
 
 	vUv = spriteUVSelector( vUv, vec2( 16.0, 2.0 ), 16.0, time + computeUV.x, offset );
+	vBaseUV = uv;
+	vBaseUV.y *= 1.5;
+	vBaseUV.y -= 0.42;
 
 	if( offset > 0.0 && vel.x < 0.0 ) {
 		vUv.x = 1.0 - vUv.x;
@@ -111,6 +119,9 @@ void main( void ) {
 	vNormal = normal;
 	vViewPos = -mvPosition.xyz;
 	vWorldPos = worldPos.xyz;
+	vType = posData.w * 0.0;
+	vType = 0.0;
+	vComputeUV = computeUV;
 
 	#ifdef DEPTH
 	

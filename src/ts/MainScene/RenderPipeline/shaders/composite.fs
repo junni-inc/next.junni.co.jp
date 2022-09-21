@@ -133,7 +133,7 @@ void main(){
 
 	color *= mix( 1.0, smoothstep( 2.0, 0.8, length( cuv ) ), uVignet );
 
-	color *= mix( 1.0, texture2D( uFilmNoiseTex, spriteUVSelector( vUv, vec2( 2.0, 4.0 ), 8.0, time * 2.0 ) ).x * 0.9, uFilmNoise );
+	// color *= mix( 1.0, texture2D( uFilmNoiseTex, spriteUVSelector( vUv, vec2( 2.0, 4.0 ), 8.0, time * 2.0 ) ).x * 0.9, uFilmNoise );
 
 	gl_FragColor = vec4( color, 1.0 );
 

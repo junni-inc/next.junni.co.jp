@@ -1,5 +1,5 @@
-uniform float uSectionVisibility;
 uniform float uSectionViewing;
+uniform float uVisibility;
 attribute vec4 tangent;
 
 varying vec2 vUv;
@@ -22,8 +22,8 @@ void main( void ) {
 	-------------------------------*/
 
 	vec3 pos = position;
-	pos.xy *= rotate( uSectionViewing * 5.0 );
-	pos *= uSectionVisibility;
+	pos.xy *= rotate( ( 1.0 - uSectionViewing ) * 5.0 );
+	pos *= uVisibility;
 
 	vec4 worldPos = modelMatrix * vec4( pos, 1.0 );
 	vec4 mvPosition = viewMatrix * worldPos;

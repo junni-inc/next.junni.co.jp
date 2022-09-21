@@ -451,19 +451,20 @@ void main( void ) {
 	vec2 refractUv = screenUv;
 
 	float slide;
-	float refractPower = 0.2;
 	vec2 refractUvR;
 	vec2 refractUvG;
 	vec2 refractUvB;
+	float refractPower = 0.3;
+	vec2 refractNormal = geo.normal.xy * ( 1.0 - geo.normal.z * 0.85 );
 
 	#pragma unroll_loop_start
 	for ( int i = 0; i < 16; i ++ ) {
 		
-		slide = float( UNROLLED_LOOP_INDEX ) / 16.0 * 0.03 + random( screenUv ) * 0.01;
+		slide = float( UNROLLED_LOOP_INDEX ) / 16.0 * 0.07 + random( screenUv ) * 0.014;
 
-		refractUvR = refractUv - geo.normal.xy * ( refractPower + slide * 1.0 ) * uTransparent;
-		refractUvG = refractUv - geo.normal.xy * ( refractPower + slide * 1.5 ) * uTransparent;
-		refractUvB = refractUv - geo.normal.xy * ( refractPower + slide * 2.0 ) * uTransparent;
+		refractUvR = refractUv - refractNormal * ( refractPower + slide * 1.0 ) * uTransparent;
+		refractUvG = refractUv - refractNormal * ( refractPower + slide * 1.5 ) * uTransparent;
+		refractUvB = refractUv - refractNormal * ( refractPower + slide * 2.0 ) * uTransparent;
 
 		refractCol.x += texture2D( uSceneTex, refractUvR ).x;
 		refractCol.y += texture2D( uSceneTex, refractUvG ).y;
