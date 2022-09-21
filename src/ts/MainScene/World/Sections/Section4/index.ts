@@ -51,18 +51,12 @@ export class Section4 extends Section {
 
 		this.elm = document.querySelector( '.section4' ) as HTMLElement;
 
-		// animator
+
 
 		this.commonUniforms.uTextSwitch = this.animator.add( {
 			name: 'sec4TextSwtich',
 			initValue: 0,
 			easing: ORE.Easings.linear
-		} );
-
-		this.commonUniforms.uJumping = this.animator.add( {
-			name: 'sec4Jumping',
-			initValue: 0,
-			easing: ORE.Easings.easeOutCubic
 		} );
 
 		/*-------------------------------
@@ -272,7 +266,7 @@ export class Section4 extends Section {
 			let passed = viewing == 'passed';
 
 			this.peoples.switchVisibility( this.sectionVisibility, passed ? 4 : 1.5 );
-			this.peoples.switchJump( passed, passed ? 4 : 1.5 );
+			this.peoples.switchAscension( passed, passed ? 4 : 1.5 );
 
 		}
 
@@ -283,15 +277,11 @@ export class Section4 extends Section {
 
 	public switchText() {
 
+		if ( this.peoples ) this.peoples.jump();
+
 		this.animator.setValue( 'sec4TextSwtich', 0 );
 		this.animator.animate( 'sec4TextSwtich', 1, 1 );
 
-		this.animator.setValue( 'sec4Jumping', 1 );
-		this.animator.animate( 'sec4Jumping', 0, 1.0, ()=> {
-
-			// this.animator.animate( 'sec4Jumping', 0, 0.5 );
-
-		} );
 
 		if ( this.word ) {
 
