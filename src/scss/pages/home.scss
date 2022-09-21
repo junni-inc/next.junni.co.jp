@@ -441,8 +441,6 @@ body {
 
 		&-link {
 
-			pointer-events: auto;
-
 			a {
 				position: relative;
 				display: block;
@@ -637,7 +635,7 @@ body {
 			#{$this}-inner {
 				@keyframes jump {
 					0% {
-						transform: translateY( 0);
+						transform: translateY(0);
 						animation-timing-function: ease-out;
 					}
 					50% {
@@ -645,7 +643,7 @@ body {
 						animation-timing-function: ease-in;
 					}
 					100% {
-						transform: translateY( 0);
+						transform: translateY(0);
 					}
 				}
 				
@@ -660,6 +658,20 @@ body {
 		&-txt {
 			position: absolute;
 			width: 100%;
+
+			opacity: 0;
+			transform: rotate( -45deg ) scale(0);
+
+			transition: transform .5s cubic-bezier(.4,1.44,.74,1);
+			transition-delay: 1s;
+
+			
+			[data-skipVisible="true"] & {
+			
+				transform: rotate( 0 ) scale(1);
+				opacity: 1;
+				
+			}
 
 			&-item {
 				position: absolute;
