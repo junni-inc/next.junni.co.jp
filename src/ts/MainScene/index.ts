@@ -418,9 +418,13 @@ export class MainScene extends ORE.BaseLayer {
 
 		if ( this.world ) {
 
+			let worldPos = new THREE.Vector3( args.screenPosition.x, args.screenPosition.y, 0.95 ).unproject( this.camera );
+
 			this.world.intro.hover( args );
 			this.world.section1.hover( args, this.camera );
-			this.world.section3.hover( args );
+
+
+			this.world.section3.hover( args, worldPos );
 
 		}
 
