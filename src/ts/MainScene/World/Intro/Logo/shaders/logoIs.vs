@@ -13,15 +13,16 @@ float easeInOutQuad( float t ) {
 
 }
 
+
 void main( void ) {
 
 	vec3 pos = position;
 
 	#ifdef IS_LINE
 
-		pos.x += 0.07;
+		pos.x -= 0.0;
 		pos.x *= easeInOutQuad( linearstep( 0.0, 0.6, uIsVisibility ) );
-		pos.x -= 0.07;
+		pos.x += 0.0;
 		
 		vAlpha = 1.0;
 	#else

@@ -33,6 +33,7 @@ export class Peoples extends THREE.Mesh {
 	private commonUniforms: ORE.Uniforms;
 
 	private avoidRoot: THREE.Object3D;
+	private styleIndex: number = 0.0;
 
 	constructor( renderer: THREE.WebGLRenderer, num: number, parentUniforms: ORE.Uniforms, avoidRoot: THREE.Object3D, textMeshList: FallText[] ) {
 
@@ -61,7 +62,7 @@ export class Peoples extends THREE.Mesh {
 		} );
 
 		commonUniforms.uJump = animator.add( {
-			name: 'peopleJump',
+			name: 'peopleAscension',
 			initValue: 0,
 			easing: ORE.Easings.linear,
 		} );
@@ -109,7 +110,11 @@ export class Peoples extends THREE.Mesh {
 				value: null
 			},
 			tex: window.gManager.assetManager.getTex( 'human' ),
-			noiseTex: window.gManager.assetManager.getTex( 'noise' )
+			noiseTex: window.gManager.assetManager.getTex( 'noise' ),
+			uPeopleStyle: window.gManager.animator.add( {
+				name: 'peopleStyle',
+				initValue: [ 1, 0, 0, 0 ],
+			} )
 		} );
 
 		/*-------------------------------
@@ -293,7 +298,7 @@ export class Peoples extends THREE.Mesh {
 	}
 
 	private visibility: boolean = false;
-	private jump: boolean = false;
+	private ascension: boolean = false;
 
 	public switchVisibility( visible: boolean, duration: number ) {
 
@@ -306,14 +311,22 @@ export class Peoples extends THREE.Mesh {
 
 	}
 
-	public switchJump( jump: boolean, duration: number ) {
+	public switchAscension( ascension: boolean, duration: number ) {
 
-		if ( this.jump == jump ) return;
+		if ( this.ascension == ascension ) return;
 
-		this.animator.animate( 'peopleJump', jump ? 1 : 0, duration );
+		this.animator.animate( 'peopleAscension', ascension ? 1 : 0, duration );
+		this.ascension = ascension;
 
-		this.jump = jump;
+	}
 
+	public jump() {
+
+		let styleArray = [ 0, 0, 0, 0 ];
+		this.styleIndex = ( this.styleIndex + 1 ) % styleArray.length;
+		styleArray[ this.styleIndex ] = 1.0;
+
+		this.animator.animate( 'peopleStyle', styleArray, 0.2 );
 
 	}
 

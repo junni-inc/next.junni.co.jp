@@ -181,7 +181,7 @@ export class World extends THREE.Object3D {
 		this.add( this.section2 );
 		this.sections.push( this.section2 );
 
-		this.section3 = new Section3( this.manager, this.commonUniforms );
+		this.section3 = new Section3( this.manager, this.commonUniforms, renderer );
 		this.add( this.section3 );
 		this.sections.push( this.section3 );
 
