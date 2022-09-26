@@ -12,6 +12,7 @@ import { Section6 } from './Sections/Section6';
 import { BG } from './BG';
 import { Ground } from './Ground';
 import { Lights } from './Lights';
+import { DrawTrail } from './DrawTrail';
 
 export class World extends THREE.Object3D {
 
@@ -49,6 +50,10 @@ export class World extends THREE.Object3D {
 	// baku
 
 	private baku: Baku;
+
+	// trail
+
+	public trail: DrawTrail;
 
 	// state
 
@@ -169,6 +174,15 @@ export class World extends THREE.Object3D {
 		}, 3500 );
 
 		/*-------------------------------
+			Trail
+		-------------------------------*/
+
+		this.trail = new DrawTrail( renderer, this.commonUniforms );
+		this.trail.position.set( 0, 0, 0 );
+		this.trail.frustumCulled = false;
+		this.add( this.trail );
+
+		/*-------------------------------
 			Sections
 		-------------------------------*/
 
@@ -198,7 +212,6 @@ export class World extends THREE.Object3D {
 
 			}, 700 );
 
-
 		} );
 
 		this.section5 = new Section5( this.manager, this.commonUniforms );
@@ -212,6 +225,7 @@ export class World extends THREE.Object3D {
 		this.baku.onLoaded = () => {
 
 			this.section2.setSceneTex( this.baku.sceneRenderTarget.texture );
+			this.trail.setSceneTex( this.baku.sceneRenderTarget.texture );
 
 		};
 
@@ -334,9 +348,13 @@ export class World extends THREE.Object3D {
 
 		this.lights.update( deltaTime );
 
+		if ( this.trail ) this.trail.update( deltaTime );
+
 	}
 
 	public resize( info: ORE.LayerInfo ) {
+
+		this.trail.resize( info );
 
 		this.intro.resize( info );
 

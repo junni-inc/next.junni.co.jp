@@ -31,8 +31,8 @@ export class DrawTrail extends THREE.Mesh {
 
 	constructor( renderer: THREE.WebGLRenderer, parentUniforms: ORE.Uniforms ) {
 
-		let radialSegments = 2;
-		let heightSegments = 30;
+		let radialSegments = 8;
+		let heightSegments = 32;
 
 		let uni = ORE.UniformsLib.mergeUniforms( parentUniforms, {
 			uCursorPos: {
@@ -46,21 +46,27 @@ export class DrawTrail extends THREE.Mesh {
 			}
 		} );
 
-		let meshUniforms = ORE.UniformsLib.mergeUniforms( uni );
+		let meshUniforms = ORE.UniformsLib.mergeUniforms( THREE.UniformsUtils.clone( THREE.UniformsLib.lights ), uni, {
+			uSceneTex: {
+				value: null
+			},
+			uWinResolution: {
+				value: new THREE.Vector2()
+			}
+		} );
 
 		let radius = 0.05;
 
-		let geo = new THREE.CylinderBufferGeometry( radius, radius, 0.0, radialSegments, heightSegments, true );
+		let geo = new THREE.CylinderBufferGeometry( radius, radius, 1.0, radialSegments, heightSegments, true );
+
 		let mat = new THREE.ShaderMaterial( {
 			vertexShader: drawTrailVert,
 			fragmentShader: drawTrailFrag,
 			uniforms: meshUniforms,
 			side: THREE.DoubleSide,
-			wireframe: false,
 			transparent: true,
-			blending: THREE.AdditiveBlending
+			lights: true
 		} );
-
 
 		let computeUVArray = [];
 
@@ -76,7 +82,11 @@ export class DrawTrail extends THREE.Mesh {
 
 		}
 
+
+
 		geo.setAttribute( 'computeUV', new THREE.BufferAttribute( new Float32Array( computeUVArray ), 2 ), );
+		geo.getAttribute( 'position' ).applyMatrix4( new THREE.Matrix4().makeRotationX( Math.PI / 2 ) );
+		geo.getAttribute( 'normal' ).applyMatrix4( new THREE.Matrix4().makeRotationX( Math.PI / 2 ) );
 
 		super( geo, mat );
 
@@ -124,6 +134,12 @@ export class DrawTrail extends THREE.Mesh {
 
 	}
 
+	public setSceneTex( texture: THREE.Texture ) {
+
+		this.meshUniforms.uSceneTex.value = texture;
+
+	}
+
 	public update( deltaTime: number ) {
 
 		this.kernels.position.uniforms.uPosDataTex.value = this.datas.position.buffer.texture;
@@ -138,6 +154,12 @@ export class DrawTrail extends THREE.Mesh {
 		let localPos = this.worldToLocal( worldPos );
 
 		this.commonUniforms.uCursorPos.value.copy( localPos );
+
+	}
+
+	public resize( info: ORE.LayerInfo ) {
+
+		this.meshUniforms.uWinResolution.value.copy( info.size.canvasPixelSize );
 
 	}
 

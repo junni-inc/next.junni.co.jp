@@ -7,7 +7,6 @@ import { Lights } from './Lights';
 import { BackText } from './BackText';
 import { CursorLight } from './CursorLight';
 import { Wire } from './Wire';
-import { DrawTrail } from './DrawTrail';
 
 export class Section3 extends Section {
 
@@ -17,7 +16,6 @@ export class Section3 extends Section {
 	private directionLightList: THREE.DirectionalLight[] = [];
 	private backText?: BackText;
 	private cursorLight: CursorLight;
-	private drawTrail?: DrawTrail;
 	private renderer: THREE.WebGLRenderer;
 
 	constructor( manager: THREE.LoadingManager, parentUniforms: ORE.Uniforms, renderer: THREE.WebGLRenderer ) {
@@ -84,17 +82,6 @@ export class Section3 extends Section {
 		this.backText = new BackText( this.getObjectByName( 'BackText' ) as THREE.Mesh, this.commonUniforms );
 		this.backText.switchVisibility( this.sectionVisibility );
 
-		/*-------------------------------
-			DrawTrail
-		-------------------------------*/
-
-		let baku = this.getObjectByName( 'Baku' ) as THREE.Object3D;
-
-		this.drawTrail = new DrawTrail( this.renderer, this.commonUniforms );
-		this.drawTrail.position.copy( baku.position );
-		this.drawTrail.frustumCulled = false;
-		this.add( this.drawTrail );
-
 	}
 
 	public update( deltaTime: number ) {
@@ -103,8 +90,6 @@ export class Section3 extends Section {
 
 		this.cursorLight.update( deltaTime );
 		this.cursorLight.intensity = this.animator.get( 'sectionVisibility' + this.sectionName ) || 0;
-
-		if ( this.drawTrail ) this.drawTrail.update( deltaTime );
 
 	}
 
@@ -142,11 +127,9 @@ export class Section3 extends Section {
 
 	}
 
-	public hover( args: ORE.TouchEventArgs, worldPos: THREE.Vector3 ) {
+	public hover( args: ORE.TouchEventArgs ) {
 
 		this.cursorLight.hover( args );
-
-		if ( this.drawTrail ) this.drawTrail.updateCursorPos( worldPos );
 
 	}
 
