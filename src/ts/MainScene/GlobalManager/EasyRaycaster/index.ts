@@ -32,6 +32,11 @@ export class EasyRaycaster extends THREE.EventDispatcher {
 	private dispatchMouseEvent( type: 'enter' | 'out' | 'hover' | 'click', name: string, intersection?: THREE.Intersection ) {
 
 		this.dispatchEvent( {
+			type: type,
+			intersection: intersection
+		} );
+
+		this.dispatchEvent( {
 			type: type + '/' + name,
 			intersection: intersection
 		} );

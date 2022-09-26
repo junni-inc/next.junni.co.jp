@@ -294,6 +294,9 @@ export class World extends THREE.Object3D {
 
 		this.ground.changeSection( sectionIndex );
 
+		// trail
+
+		this.trail.changeMaterial( sectionIndex );
 
 		return section;
 

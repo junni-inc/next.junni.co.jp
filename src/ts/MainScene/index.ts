@@ -20,6 +20,8 @@ export class MainScene extends ORE.BaseLayer {
 	private cameraController?: CameraController;
 	private scroller: Scroller;
 
+	// content
+
 	private world?: World;
 	private subtitles: Subtitles;
 	private header: Header;
@@ -32,9 +34,13 @@ export class MainScene extends ORE.BaseLayer {
 	private memDelta: number = 0.0;
 	private riseDelta: boolean = false;
 
-	// content wrapper
+	// wrapper
 
 	private contentWrapperElm: HTMLElement;
+
+	// state
+
+	private raycasterWorldPos: THREE.Vector3 = new THREE.Vector3();
 
 	constructor() {
 
@@ -203,6 +209,16 @@ export class MainScene extends ORE.BaseLayer {
 
 		this.cameraController = new CameraController( this.camera );
 		window.cameraController = this.cameraController;
+
+		/*-------------------------------
+			Raycaster
+		-------------------------------*/
+
+		this.gManager.eRay.addEventListener( 'hover', ( e ) => {
+
+			this.raycasterWorldPos.copy( e.intersection.point );
+
+		} );
 
 	}
 
@@ -421,7 +437,7 @@ export class MainScene extends ORE.BaseLayer {
 			let cursorWorldPos = new THREE.Vector3( args.screenPosition.x, args.screenPosition.y, 0.95 ).unproject( this.camera );
 
 			this.world.intro.hover( args );
-			this.world.trail.updateCursorPos( cursorWorldPos );
+			this.world.trail.updateCursorPos( cursorWorldPos, this.raycasterWorldPos );
 			this.world.section1.hover( args, this.camera );
 			this.world.section3.hover( args );
 

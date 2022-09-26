@@ -5,7 +5,6 @@ import { Section, ViewingState } from '../Section';
 import { GLTF } from 'three/examples/jsm/loaders/GLTFLoader';
 import { Objects } from './Objects';
 import { TextRing } from './TextRing';
-import { Rings } from './Rings';
 import { Grid } from './Grid';
 import { Outro } from './Outro';
 
@@ -13,7 +12,6 @@ export class Section5 extends Section {
 
 	private objects?: Objects;
 	private textring: TextRing;
-	private rings: Rings;
 	private grid: Grid;
 	private outro: Outro;
 
@@ -55,18 +53,14 @@ export class Section5 extends Section {
 		-------------------------------*/
 
 		this.textring = new TextRing( this.commonUniforms );
-
-		/*-------------------------------
-			Rings
-		-------------------------------*/
-
-		this.rings = new Rings( this.commonUniforms );
+		this.textring.switchVisibility( this.sectionVisibility );
 
 		/*-------------------------------
 			Grid
 		-------------------------------*/
 
 		this.grid = new Grid( this.commonUniforms );
+		this.grid.switchVisibility( this.sectionVisibility );
 
 		/*-------------------------------
 			Outro
@@ -89,10 +83,6 @@ export class Section5 extends Section {
 		// textring
 
 		baku.add( this.textring );
-
-		// ring
-
-		baku.add( this.rings );
 
 		// grid
 
@@ -125,7 +115,7 @@ export class Section5 extends Section {
 		super.switchViewingState( viewing );
 
 		this.textring.switchVisibility( this.sectionVisibility );
-		this.rings.switchVisibility( this.sectionVisibility );
+		this.grid.switchVisibility( this.sectionVisibility );
 
 		if ( this.outroTextTimer ) {
 

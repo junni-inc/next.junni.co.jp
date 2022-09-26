@@ -5,6 +5,8 @@ varying vec3 vBitangent;
 uniform vec3 uColor;
 uniform samplerCube uEnvMap;
 
+uniform float uMaterial[6];
+
 /*-------------------------------
 	Require
 -------------------------------*/
@@ -122,6 +124,7 @@ struct Material {
 	vec3 albedo;
 	vec3 diffuseColor;
 	vec3 specularColor;
+	vec3 emission;
 	float metalness;
 	float roughness;
 	float opacity;
@@ -237,6 +240,16 @@ vec3 RE( Geometry geo, Material mat, Light light) {
 }
 
 /*-------------------------------
+	HSV
+-------------------------------*/
+
+vec3 hsv2rgb( vec3 hsv ){
+
+	return ((clamp(abs(fract(hsv.x+vec3(0,2,1)/3.)*6.-3.)-1.,0.,1.)-1.)*hsv.y+1.)*hsv.z;
+
+}
+
+/*-------------------------------
 	Main
 -------------------------------*/
 
@@ -247,10 +260,23 @@ void main( void ) {
 	-------------------------------*/
 
 	Material mat;
-	mat.albedo = vec3( 1.0, 1.0, 1.0 );
 	mat.opacity = 1.0;
-	mat.roughness = 1.0;
+	mat.roughness = 0.1;
 	mat.metalness = 0.0;
+
+	// albedo
+	
+	mat.albedo = vec3( 0.0, 0.0, 0.0 );
+	mat.albedo += hsv2rgb( vec3( time * 0.1 + vUv.y * 0.1 + 0.1, 1.0, 1.0 ) ) * uMaterial[0];
+	// mat.albedo += vec3( 1.0, 0.0, 0.0 ) * uMaterial[3];
+
+	// emission
+
+	mat.emission += mat.albedo * 0.9 * uMaterial[0];
+	mat.emission += vec3( 1.0 ) * uMaterial[2];
+	mat.emission += vec3( 0.1, 0.0, 0.0 ) * uMaterial[3];
+	mat.emission += vec3( 0.5 ) * uMaterial[4];
+	mat.emission += vec3( 1.0 ) * uMaterial[5];
 
 	#ifdef USE_ALPHA_MAP
 
@@ -300,6 +326,7 @@ void main( void ) {
 	vec2 refractNormal = geo.normal.xy * ( 1.0 - geo.normal.z * 0.9 );
 	
 	#pragma unroll_loop_start
+
 	for ( int i = 0; i < 16; i ++ ) {
 		
 		slide = float( UNROLLED_LOOP_INDEX ) / 16.0 * 0.03 + random( screenUv ) * 0.007;
@@ -316,12 +343,16 @@ void main( void ) {
 	#pragma unroll_loop_end
 	refractCol /= float( 16 );
 
-	outColor += (refractCol);
+	outColor += (refractCol) * hsv2rgb(vec3( time * 0.05, 1.0, 1.0 ) ) * uMaterial[1];
 
 	/*-------------------------------
 		Specular
 	-------------------------------*/
 	Light light;
+
+	float lw;
+	lw += uMaterial[0];
+	lw += uMaterial[3];
 
 	#if NUM_DIR_LIGHTS > 0
 
@@ -334,7 +365,7 @@ void main( void ) {
 				light.color = directionalLights[ i ].color;
 				shadow = 1.0;
 
-				// outColor += RE( geo, mat, light ) * shadow;
+				outColor += RE( geo, mat, light ) * shadow * lw;
 				
 			}
 		#pragma unroll_loop_end
@@ -354,6 +385,7 @@ void main( void ) {
 	vec3 envMapColor = textureCube( uEnvMap, refDir ).xyz;
 
 	// outColor += envMapColor * EF;
+	outColor += mat.emission;
 
 	gl_FragColor = vec4( outColor, 1.0 );
 

@@ -135,7 +135,7 @@ export class TextRing extends THREE.Mesh {
 
 			this.animator.animate( 'sec5TextRingVisibility', visible ? 1 : 0, visible ? 2 : 0.5, () => {
 
-				if ( ! this.visible ) this.visible = false;
+				if ( ! visible ) this.visible = false;
 
 			} );
 

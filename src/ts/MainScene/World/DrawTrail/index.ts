@@ -5,6 +5,7 @@ import drawTrailVert from './shaders/drawTrail.vs';
 import drawTrailFrag from './shaders/drawTrail.fs';
 
 import computePosition from './shaders/trailComputePosition.glsl';
+import { Pencil } from './Pencil';
 
 declare interface Kernels{
     position: ORE.GPUComputationKernel
@@ -15,6 +16,8 @@ declare interface Datas{
 }
 
 export class DrawTrail extends THREE.Mesh {
+
+	private animator: ORE.Animator;
 
 	private commonUniforms: ORE.Uniforms;
 	private meshUniforms: ORE.Uniforms;
@@ -29,10 +32,15 @@ export class DrawTrail extends THREE.Mesh {
 	private kernels: Kernels;
 	private datas: Datas;
 
+	// children
+
+	private childrenWrapper: THREE.Object3D;
+	private pencil: Pencil;
+
 	constructor( renderer: THREE.WebGLRenderer, parentUniforms: ORE.Uniforms ) {
 
-		let radialSegments = 8;
-		let heightSegments = 32;
+		let radialSegments = 9;
+		let heightSegments = 128;
 
 		let uni = ORE.UniformsLib.mergeUniforms( parentUniforms, {
 			uCursorPos: {
@@ -43,7 +51,11 @@ export class DrawTrail extends THREE.Mesh {
 			},
 			uDataSize: {
 				value: new THREE.Vector2()
-			}
+			},
+			uMaterial: window.gManager.animator.add( {
+				name: 'trailMaterial',
+				initValue: [ 1.0, 0.0, 0.0, 0.0, 0.0, 0.0 ],
+			} )
 		} );
 
 		let meshUniforms = ORE.UniformsLib.mergeUniforms( THREE.UniformsUtils.clone( THREE.UniformsLib.lights ), uni, {
@@ -52,7 +64,7 @@ export class DrawTrail extends THREE.Mesh {
 			},
 			uWinResolution: {
 				value: new THREE.Vector2()
-			}
+			},
 		} );
 
 		let radius = 0.05;
@@ -65,7 +77,7 @@ export class DrawTrail extends THREE.Mesh {
 			uniforms: meshUniforms,
 			side: THREE.DoubleSide,
 			transparent: true,
-			lights: true
+			lights: true,
 		} );
 
 		let computeUVArray = [];
@@ -82,13 +94,13 @@ export class DrawTrail extends THREE.Mesh {
 
 		}
 
-
-
 		geo.setAttribute( 'computeUV', new THREE.BufferAttribute( new Float32Array( computeUVArray ), 2 ), );
 		geo.getAttribute( 'position' ).applyMatrix4( new THREE.Matrix4().makeRotationX( Math.PI / 2 ) );
 		geo.getAttribute( 'normal' ).applyMatrix4( new THREE.Matrix4().makeRotationX( Math.PI / 2 ) );
 
 		super( geo, mat );
+
+		this.animator = window.gManager.animator;
 
 		this.renderOrder = 999;
 
@@ -132,6 +144,16 @@ export class DrawTrail extends THREE.Mesh {
 			position: this.gCon.createData()
 		};
 
+		/*-------------------------------
+			Children
+		-------------------------------*/
+
+		this.childrenWrapper = new THREE.Object3D();
+		this.add( this.childrenWrapper );
+
+		this.pencil = new Pencil( this.commonUniforms );
+		this.childrenWrapper.add( this.pencil );
+
 	}
 
 	public setSceneTex( texture: THREE.Texture ) {
@@ -149,11 +171,23 @@ export class DrawTrail extends THREE.Mesh {
 
 	}
 
-	public updateCursorPos( worldPos: THREE.Vector3 ) {
+	public updateCursorPos( worldPos: THREE.Vector3, raycasterWorldPos: THREE.Vector3 ) {
 
-		let localPos = this.worldToLocal( worldPos );
+		let localPos = this.worldToLocal( worldPos.clone() ).lerp( raycasterWorldPos, this.animator.get<number[]>( 'trailMaterial' )![ 3 ] );
 
 		this.commonUniforms.uCursorPos.value.copy( localPos );
+
+		this.childrenWrapper.position.copy( localPos );
+
+	}
+
+	public changeMaterial( sectionIndex: number ) {
+
+		let mat = [ 0, 0, 0, 0, 0, 0 ];
+
+		mat[ sectionIndex ] = 1.0;
+
+		this.animator.animate( 'trailMaterial', mat );
 
 	}
 

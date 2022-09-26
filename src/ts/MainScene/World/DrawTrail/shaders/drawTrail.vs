@@ -3,6 +3,8 @@ attribute vec4 tangent;
 
 uniform sampler2D uPosDataTex;
 uniform vec2 uDataSize;
+uniform float uMaterial[6];
+uniform float time;
 
 varying vec2 vUv;
 varying vec3 vNormal;
@@ -53,8 +55,31 @@ void main( void ) {
 	vec3 vec = normalize( delta );
 
 	mat3 rot = makeRotationDir(vec, vec3( 0.0, 0.0, 1.0 ) );
+
+	// length
+
+	float trailLength = 0.0;
+	trailLength += uMaterial[0] *( 0.054 );
+	trailLength += uMaterial[1] * 0.1;
+	trailLength += uMaterial[2] * 1.0;
+	trailLength += uMaterial[3] * 1.0;
+	trailLength += uMaterial[4] * 1.0;
+	trailLength += uMaterial[5] * 0.5;
+
+	// thickness
+
+	float thicknessWeight = sin( min( (1.0 - uv.y) / trailLength, 1.0) * PI ) * length(delta) * 3.0;
+
+	float thickness = 0.0;
+	thickness += uMaterial[0] * 1.5 * thicknessWeight;
+	thickness += uMaterial[1] * 3.0 * thicknessWeight;
+	thickness += uMaterial[2] * 1.0 * thicknessWeight;
+	thickness += uMaterial[3] * 1.0;
+	thickness += uMaterial[4] * 0.1 * thicknessWeight;
+	thickness += uMaterial[5] * 1.0 * thicknessWeight;
+	
 	pos *= rot;
-	pos *= length( delta ) * 4.0;
+	pos *= thickness;
 	pos += posData.xyz;
 	
 	vec4 worldPos = modelMatrix * vec4( pos, 1.0 );

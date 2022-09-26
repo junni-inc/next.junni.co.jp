@@ -2,8 +2,10 @@ uniform vec2 dataSize;
 uniform sampler2D uPosDataTex;
 uniform float time;
 uniform vec3 uCursorPos;
+uniform float uMaterial[6];
 
 void main() {
+
     if( gl_FragCoord.x <= 1.0 ) {
 		
         vec2 uv = gl_FragCoord.xy / dataSize.xy;
@@ -22,6 +24,16 @@ void main() {
 		
         vec3 beforePos = texture2D( uPosDataTex, bUV ).xyz;
 		
-        gl_FragColor = vec4(mix(beforePos, pos, 0.2) ,1.0);
+		float blend = 0.0;
+		blend += uMaterial[0] * 0.4;
+		blend += uMaterial[1] * 0.4;
+		blend += uMaterial[2] * 0.2;
+		blend += uMaterial[4] * 0.7;
+		blend += uMaterial[5] * 0.2;
+
+		vec3 newPos = mix(beforePos, pos, blend);
+		newPos += uMaterial[5] * vec3( 0.1, -.06, 0.1 );
+		
+        gl_FragColor = vec4(newPos,1.0);
     }
 }
