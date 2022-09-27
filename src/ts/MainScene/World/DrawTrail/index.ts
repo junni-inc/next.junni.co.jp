@@ -56,9 +56,6 @@ export class DrawTrail extends THREE.Mesh {
 				name: 'trailMaterial',
 				initValue: [ 1.0, 0.0, 0.0, 0.0, 0.0, 0.0 ],
 			} ),
-			uOrigin: {
-				value: new THREE.Vector3()
-			}
 		} );
 
 		let meshUniforms = ORE.UniformsLib.mergeUniforms( THREE.UniformsUtils.clone( THREE.UniformsLib.lights ), uni, {
@@ -166,13 +163,12 @@ export class DrawTrail extends THREE.Mesh {
 
 	}
 
-	public update( deltaTime: number, bakuWorldPos: THREE.Vector3 ) {
+	public update( deltaTime: number ) {
 
 		this.kernels.position.uniforms.uPosDataTex.value = this.datas.position.buffer.texture;
 		this.gCon.compute( this.kernels.position, this.datas.position );
 
 		this.meshUniforms.uPosDataTex.value = this.datas.position.buffer.texture;
-		this.commonUniforms.uOrigin.value.copy( bakuWorldPos );
 
 	}
 
