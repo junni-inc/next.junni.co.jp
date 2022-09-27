@@ -59,19 +59,20 @@ void main( void ) {
 	float trailLength = 0.0;
 	trailLength += uMaterial[0] *( 0.054 );
 	trailLength += uMaterial[1] * 0.1;
-	trailLength += uMaterial[2] * 1.0;
+	trailLength += uMaterial[2] * 0.4;
 	trailLength += uMaterial[3] * 1.0;
 	trailLength += uMaterial[4] * 1.0;
 	trailLength += uMaterial[5] * 0.5;
 
 	// thickness
 
-	float thicknessWeight = sin( min( (1.0 - uv.y) / trailLength, 1.0) * PI ) * length(delta) * 3.0;
+	float trailClamp = 1.0 - min( (1.0 - uv.y) / trailLength, 1.0);
+	float thicknessWeight = sin( trailClamp * PI ) * length(delta) * 3.0;
 
 	float thickness = 0.0;
 	thickness += uMaterial[0] * 1.5 * thicknessWeight;
-	thickness += uMaterial[1] * 0.0 * thicknessWeight;
-	thickness += uMaterial[2] * 1.0 * thicknessWeight;
+	thickness += uMaterial[1] * 3.0 * thicknessWeight;
+	thickness += uMaterial[2] * 0.3 * thicknessWeight;
 	thickness += uMaterial[3] * 1.0;
 	thickness += uMaterial[4] * 0.05 * thicknessWeight;
 	thickness += uMaterial[5] * 1.0 * thicknessWeight;
@@ -81,7 +82,6 @@ void main( void ) {
 	
 	mat3 rot = makeRotationDir(vec, mix( vec3( 0.0, 0.0, 1.0 ), vec3( 0.0, 1.0, 0.0 ), uMaterial[3] ) );
 	pos *= rot;
-
 	pos *= thickness;
 	pos += posData.xyz;
 	

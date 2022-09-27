@@ -163,81 +163,113 @@ varying vec3 vViewNormal;
 varying vec3 vViewPos;
 varying vec3 vWorldPos;
 
-float ggx( float dNH, float roughness ) {
-	
-	float a2 = roughness * roughness;
-	a2 = a2 * a2;
-	float dNH2 = dNH * dNH;
+/*-------------------------------
+	Shadow
+-------------------------------*/
 
-	if( dNH2 <= 0.0 ) return 0.0;
+#ifdef DEPTH
 
-	return a2 / ( PI * pow( dNH2 * ( a2 - 1.0 ) + 1.0, 2.0) );
+	varying vec2 vHighPrecisionZW;
 
-}
+#endif
 
-vec3 lambert( vec3 diffuseColor ) {
+#ifdef USE_SHADOWMAP
 
-	return diffuseColor / PI;
+#if NUM_DIR_LIGHT_SHADOWS > 0
 
-}
+		uniform sampler2D directionalShadowMap[ NUM_DIR_LIGHT_SHADOWS ];
+		varying vec4 vDirectionalShadowCoord[ NUM_DIR_LIGHT_SHADOWS ];
 
-float gSchlick( float d, float k ) {
+		struct DirectionalLightShadow {
+			float shadowBias;
+			float shadowNormalBias;
+			float shadowRadius;
+			vec2 shadowMapSize;
+		};
 
-	if( d == 0.0 ) return 0.0;
+		uniform DirectionalLightShadow directionalLightShadows[ NUM_DIR_LIGHT_SHADOWS ];
 
-	return d / ( d * ( 1.0 - k ) + k );
-	
-}
+	#endif
 
-float gSmith( float dNV, float dNL, float roughness ) {
+	#define SHADOW_SAMPLE_COUNT 4
 
-	float k = clamp( roughness * sqrt( 2.0 / PI ), 0.0, 1.0 );
+	vec2 poissonDisk[ SHADOW_SAMPLE_COUNT ];
 
-	return gSchlick( dNV, k ) * gSchlick( dNL, k );
-	
-}
+	void initPoissonDisk( float seed ) {
 
-float fresnel( float d ) {
-	
-	float f0 = 0.15;
+		float r = 0.1;
+		float rStep = (1.0 - r) / float( SHADOW_SAMPLE_COUNT );
 
-	return f0 + ( 1.0 - f0 ) * pow( 1.0 - d, 5.0 );
+		float ang = random( gl_FragCoord.xy * 0.01 ) * PI2 * 1.0;
+		float angStep = ( ( PI2 * 11.0 ) / float( SHADOW_SAMPLE_COUNT ) );
+		
+		for( int i = 0; i < SHADOW_SAMPLE_COUNT; i++ ) {
 
-}
+			poissonDisk[ i ] = vec2(
+				sin( ang ),
+				cos( ang )
+			) * pow( r, 0.75 );
 
+			r += rStep;
+			ang += angStep;
+		}
+		
+	}
 
-vec3 RE( Geometry geo, Material mat, Light light) {
+	vec2 compairShadowMapDepth( sampler2D shadowMap, vec2 shadowMapUV, float depth ) {
 
-	vec3 lightDir = normalize( light.direction );
-	vec3 halfVec = normalize( geo.viewDir + lightDir );
+		if( shadowMapUV.x < 0.0 || shadowMapUV.x > 1.0 || shadowMapUV.y < 0.0 || shadowMapUV.y > 1.0 ) {
 
-	float dLH = clamp( dot( lightDir, halfVec ), 0.0, 1.0 );
-	float dNH = clamp( dot( geo.normal, halfVec ), 0.0, 1.0 );
-	float dNV = clamp( dot( geo.normal, geo.viewDir ), 0.0, 1.0 );
-	float dNL = clamp( dot( geo.normal, lightDir), 0.0, 1.0 );
+			return vec2( 1.0, 0.0 );
 
-	vec3 irradiance = light.color * dNL;
+		}
 
-	// diffuse
-	vec3 diffuse = lambert( mat.diffuseColor ) * irradiance;
+		float shadowMapDepth = unpackRGBAToDepth( texture2D( shadowMap, shadowMapUV ) );
 
-	// specular
-	float D = ggx( dNH, mat.roughness );
-	float G = gSmith( dNV, dNL, mat.roughness );
-	float F = fresnel( dLH );
-	
-	vec3 specular = (( D * G * F ) / ( 4.0 * dNL * dNV + 0.0001 ) * mat.specularColor ) * irradiance; 
+		if( 0.0 >= shadowMapDepth || shadowMapDepth >= 1.0 ) {
 
-	vec3 c = vec3( 0.0 );
-	c += diffuse * ( 1.0 - F ) + specular;
+			return vec2( 1.0, 0.0 );
 
-	
-	vec3 color = vec3( mix( vec3( 1.0 ), mat.diffuseColor * 0.5 + 0.5, length( mat.diffuseColor ) ) )* mix( #000, vec3( 1.0, 1.0, 1.0 ), dNL + random(gl_FragCoord.xy * 0.001) * 0.15 );
-	// c = mix( c, vec3( 1.0 ), uLine);
+		}
+		
+		float shadow = depth <= shadowMapDepth ? 1.0 : 0.0;
 
-	return c;
+		return vec2( shadow, shadowMapDepth );
+		
+	}
 
-}
+	float shadowMapPCF( sampler2D shadowMap, vec4 shadowMapCoord, vec2 shadowSize ) {
+
+		float shadow = 0.0;
+		
+		for( int i = 0; i < SHADOW_SAMPLE_COUNT; i ++  ) {
+			
+			vec2 offset = poissonDisk[ i ] * shadowSize * 2.5; 
+
+			shadow += compairShadowMapDepth( shadowMap, shadowMapCoord.xy + offset, shadowMapCoord.z ).x;
+			
+		}
+
+		shadow /= float( SHADOW_SAMPLE_COUNT );
+
+		return shadow;
+
+	}
+
+	float getShadow( sampler2D shadowMap, vec2 shadowMapSize, float bias, vec4 shadowMapCoord ) {
+		
+		shadowMapCoord.xyz /= shadowMapCoord.w;
+		shadowMapCoord.z += bias - 0.0001;
+
+		initPoissonDisk(time);
+
+		vec2 shadowSize = 1.0 / shadowMapSize;
+
+		return shadowMapPCF( shadowMap, shadowMapCoord, shadowSize );
+
+	}
+
+#endif
 
 /*-------------------------------
 	HSV
@@ -264,36 +296,20 @@ void main( void ) {
 	mat.roughness = 0.1;
 	mat.metalness = 0.0;
 
-	// albedo
-	
-	mat.albedo = vec3( 0.0, 0.0, 0.0 );
-	mat.albedo += hsv2rgb( vec3( time * 0.1 + vUv.y * 0.1 + 0.1, 1.0, 1.0 ) ) * uMaterial[0];
-	// mat.albedo += vec3( 1.0, 0.0, 0.0 ) * uMaterial[3];
-
 	// emission
 
-	mat.emission += mat.albedo * 0.9 * uMaterial[0];
-	mat.emission += vec3( 1.0 ) * uMaterial[2];
+	vec3 gradation = hsv2rgb( vec3( time * 0.1 + vUv.y * 0.1 + 0.1, 1.0 - uMaterial[2] * 0.5, 1.0 ) ) * (uMaterial[0] + uMaterial[2] + uMaterial[3]) * 0.9;
+
+	mat.emission = vec3( 0.0 );
+	mat.emission += gradation * uMaterial[0];
+	mat.emission += gradation * uMaterial[2];
+	mat.emission += gradation * uMaterial[3];
 	mat.emission += vec3( 0.1, 0.0, 0.0 ) * uMaterial[3];
 	mat.emission += vec3( 0.5 ) * uMaterial[4];
 	mat.emission += vec3( 1.0 ) * uMaterial[5];
 
-	#ifdef USE_ALPHA_MAP
-
-		mat.opacity = texture2D( alphaMap, vUv ).x;
-
-	#else
-
-		mat.opacity *= opacity;
-
-	#endif
-	
-	// if( mat.opacity < 0.5 ) discard;
-
-	mat.diffuseColor = mix( mat.albedo, vec3( 0.0, 0.0, 0.0 ), mat.metalness );
-	mat.specularColor = mix( vec3( 1.0, 1.0, 1.0 ), mat.albedo, mat.metalness );
-
 	// output
+
 	vec3 outColor = vec3( 0.0 );
 	float outOpacity = mat.opacity;
 
@@ -310,6 +326,18 @@ void main( void ) {
 	geo.viewDirWorld = normalize( geo.posWorld - cameraPosition );
 	geo.normal = normalize( vNormal ) * faceDirection;
 	geo.normalWorld = normalize( ( vec4( geo.normal, 0.0 ) * viewMatrix ).xyz );
+
+	/*-------------------------------
+		Depth
+	-------------------------------*/
+
+	#ifdef DEPTH
+
+		float fragCoordZ = 0.5 * vHighPrecisionZW.x / vHighPrecisionZW.y + 0.5;
+		gl_FragColor = packDepthToRGBA( fragCoordZ );
+		return;
+	
+	#endif
 
 	/*-------------------------------
 		Refract
@@ -346,47 +374,39 @@ void main( void ) {
 	outColor += (refractCol) * hsv2rgb(vec3( time * 0.05, 1.0, 1.0 ) ) * uMaterial[1];
 
 	/*-------------------------------
-		Specular
+		Emission
 	-------------------------------*/
+
+	outColor += mat.emission;
+	
+	/*-------------------------------
+		Shadow
+	-------------------------------*/
+
 	Light light;
 
 	float lw;
-	lw += uMaterial[0];
-	lw += uMaterial[3];
 
 	#if NUM_DIR_LIGHTS > 0
 
-		float shadow;
+		float shadow = 1.0;
 
 		#pragma unroll_loop_start
 			for ( int i = 0; i < NUM_DIR_LIGHTS; i ++ ) {
 
-				light.direction = directionalLights[ i ].direction;
-				light.color = directionalLights[ i ].color;
-				shadow = 1.0;
+				#if defined( USE_SHADOWMAP ) && UNROLLED_LOOP_INDEX < NUM_DIR_LIGHT_SHADOWS
 
-				outColor += RE( geo, mat, light ) * shadow * lw;
+					shadow *= getShadow( directionalShadowMap[ i ], directionalLightShadows[ i ].shadowMapSize, directionalLightShadows[ i ].shadowBias, vDirectionalShadowCoord[ i ] );
+
+				#endif
 				
 			}
 		#pragma unroll_loop_end
+		
+		outColor *= mix( 1.0, shadow, uMaterial[3] );
 
 	#endif
 
-	/*-------------------------------
-		Envmap
-	-------------------------------*/
-
-	float dNV = clamp( dot( geo.normal, geo.viewDir ), 0.0, 1.0 );
-	float EF = fresnel( dNV );
-	
-	vec3 refDir = reflect( geo.viewDirWorld, geo.normalWorld );
-	refDir.x *= -1.0;
-	
-	vec3 envMapColor = textureCube( uEnvMap, refDir ).xyz;
-
-	// outColor += envMapColor * EF;
-	outColor += mat.emission;
-
-	gl_FragColor = vec4( outColor, 1.0 );
+	gl_FragColor = vec4( outColor, outOpacity );
 
 }

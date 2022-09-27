@@ -7,6 +7,7 @@ import { Lights } from './Lights';
 import { BackText } from './BackText';
 import { CursorLight } from './CursorLight';
 import { Wire } from './Wire';
+import { Sec3Particle } from './Sec3Particle';
 
 export class Section3 extends Section {
 
@@ -17,6 +18,9 @@ export class Section3 extends Section {
 	private backText?: BackText;
 	private cursorLight: CursorLight;
 	private renderer: THREE.WebGLRenderer;
+	private particle?: Sec3Particle;
+
+	private info?: ORE.LayerInfo;
 
 	constructor( manager: THREE.LoadingManager, parentUniforms: ORE.Uniforms, renderer: THREE.WebGLRenderer ) {
 
@@ -82,6 +86,23 @@ export class Section3 extends Section {
 		this.backText = new BackText( this.getObjectByName( 'BackText' ) as THREE.Mesh, this.commonUniforms );
 		this.backText.switchVisibility( this.sectionVisibility );
 
+		/*-------------------------------
+			Particle
+		-------------------------------*/
+
+		let baku = this.getObjectByName( 'Baku' )!;
+
+		this.particle = new Sec3Particle( this.commonUniforms );
+		this.particle.switchVisibility( this.sectionVisibility );
+		this.particle.position.copy( baku.position );
+		this.add( this.particle );
+
+		if ( this.info ) {
+
+			this.resize( this.info );
+
+		}
+
 	}
 
 	public update( deltaTime: number ) {
@@ -97,6 +118,10 @@ export class Section3 extends Section {
 
 		super.resize( info );
 
+		this.info = info;
+
+		if ( this.particle ) this.particle.resize( info );
+
 	}
 
 	public switchViewingState( viewing: ViewingState ): void {
@@ -107,23 +132,13 @@ export class Section3 extends Section {
 
 		window.cameraController.switchCameraMove( this.sectionVisibility );
 
-		if ( this.lights ) {
+		if ( this.lights ) this.lights.switchVisibility( this.sectionVisibility );
 
-			this.lights.switchVisibility( this.sectionVisibility );
+		if ( this.wire ) this.wire.switchVisibility( this.sectionVisibility );
 
-		}
+		if ( this.displays ) this.displays.switchVisibility( this.sectionVisibility );
 
-		if ( this.wire ) {
-
-			this.wire.switchVisibility( this.sectionVisibility );
-
-		}
-
-		if ( this.displays ) {
-
-			this.displays.switchVisibility( this.sectionVisibility );
-
-		}
+		if ( this.particle ) this.particle.switchVisibility( this.sectionVisibility );
 
 	}
 

@@ -28,7 +28,7 @@ void main( void ) {
 		
 		vAlpha = 1.0;
 	#else
-		float v = easeInOutQuad( linearstep( 0.3, 1.0, uIsVisibility ) );
+		float v = easeInOutQuad( linearstep( 0.0, 1.0, uIsVisibility ) );
 		pos.x -= ( 1.0 - v ) * 0.07;
 		vAlpha = v;
 	#endif

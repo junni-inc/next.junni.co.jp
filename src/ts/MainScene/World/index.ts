@@ -50,6 +50,7 @@ export class World extends THREE.Object3D {
 	// baku
 
 	private baku: Baku;
+	private bakuWorldPosition: THREE.Vector3 = new THREE.Vector3();
 
 	// trail
 
@@ -351,7 +352,7 @@ export class World extends THREE.Object3D {
 
 		this.lights.update( deltaTime );
 
-		if ( this.trail ) this.trail.update( deltaTime );
+		if ( this.trail ) this.trail.update( deltaTime, this.baku.getWorldPosition( this.bakuWorldPosition ) );
 
 	}
 

@@ -55,7 +55,10 @@ export class DrawTrail extends THREE.Mesh {
 			uMaterial: window.gManager.animator.add( {
 				name: 'trailMaterial',
 				initValue: [ 1.0, 0.0, 0.0, 0.0, 0.0, 0.0 ],
-			} )
+			} ),
+			uOrigin: {
+				value: new THREE.Vector3()
+			}
 		} );
 
 		let meshUniforms = ORE.UniformsLib.mergeUniforms( THREE.UniformsUtils.clone( THREE.UniformsLib.lights ), uni, {
@@ -75,8 +78,6 @@ export class DrawTrail extends THREE.Mesh {
 			vertexShader: drawTrailVert,
 			fragmentShader: drawTrailFrag,
 			uniforms: meshUniforms,
-			side: THREE.DoubleSide,
-			transparent: true,
 			lights: true,
 		} );
 
@@ -99,6 +100,8 @@ export class DrawTrail extends THREE.Mesh {
 		geo.getAttribute( 'normal' ).applyMatrix4( new THREE.Matrix4().makeRotationX( Math.PI / 2 ) );
 
 		super( geo, mat );
+
+		this.castShadow = true;
 
 		this.animator = window.gManager.animator;
 
@@ -127,6 +130,7 @@ export class DrawTrail extends THREE.Mesh {
 
 		let posUni = ORE.UniformsLib.mergeUniforms( gpuCommonUniforms, {
 			uPosDataTex: { value: null },
+			uNoiseTex: window.gManager.assetManager.getTex( 'noise' )
 		} );
 
 		let posKernel = this.gCon.createKernel( {
@@ -162,12 +166,13 @@ export class DrawTrail extends THREE.Mesh {
 
 	}
 
-	public update( deltaTime: number ) {
+	public update( deltaTime: number, bakuWorldPos: THREE.Vector3 ) {
 
 		this.kernels.position.uniforms.uPosDataTex.value = this.datas.position.buffer.texture;
 		this.gCon.compute( this.kernels.position, this.datas.position );
 
 		this.meshUniforms.uPosDataTex.value = this.datas.position.buffer.texture;
+		this.commonUniforms.uOrigin.value.copy( bakuWorldPos );
 
 	}
 

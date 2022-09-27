@@ -434,7 +434,9 @@ export class MainScene extends ORE.BaseLayer {
 
 		if ( this.world ) {
 
-			let cursorWorldPos = new THREE.Vector3( args.screenPosition.x, args.screenPosition.y, 0.95 ).unproject( this.camera );
+			let cursorWorldPos = new THREE.Vector3( args.screenPosition.x, args.screenPosition.y, 0.97 ).unproject( this.camera );
+
+			if ( cursorWorldPos.x != cursorWorldPos.x ) return;
 
 			this.world.intro.hover( args );
 			this.world.trail.updateCursorPos( cursorWorldPos, this.raycasterWorldPos );

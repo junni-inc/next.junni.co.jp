@@ -114,7 +114,8 @@ body {
 	}
 
 	&-timeline {
-		position: absolute;
+		
+		position: relative;
 		left: 3%;
 
 		display: flex;
@@ -186,17 +187,18 @@ body {
 	}
 
 	&-copyright {
-		position: absolute;
-		left: 50%;
-		transform: translateX(-50%);
+		position: relative;
+		right: 3%;
+
+		// left: 50%;
+		// transform: translateX(-50%);
 		opacity: 0;
 		transition: opacity 2s;
 		
 		font-family: $notosans;	
-		font-size: 0.5vw;
-		font-weight: lighter;
+		font-size: 8px;
 		letter-spacing: 0.2em;
-		color: #eee;
+		color: #777;
 
 		&[data-visible="true"] {
 			opacity: 1;
@@ -387,6 +389,7 @@ body {
 			position: relative;
 			display: inline-block;
 			padding: 10px 0px;
+			backface-visibility: hidden;
 
 
 			span {
@@ -397,6 +400,8 @@ body {
 				color: rgba($color: #fff, $alpha: 0.0);
 
 				transform: translateX(-20px);
+				backface-visibility: hidden;
+				// will-change: transform;
 
 				transition: color 2.0s, transform 2.0s;
 				z-index: 1;
@@ -407,7 +412,7 @@ body {
 	
 					@for $i from 0 through 30 {
 						&:nth-child(#{$i}) {
-							transition-delay: #{0.2 + $i * 0.04}s;
+							transition-delay: #{0.2 + $i * 0.06}s;
 						}
 					}
 				}
