@@ -6,6 +6,7 @@ import drawTrailFrag from './shaders/drawTrail.fs';
 
 import computePosition from './shaders/trailComputePosition.glsl';
 import { Pencil } from './Pencil';
+import { Sec1Pointer } from './Sec1Pointer';
 
 declare interface Kernels{
     position: ORE.GPUComputationKernel
@@ -32,10 +33,16 @@ export class DrawTrail extends THREE.Mesh {
 	private kernels: Kernels;
 	private datas: Datas;
 
+	// state
+
+	private cursorPos: THREE.Vector3 = new THREE.Vector3();
+	private cursorPosDelay: THREE.Vector3 = new THREE.Vector3();
+
 	// children
 
 	private childrenWrapper: THREE.Object3D;
 	private pencil: Pencil;
+	private pointer: Sec1Pointer;
 
 	constructor( renderer: THREE.WebGLRenderer, parentUniforms: ORE.Uniforms ) {
 
@@ -70,7 +77,6 @@ export class DrawTrail extends THREE.Mesh {
 		let radius = 0.05;
 
 		let geo = new THREE.CylinderBufferGeometry( radius, radius, 1.0, radialSegments, heightSegments, true );
-
 		let mat = new THREE.ShaderMaterial( {
 			vertexShader: drawTrailVert,
 			fragmentShader: drawTrailFrag,
@@ -156,6 +162,9 @@ export class DrawTrail extends THREE.Mesh {
 		this.pencil = new Pencil( this.commonUniforms );
 		this.childrenWrapper.add( this.pencil );
 
+		this.pointer = new Sec1Pointer( this.commonUniforms );
+		this.childrenWrapper.add( this.pointer );
+
 	}
 
 	public setSceneTex( texture: THREE.Texture ) {
@@ -171,15 +180,22 @@ export class DrawTrail extends THREE.Mesh {
 
 		this.meshUniforms.uPosDataTex.value = this.datas.position.buffer.texture;
 
+		// calc pos
+		let diff = this.cursorPos.clone().sub( this.cursorPosDelay );
+		diff.multiplyScalar( deltaTime * 13.0 );
+
+		this.cursorPosDelay.add( diff );
+
+		this.commonUniforms.uCursorPos.value.copy( this.cursorPosDelay );
+		this.childrenWrapper.position.copy( this.cursorPosDelay );
+
 	}
 
 	public updateCursorPos( worldPos: THREE.Vector3, raycasterWorldPos: THREE.Vector3 ) {
 
 		let localPos = this.worldToLocal( worldPos.clone() ).lerp( raycasterWorldPos, this.animator.get<number[]>( 'trailMaterial' )![ 3 ] );
 
-		this.commonUniforms.uCursorPos.value.copy( localPos );
-
-		this.childrenWrapper.position.copy( localPos );
+		this.cursorPos.copy( localPos );
 
 	}
 
