@@ -1,11 +1,11 @@
 varying vec2 vUv;
 varying vec2 vUv2;
 varying	float vBrightness;
-varying float vCount;
 varying float vFade;
 
 varying vec3 vNormal;
 varying vec3 vViewPos;
+varying float vInvert;
 
 uniform vec2 uv2;
 uniform float time;
@@ -36,19 +36,16 @@ void main( void ) {
 	vec4 mvPosition = modelViewMatrix * vec4( pos, 1.0 );
 	gl_Position = projectionMatrix * mvPosition;
 
-	float t = time + uOffset * 0.5;
-	vCount = floor(t / 1.0);
-	vFade = smoothstep( 0.85, 1.0, mod(t, 1.0) );
-
 	vUv = uv;
 	vUv.y = 1.0 - vUv.y;
-	vUv2 = spriteUVSelector( vUv, vec2( 2.0, 4.0 ), 8.0, vCount / 8.0 );
+	vUv2 = spriteUVSelector( vUv, vec2( 2.0, 4.0 ), 8.0, uOffset / 8.0 );
 
-	float noise = texture2D( uNoiseTex, vec2( time * 0.03 + modelMatrix[3][0] ) ).x;
-	float noiseHigh = texture2D( uNoiseTex, vec2( time * 3.0 + modelMatrix[3][0] ) ).x;
-	vBrightness = smoothstep( 0.54, 0.55, noise + noiseHigh * 0.08 ) * 0.9;
+	vec2 noise = texture2D( uNoiseTex, vec2( time * 0.03 + modelMatrix[3][0] ) ).xy;
+	vec2 noiseHigh = texture2D( uNoiseTex, vec2( time * 3.0 + modelMatrix[3][0] ) ).xy;
+	vBrightness = smoothstep( 0.55, 0.65, noise.x + noiseHigh.x * 0.08 ) * 0.9;
+	vInvert = step( 0.5, noise.y + noiseHigh.y * 0.08 );
 
-	vFade += smoothstep( 0.4, 1.0, sin( vBrightness * PI ) );
+	vFade = sin( vBrightness * PI ) + sin( vInvert * PI);
 
 	/*-------------------------------
 		Varying

@@ -34,12 +34,17 @@ export class Displays extends EventEmitter {
 			initValue: 0
 		} );
 
+		this.animator.add( {
+			name: 'raymarchEffect',
+			initValue: 0,
+			easing: ORE.Easings.cubicBezier( 0, .85, .25, 1.01 )
+		} );
+
 		/*-------------------------------
 			Mesh
 		-------------------------------*/
 
 		this.root = root;
-
 		this.root.children.forEach( ( item, index ) => {
 
 			let container = item as THREE.Mesh;
@@ -57,21 +62,46 @@ export class Displays extends EventEmitter {
 
 			let display = item.children[ 0 ] as THREE.Mesh;
 
+			let defines: any = {};
+
+			let uniforms = ORE.UniformsLib.mergeUniforms( this.commonUniforms, {
+				uOffset: {
+					value: index
+				}
+			} );
+
+			if ( display.name == 'Raymarching' ) {
+
+				defines.IS_RAYMARCH = '';
+				uniforms.uRaymarchEffect = this.animator.getVariableObject( 'raymarchEffect' )!;
+
+			}
+
+
 			display.material = new THREE.ShaderMaterial( {
 				vertexShader: displayVert,
 				fragmentShader: displayFrag,
-				uniforms: ORE.UniformsLib.mergeUniforms( this.commonUniforms, {
-					uOffset: {
-						value: index
-					}
-				} ),
+				uniforms,
 				transparent: true,
+				defines
 			} );
 
 			display.renderOrder = 10;
 
 		} );
 
+
+		let animate = () => {
+
+			this.animator.animate( 'raymarchEffect', Math.random(), Math.random() * 1.0 + 0.8, () => {
+
+				animate();
+
+			} );
+
+		};
+
+		animate();
 
 	}
 
