@@ -54,8 +54,6 @@ void main( void ) {
     vec3 delta = ( posData.xyz - nextPosData.xyz );
 	vec3 vec = normalize( delta );
 
-	mat3 rot = makeRotationDir(vec, vec3( 0.0, 0.0, 1.0 ) );
-
 	// length
 
 	float trailLength = 0.0;
@@ -72,13 +70,18 @@ void main( void ) {
 
 	float thickness = 0.0;
 	thickness += uMaterial[0] * 1.5 * thicknessWeight;
-	thickness += uMaterial[1] * 3.0 * thicknessWeight;
+	thickness += uMaterial[1] * 0.0 * thicknessWeight;
 	thickness += uMaterial[2] * 1.0 * thicknessWeight;
 	thickness += uMaterial[3] * 1.0;
 	thickness += uMaterial[4] * 0.05 * thicknessWeight;
 	thickness += uMaterial[5] * 1.0 * thicknessWeight;
 	
+	mat2 sec4Rot = rotate( - (PI / 2.0) * uMaterial[3] );
+	pos.xy *= sec4Rot;
+	
+	mat3 rot = makeRotationDir(vec, mix( vec3( 0.0, 0.0, 1.0 ), vec3( 0.0, 1.0, 0.0 ), uMaterial[3] ) );
 	pos *= rot;
+
 	pos *= thickness;
 	pos += posData.xyz;
 	
@@ -101,6 +104,7 @@ void main( void ) {
 	#endif
 	
 	vec3 normal = normalize( transformedNormal );
+	normal.xy *= sec4Rot;
 	normal *= rot;
 
 	vec3 tangent = normalize( ( modelViewMatrix * vec4( flipedTangent.xyz, 0.0 ) ).xyz );
