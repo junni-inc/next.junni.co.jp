@@ -53,7 +53,7 @@ export class World extends THREE.Object3D {
 
 	// trail
 
-	public trail: DrawTrail;
+	public trail?: DrawTrail;
 
 	// state
 
@@ -177,10 +177,14 @@ export class World extends THREE.Object3D {
 			Trail
 		-------------------------------*/
 
-		this.trail = new DrawTrail( renderer, this.commonUniforms );
-		this.trail.position.set( 0, 0, 0 );
-		this.trail.frustumCulled = false;
-		this.add( this.trail );
+		if ( ! window.isSP ) {
+
+			this.trail = new DrawTrail( renderer, this.commonUniforms );
+			this.trail.position.set( 0, 0, 0 );
+			this.trail.frustumCulled = false;
+			this.add( this.trail );
+
+		}
 
 		/*-------------------------------
 			Sections
@@ -225,7 +229,12 @@ export class World extends THREE.Object3D {
 		this.baku.onLoaded = () => {
 
 			this.section2.setSceneTex( this.baku.sceneRenderTarget.texture );
-			this.trail.setSceneTex( this.baku.sceneRenderTarget.texture );
+
+			if ( this.trail ) {
+
+				this.trail.setSceneTex( this.baku.sceneRenderTarget.texture );
+
+			}
 
 		};
 
@@ -296,7 +305,7 @@ export class World extends THREE.Object3D {
 
 		// trail
 
-		this.trail.changeMaterial( sectionIndex );
+		if ( this.trail ) this.trail.changeMaterial( sectionIndex );
 
 		return section;
 
@@ -357,7 +366,7 @@ export class World extends THREE.Object3D {
 
 	public resize( info: ORE.LayerInfo ) {
 
-		this.trail.resize( info );
+		if ( this.trail ) this.trail.resize( info );
 
 		this.intro.resize( info );
 
