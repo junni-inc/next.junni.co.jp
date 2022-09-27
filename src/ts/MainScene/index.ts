@@ -16,6 +16,7 @@ import { Lethargy } from 'lethargy';
 export class MainScene extends ORE.BaseLayer {
 
 	private gManager?: GlobalManager;
+	private animator?: ORE.Animator;
 	private renderPipeline?: RenderPipeline;
 	private cameraController?: CameraController;
 	private scroller: Scroller;
@@ -75,6 +76,8 @@ export class MainScene extends ORE.BaseLayer {
 				if ( this.cameraController ) this.cameraController.changeRange( section.cameraRange );
 
 				if ( this.renderPipeline ) this.renderPipeline.updateParam( section.ppParam );
+
+				if ( this.animator ) this.animator.animate( 'trailCursorDepth', section.trailDepth );
 
 				this.footer.changeTimelineSection( sectionIndex + 1 );
 
@@ -201,6 +204,17 @@ export class MainScene extends ORE.BaseLayer {
 			this.onResize();
 
 
+		} );
+
+		/*-------------------------------
+			Animator
+		-------------------------------*/
+
+		this.animator = this.gManager.animator;
+
+		this.animator.add( {
+			name: 'trailCursorDepth',
+			initValue: 0.97
 		} );
 
 		/*-------------------------------
@@ -434,7 +448,11 @@ export class MainScene extends ORE.BaseLayer {
 
 		if ( this.world ) {
 
-			let cursorWorldPos = new THREE.Vector3( args.screenPosition.x, args.screenPosition.y, 0.97 ).unproject( this.camera );
+			let depth = 0.97;
+
+			if ( this.animator ) depth = this.animator.get( 'trailCursorDepth' )!;
+
+			let cursorWorldPos = new THREE.Vector3( args.screenPosition.x, args.screenPosition.y, depth ).unproject( this.camera );
 
 			if ( cursorWorldPos.x != cursorWorldPos.x ) return;
 

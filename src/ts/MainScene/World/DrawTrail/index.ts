@@ -76,6 +76,7 @@ export class DrawTrail extends THREE.Mesh {
 			fragmentShader: drawTrailFrag,
 			uniforms: meshUniforms,
 			lights: true,
+			transparent: true
 		} );
 
 		let computeUVArray = [];

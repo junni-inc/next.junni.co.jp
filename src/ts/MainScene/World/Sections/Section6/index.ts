@@ -33,8 +33,7 @@ export class Section6 extends Section {
 
 		this.bakuParam.materialType = 'normal';
 		this.ppParam.bloomBrightness = 2.0;
-
-		// this.ppParam.bloomBrightness = 0.0;
+		this.trailDepth = 0.96;
 
 		/*-------------------------------
 			Animator
@@ -55,7 +54,6 @@ export class Section6 extends Section {
 			),
 			intensity: 1
 		};
-
 
 		this.light2Data = {
 			position: new THREE.Vector3( 5.0, - 10.7, 20 ),
