@@ -10,8 +10,8 @@ void main( void ) {
 	color.w *= texture2D( tex, vUv ).w;
 	
 	if( color.w < 0.2 ) discard;
-	
-	color.w *= vAlpha;
+
+	color.w *= vAlpha * 0.3;
 
 	gl_FragColor = vec4( color );
 

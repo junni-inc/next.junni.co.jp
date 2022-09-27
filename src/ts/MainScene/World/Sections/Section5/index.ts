@@ -23,9 +23,10 @@ export class Section5 extends Section {
 
 		this.elm = document.querySelector( '.section5' ) as HTMLElement;
 
-		this.bakuParam.materialType = 'normal';
+		this.bakuParam.materialType = 'dark';
 		this.bakuParam.rotateSpeed = 0.18;
 		this.ppParam.bloomBrightness = 1.0;
+		this.ppParam.vignet = 1.0;
 		this.cameraRange.set( 0.02, 0.02 );
 
 		/*-------------------------------
@@ -45,7 +46,7 @@ export class Section5 extends Section {
 		this.light2Data = {
 			position: new THREE.Vector3( 5.0, - 10.7, 20 ),
 			targetPosition: new THREE.Vector3( - 1.7, - 6.7, 12 ),
-			intensity: 1,
+			intensity: 0.5,
 		};
 
 		/*-------------------------------
@@ -129,7 +130,7 @@ export class Section5 extends Section {
 			this.outro.switchVisibility( this.sectionVisibility );
 			this.outroTextTimer = null;
 
-		}, this.sectionVisibility ? 2500 : 0 );
+		}, this.sectionVisibility ? 1000 : 0 );
 
 	}
 

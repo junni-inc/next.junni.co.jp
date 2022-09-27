@@ -75,7 +75,7 @@ void main( void ) {
 	thickness += uMaterial[1] * 3.0 * thicknessWeight;
 	thickness += uMaterial[2] * 1.0 * thicknessWeight;
 	thickness += uMaterial[3] * 1.0;
-	thickness += uMaterial[4] * 0.1 * thicknessWeight;
+	thickness += uMaterial[4] * 0.05 * thicknessWeight;
 	thickness += uMaterial[5] * 1.0 * thicknessWeight;
 	
 	pos *= rot;

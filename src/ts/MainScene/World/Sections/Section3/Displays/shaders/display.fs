@@ -28,8 +28,7 @@ uniform float uSectionVisibility;
 
 	float SDF( vec3 p ){
 
-
-		p.xy *= rotate( p.z * 0.05 * uRaymarchEffect );
+		p.xy *= rotate( p.z * 0.05 + uRaymarchEffect * 5.0 );
 		
 		vec3 loopP = mod( p, 4.0 ) - 2.0;
 		

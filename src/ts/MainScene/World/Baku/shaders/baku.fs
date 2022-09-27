@@ -35,6 +35,7 @@ uniform float time;
 uniform vec2 winResolution;
 uniform float uTransparent;
 uniform float uLine;
+uniform float uRimLight;
 
 /*-------------------------------
 	Textures
@@ -543,7 +544,7 @@ void main( void ) {
 
 	float dNV = clamp( dot( geo.normal, geo.viewDir ), 0.0, 1.0 );
 	float EF = mix( fresnel( dNV ), 1.0, mat.metalness );
-	outColor += EF;
+	outColor += EF * ( 0.5 +  uRimLight * 0.3 );
 	
 	/*-------------------------------
 		Emission

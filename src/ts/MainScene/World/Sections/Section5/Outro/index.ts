@@ -9,6 +9,21 @@ export class Outro {
 		this.elm = document.querySelector( '.section5-content' ) as HTMLElement;
 		this.textElmWrapList = Array.from( this.elm.querySelectorAll( '.section5-text-wrap' ) );
 
+		let textInnerList = Array.from( this.elm.querySelectorAll( '.section5-text-inner' ) );
+
+		textInnerList.forEach( item => {
+
+			let str = item.innerHTML;
+			item.innerHTML = '';
+
+			str.split( "" ).forEach( char => {
+
+				item.innerHTML += '<span>' + char + '</span>';
+
+			} );
+
+		} );
+
 	}
 
 	private timeoutList: number[] = [];
@@ -39,7 +54,7 @@ export class Outro {
 
 						this.timeoutList.push( window.setTimeout( () => {
 
-							item.setAttribute( 'data-visible', 'true' );
+							item.setAttribute( 'data-visible5line', 'true' );
 
 						}, 200 * j ) );
 
@@ -57,7 +72,7 @@ export class Outro {
 
 			items.forEach( item => {
 
-				item.setAttribute( 'data-visible', "false" );
+				item.setAttribute( 'data-visible5line', "false" );
 
 			} );
 

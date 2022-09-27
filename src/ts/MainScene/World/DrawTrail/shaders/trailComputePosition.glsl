@@ -4,6 +4,8 @@ uniform float time;
 uniform vec3 uCursorPos;
 uniform float uMaterial[6];
 
+#pragma glslify: rotate = require('./rotate.glsl' )
+
 void main() {
 
     if( gl_FragCoord.x <= 1.0 ) {
@@ -33,6 +35,8 @@ void main() {
 
 		vec3 newPos = mix(beforePos, pos, blend);
 		newPos += uMaterial[5] * vec3( 0.1, -.06, 0.1 );
+
+		// newPos.xy *= rotate( 0.001 );
 		
         gl_FragColor = vec4(newPos,1.0);
     }
