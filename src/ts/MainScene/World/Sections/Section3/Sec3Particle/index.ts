@@ -4,7 +4,7 @@ import * as ORE from 'ore-three';
 import particlesVert from './shaders/sec3Particle.vs';
 import particlesFrag from './shaders/sec3Particle.fs';
 
-export class Sec3Particle extends THREE.Points {
+export class Sec3Particle extends THREE.Mesh {
 
 	private animator: ORE.Animator;
 	public commonUniforms: ORE.Uniforms;
@@ -25,21 +25,26 @@ export class Sec3Particle extends THREE.Points {
 				Math.random() * range.z,
 			);
 
-			numArray.push( i );
+			numArray.push( i, Math.random() * 0.95 + 0.05 );
 
 		}
 
-		let geo = new THREE.BufferGeometry();
-		geo.setAttribute( 'position', new THREE.BufferAttribute( new Float32Array( offsetPosArray ), 3 ) );
-		geo.setAttribute( 'num', new THREE.BufferAttribute( new Float32Array( numArray ), 1 ) );
+		let size = 0.2;
+		let originGeo = new THREE.PlaneBufferGeometry( size, size );
+
+		let geo = new THREE.InstancedBufferGeometry();
+		geo.setAttribute( 'position', originGeo.getAttribute( 'position' ) );
+		geo.setAttribute( 'uv', originGeo.getAttribute( 'uv' ) );
+		geo.setIndex( originGeo.getIndex() );
+
+		geo.setAttribute( 'offsetPos', new THREE.InstancedBufferAttribute( new Float32Array( offsetPosArray ), 3 ) );
+		geo.setAttribute( 'num', new THREE.InstancedBufferAttribute( new Float32Array( numArray ), 2 ) );
 
 		let uni = ORE.UniformsLib.mergeUniforms( parentUniforms, {
 			range: {
 				value: range
 			},
-			particleSize: {
-				value: 0.1
-			},
+			uTex: window.gManager.assetManager.getTex( 'sec3Particle' )
 		} );
 
 		/*-------------------------------
@@ -58,30 +63,25 @@ export class Sec3Particle extends THREE.Points {
 			vertexShader: particlesVert,
 			fragmentShader: particlesFrag,
 			uniforms: uni,
-			transparent: false,
-			// blending: THREE.AdditiveBlending,
-			depthWrite: true,
+			transparent: true,
+			depthWrite: false,
+			blending: THREE.AdditiveBlending,
 		} );
 
 		super( geo, mat );
 
-		this.renderOrder = 0;
+		this.renderOrder = 999;
 
 		this.animator = animator;
 
 		this.commonUniforms = uni;
+		this.frustumCulled = false;
 
 	}
 
 	public update( deltaTime: number ) {
 
 		this.commonUniforms.time.value += deltaTime * ( this.animator.get<number>( 'particleTimeScale' ) || 1.0 );
-
-	}
-
-	public resize( layerInfo: ORE.LayerInfo ) {
-
-		this.commonUniforms.particleSize.value = layerInfo.size.canvasSize.y / 200;
 
 	}
 

@@ -70,7 +70,7 @@ export class Displays extends EventEmitter {
 				}
 			} );
 
-			if ( display.name == 'Raymarching' ) {
+			if ( display.name.indexOf( 'Raymarching' ) > - 1 ) {
 
 				defines.IS_RAYMARCH = '';
 				uniforms.uRaymarchEffect = this.animator.getVariableObject( 'raymarchEffect' )!;

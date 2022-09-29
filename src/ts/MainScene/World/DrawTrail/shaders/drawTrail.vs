@@ -71,7 +71,7 @@ void main( void ) {
 
 	float thickness = 0.0;
 	thickness += uMaterial[0] * 1.5 * thicknessWeight;
-	thickness += uMaterial[1] * 3.0 * thicknessWeight;
+	thickness += uMaterial[1] * 5.0 * thicknessWeight;
 	thickness += uMaterial[2] * 0.3 * thicknessWeight;
 	thickness += uMaterial[3] * 1.0;
 	thickness += uMaterial[4] * 0.05 * thicknessWeight;

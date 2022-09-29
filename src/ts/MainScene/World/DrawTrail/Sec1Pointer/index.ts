@@ -4,16 +4,21 @@ import * as ORE from 'ore-three';
 import sec1PointerVert from './shaders/sec1Pointer.vs';
 import sec1PointerFrag from './shaders/sec1Pointer.fs';
 
-export class Sec1Pointer extends THREE.Mesh {
+export class Sec1Pointer {
 
+	public mesh: THREE.Mesh;
 	private commonUniforms: ORE.Uniforms;
 
-	constructor( parentUniforms: ORE.Uniforms ) {
+	constructor( mesh: THREE.Mesh, parentUniforms: ORE.Uniforms ) {
+
+		let baseMat = mesh.material as THREE.MeshStandardMaterial;
 
 		let commonUniforms = ORE.UniformsLib.mergeUniforms( parentUniforms, {
+			uTex: {
+				value: baseMat.map
+			},
+			uMatCapTex: window.gManager.assetManager.getTex( 'matCap' ),
 		} );
-
-		let geo = new THREE.SphereBufferGeometry( 0.1 );
 
 		let mat = new THREE.ShaderMaterial( {
 			fragmentShader: sec1PointerFrag,
@@ -21,7 +26,26 @@ export class Sec1Pointer extends THREE.Mesh {
 			uniforms: commonUniforms,
 		} );
 
-		super( geo, mat );
+		this.mesh = mesh;
+
+		this.mesh.material = mat;
+
+		this.mesh.children.forEach( item => {
+
+			let mesh = item as THREE.Mesh;
+
+			let mat = new THREE.ShaderMaterial( {
+				fragmentShader: sec1PointerFrag,
+				vertexShader: sec1PointerVert,
+				uniforms: commonUniforms,
+				defines: {
+					"GRADATION": ''
+				}
+			} );
+
+			mesh.material = mat;
+
+		} );
 
 		this.commonUniforms = commonUniforms;
 

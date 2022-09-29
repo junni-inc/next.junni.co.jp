@@ -95,6 +95,8 @@ export class Section3 extends Section {
 		this.particle = new Sec3Particle( this.commonUniforms );
 		this.particle.switchVisibility( this.sectionVisibility );
 		this.particle.position.copy( baku.position );
+		this.particle.position.y += 2.8;
+
 		this.add( this.particle );
 
 		if ( this.info ) {
@@ -119,8 +121,6 @@ export class Section3 extends Section {
 		super.resize( info );
 
 		this.info = info;
-
-		if ( this.particle ) this.particle.resize( info );
 
 	}
 

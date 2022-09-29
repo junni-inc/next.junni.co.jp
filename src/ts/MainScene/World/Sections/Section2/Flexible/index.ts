@@ -34,24 +34,33 @@ export class Flexible {
 
 		this.mesh = mesh;
 
-		let baseMat = this.mesh.material as THREE.MeshStandardMaterial;
 
-		this.mesh.material = new THREE.ShaderMaterial( {
-			vertexShader: flexibleVert,
-			fragmentShader: flexibleFrag,
-			uniforms: ORE.UniformsLib.mergeUniforms( this.commonUniforms, {
-				uTex: {
-					value: baseMat.map
-				}
-			} ),
-			depthTest: true,
-			transparent: true,
-			// blending: THREE.CustomBlending,
-			// blendDst: THREE.OneMinusSrcColorFactor,
-			// blendSrc: THREE.OneMinusDstColorFactor,
+		this.mesh.traverse( obj => {
+
+			let mesh = obj as THREE.Mesh;
+			if ( mesh.isMesh ) {
+
+				let baseMat = mesh.material as THREE.MeshStandardMaterial;
+
+				mesh.material = new THREE.ShaderMaterial( {
+					vertexShader: flexibleVert,
+					fragmentShader: flexibleFrag,
+					uniforms: ORE.UniformsLib.mergeUniforms( this.commonUniforms, {
+						uTex: {
+							value: baseMat.map
+						}
+					} ),
+					depthTest: true,
+					depthWrite: false,
+					transparent: true,
+				} );
+
+				mesh.renderOrder = 2;
+
+			}
+
 		} );
 
-		this.mesh.renderOrder = 999;
 
 	}
 

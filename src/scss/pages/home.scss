@@ -1,10 +1,11 @@
 @use "../global/" as *;
-@import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Noto+Sans&family=Noto+Sans+JP&family=Jura&family=Noto+Serif&family=Comfortaa&family=Roboto+Serif:ital,opsz,wght@1,8..144,100&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Noto+Sans&family=Noto+Sans+JP&family=Jura&family=Noto+Serif&family=Comfortaa&family=Roboto+Serif:ital,opsz,wght@1,8..144,100&family=Roboto&display=swap');
 
 $notosans: 'Noto Sans JP', 'Noto Sans', sans-serif;
 $notoserif: 'Noto Serif', serif;
 $bebas: 'Bebas Neue', cursive;
 $jura: 'Jura', sans-serif;
+$roboto: 'Roboto', sans-serif;;
 $robotoSerif: 'Roboto Serif', serif;
 $comfortaa: 'Comfortaa', cursive;
 
@@ -195,7 +196,7 @@ body {
 		opacity: 0;
 		transition: opacity 2s;
 		
-		font-family: $notosans;	
+		font-family: $roboto;	
 		font-size: 8px;
 		letter-spacing: 0.2em;
 		color: #777;
@@ -389,27 +390,23 @@ body {
 			position: relative;
 			display: inline-block;
 			padding: 10px 0px;
-			backface-visibility: hidden;
-
+			// backface-visibility: hidden;
 
 			span {
+				position: relative;
 				display: inline-block;
 				font-family: $notosans;
 				font-size: 17px;
 				letter-spacing: 0.35em;
 				color: rgba($color: #fff, $alpha: 0.0);
 
-				transform: translateX(-20px);
-				backface-visibility: hidden;
-				// will-change: transform;
-
-				transition: color 2.0s, transform 2.0s;
-				z-index: 1;
+				right: 15px;
+				transition: color 2.0s, right 1.0s;
 				
 				[data-visible5line="true"] &{
 					color: rgba($color: #fff, $alpha: 1.0);
-					transform: translateX(0);
-	
+					right: 0px;
+					
 					@for $i from 0 through 30 {
 						&:nth-child(#{$i}) {
 							transition-delay: #{0.2 + $i * 0.06}s;

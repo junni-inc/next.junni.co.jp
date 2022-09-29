@@ -35,7 +35,7 @@ export class Slides {
 
 		this.root = root;
 
-		let res = 64;
+		let res = 4;
 
 		let posArray: number[] = [];
 		let indexArray: number[] = [];
@@ -48,7 +48,7 @@ export class Slides {
 
 			let theta = i / res * Math.PI * 2.0 + Math.PI / 4.0;
 
-			let x = Math.cos( theta ) * radius;
+			let x = Math.cos( theta ) * radius * 2.0;
 			let z = Math.sin( theta ) * radius;
 
 			posArray.push( x, height / 2, z );

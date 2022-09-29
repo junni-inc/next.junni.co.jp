@@ -508,7 +508,7 @@ void main( void ) {
 			}
 		#pragma unroll_loop_end
 		
-		outColor *= mix( 1.0, shadow, uMaterial[3] );
+		outColor *= mix( 1.0, shadow * 0.8 + 0.2, uMaterial[3] );
 
 	#endif
 

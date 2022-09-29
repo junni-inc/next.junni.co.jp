@@ -19,7 +19,7 @@ void main( void ) {
 
 	vec3 pos = position;
 	pos.y *= scale;
-	pos.y += ( pos.x ) * 0.4;
+	pos.y += ( pos.x ) * 0.25;
 	pos += offsetPos;
 
 	vec4 mvPosition = modelViewMatrix * vec4( pos, 1.0 );
@@ -28,7 +28,7 @@ void main( void ) {
 	vAlpha = uVisibility;
 
 	vUv = uv;
-	vUv.x *= 3.0;
+	vUv.x *= 5.0;
 	vUv.x += time * 0.1 * speed * rnd.x + rnd.y + uSectionViewing * rnd.x;
 	vUv.x /= scale;
 

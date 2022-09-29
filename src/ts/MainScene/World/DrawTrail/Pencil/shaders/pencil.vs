@@ -1,5 +1,6 @@
 varying vec2 vUv;
 uniform float uMaterial[6];
+varying vec2 vHighPrecisionZW;
 
 void main( void ) {
 
@@ -10,5 +11,6 @@ void main( void ) {
 	gl_Position = projectionMatrix * mvPosition;
 
 	vUv = uv;
+	vHighPrecisionZW = gl_Position.zw;
 
 }

@@ -187,6 +187,8 @@ export class MainScene extends ORE.BaseLayer {
 				tex.wrapT = THREE.RepeatWrapping;
 
 			} },
+			{ name: 'signpen', path: './assets/textures/signpen.png', type: 'tex', timing: 'sub' },
+			{ name: 'sec3Particle', path: './assets/textures/pattern.jpg', type: 'tex', timing: 'sub' },
 		] } );
 
 		this.gManager.assetManager.addEventListener( 'loadMustAssets', ( e ) => {

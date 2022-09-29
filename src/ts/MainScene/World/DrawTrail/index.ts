@@ -38,13 +38,15 @@ export class DrawTrail extends THREE.Mesh {
 	private cursorPos: THREE.Vector3 = new THREE.Vector3();
 	private cursorPosDelay: THREE.Vector3 = new THREE.Vector3();
 
+	private assets: THREE.Object3D;
+
 	// children
 
 	private childrenWrapper: THREE.Object3D;
 	private pencil: Pencil;
 	private pointer: Sec1Pointer;
 
-	constructor( renderer: THREE.WebGLRenderer, parentUniforms: ORE.Uniforms ) {
+	constructor( renderer: THREE.WebGLRenderer, assets: THREE.Object3D, parentUniforms: ORE.Uniforms ) {
 
 		let radialSegments = 9;
 		let heightSegments = 128;
@@ -82,7 +84,7 @@ export class DrawTrail extends THREE.Mesh {
 			fragmentShader: drawTrailFrag,
 			uniforms: meshUniforms,
 			lights: true,
-			transparent: true
+			transparent: false
 		} );
 
 		let computeUVArray = [];
@@ -104,6 +106,8 @@ export class DrawTrail extends THREE.Mesh {
 		geo.getAttribute( 'normal' ).applyMatrix4( new THREE.Matrix4().makeRotationX( Math.PI / 2 ) );
 
 		super( geo, mat );
+
+		this.assets = assets;
 
 		this.castShadow = true;
 
@@ -160,10 +164,11 @@ export class DrawTrail extends THREE.Mesh {
 		this.add( this.childrenWrapper );
 
 		this.pencil = new Pencil( this.commonUniforms );
+		this.pencil.position.y = 0.1;
 		this.childrenWrapper.add( this.pencil );
 
-		this.pointer = new Sec1Pointer( this.commonUniforms );
-		this.childrenWrapper.add( this.pointer );
+		this.pointer = new Sec1Pointer( this.assets.getObjectByName( 'Rocket' ) as THREE.Mesh, this.commonUniforms );
+		this.childrenWrapper.add( this.pointer.mesh );
 
 	}
 
@@ -172,6 +177,8 @@ export class DrawTrail extends THREE.Mesh {
 		this.meshUniforms.uSceneTex.value = texture;
 
 	}
+
+	private pointerDirection: THREE.Vector2 = new THREE.Vector2();
 
 	public update( deltaTime: number ) {
 
@@ -188,6 +195,14 @@ export class DrawTrail extends THREE.Mesh {
 
 		this.commonUniforms.uCursorPos.value.copy( this.cursorPosDelay );
 		this.childrenWrapper.position.copy( this.cursorPosDelay );
+
+		this.pencil.rotation.z = diff.x * 0.7;
+		this.pencil.rotation.x = - diff.z * 0.5;
+
+		// pointer
+		let diffVec2 = new THREE.Vector2( diff.x, diff.y );
+		this.pointerDirection.lerp( diffVec2, Math.min( 1.0, diffVec2.length() * 10.0 ) );
+		this.pointer.mesh.rotation.z = Math.atan2( this.pointerDirection.y, this.pointerDirection.x ) - Math.PI / 2;
 
 	}
 

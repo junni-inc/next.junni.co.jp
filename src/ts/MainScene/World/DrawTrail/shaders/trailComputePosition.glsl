@@ -24,7 +24,7 @@ void main() {
 		
 		float blend = 0.0;
 		blend += uMaterial[0] * 0.4;
-		blend += uMaterial[1] * 0.4;
+		blend += uMaterial[1] * 0.2;
 		blend += uMaterial[2] * 0.3;
 		blend += uMaterial[4] * 0.1;
 		blend += uMaterial[5] * 0.2;
