@@ -56,13 +56,33 @@ uniform float uSectionVisibility;
 
 #ifdef IS_RAYMARCH_2
 
+	// https://www.shadertoy.com/view/XdBBzR
+	float smin( float a, float b, float k )
+	{
+		float h = clamp( 0.5+0.5*(b-a)/k, 0.0, 1.0 );
+		return mix( b, a, h ) - k*h*(1.0-h);
+	}
+
 	float SDF( vec3 p ){
 
 		vec3 p1 = p + vec3( sin( time ) * 0.1, cos( time ) * 0.1, 0.0 );
+		vec3 p2 = p + vec3( sin( time * 1.4 ) * 0.4, cos( time ) * 0.5, 0.0 );
+		vec3 p3 = p + vec3( sin( time * 3.0 ) * 0.7, cos( time * 0.8 ) * 0.7, 0.0 );
+		vec3 p4 = p + vec3( sin( time * 1.0 ) * 1.0, cos( time * 0.5 ) * 1.0, sin( time * 0.4 ) * 1.0 );
+		vec3 p5 = p + vec3( sin( time * 1.6 ) * 1.0, cos( time * 0.4 ) * 1.0, cos( time * 0.3 ) * 1.0 );
 
-		float sph = sdSphere( p1, 1.0 );
-
-		float d = min( sph, 999.0 );
+		float sp1 = sdSphere( p1, 0.5 );
+		float sp2 = sdSphere( p2, 0.3 );
+		float sp3 = sdSphere( p3, 0.2 );
+		float sp4 = sdSphere( p4, 0.2 );
+		float sp5 = sdSphere( p5, 0.3 );
+		
+		float d;
+		d = min( sp1, 999.0 );
+		d = smin( sp2, d, 0.3 );
+		d = smin( sp3, d, 0.3 );
+		d = smin( sp4, d, 0.3 );
+		d = smin( sp5, d, 0.3 );
 		
 		return d;
 	}
@@ -114,15 +134,18 @@ void main( void ) {
 
 		#endif
 
-		#ifdef IS_RAYMARCH_2
-		
-			vec3 cPos = vec3( 0.0, 0.0, 0.0 );
-
-		#endif
-
 		vec2 pos = vUv.xy * 2.0 - 1.0;
 		pos.x += n.y * 2.0;
 		vec3 ray = normalize( vec3( sin( fov ) * pos.x, sin( fov ) * pos.y, -1.0 ) );
+
+		#ifdef IS_RAYMARCH_2
+		
+			vec3 cPos = vec3( 0.0, 0.0, 5.0 );
+			mat2 rot = rotate( time );
+			cPos.xz *= rot;
+			ray.xz *= rot;
+
+		#endif
 		
 		float rDistance = 0.0;
 		float rLen = 0.0;
