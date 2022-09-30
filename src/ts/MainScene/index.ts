@@ -460,6 +460,7 @@ export class MainScene extends ORE.BaseLayer {
 
 			this.world.intro.hover( args );
 			this.world.section1.hover( args, this.camera );
+			this.world.section2.hover( args, this.camera );
 			this.world.section3.hover( args );
 
 			if ( this.world.trail ) this.world.trail.updateCursorPos( cursorWorldPos, this.raycasterWorldPos );
