@@ -10,6 +10,7 @@ export class Transparents {
 	private animator: ORE.Animator;
 
 	private meshList: Transparent[] = [];
+	private layoutController: ORE.LayoutController[] = [];
 
 	constructor( root: THREE.Object3D, parentUniforms: ORE.Uniforms ) {
 
@@ -34,6 +35,21 @@ export class Transparents {
 			this.meshList.push( new Transparent( item, this.commonUniforms ) );
 
 		} );
+
+		this.layoutController.push( new ORE.LayoutController( this.meshList.find( item => item.root.name == 'Cube' )!.root, {
+			position: new THREE.Vector3( 1.7, 1.3, 0.0 ),
+			scale: 1.0,
+		} ) );
+
+		this.layoutController.push( new ORE.LayoutController( this.meshList.find( item => item.root.name == 'Torus' )!.root, {
+			position: new THREE.Vector3( - 1.5, - 1.0, 0.0 ),
+			scale: 1.2
+		} ) );
+
+		this.layoutController.push( new ORE.LayoutController( this.meshList.find( item => item.root.name == 'Cylinder' )!.root, {
+			position: new THREE.Vector3( - 1.8, - 1.5, 0.0 ),
+			scale: 1.5
+		} ) );
 
 	}
 
@@ -65,6 +81,16 @@ export class Transparents {
 		this.meshList.forEach( item => {
 
 			item.hover( args, camera );
+
+		} );
+
+	}
+
+	public resize( info: ORE.LayerInfo ) {
+
+		this.layoutController.forEach( item => {
+
+			item.updateTransform( info.size.portraitWeight );
 
 		} );
 

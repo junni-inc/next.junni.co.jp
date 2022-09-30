@@ -458,7 +458,7 @@ void main( void ) {
 	vec2 refractUvR;
 	vec2 refractUvG;
 	vec2 refractUvB;
-	float refractPower = 0.3 * sin( time + geo.normal.x * 3.0 );
+	float refractPower = 0.3;
 	vec2 refractNormal = geo.normal.xy * ( 1.0 - geo.normal.z * 0.85 );
 
 	#pragma unroll_loop_start
