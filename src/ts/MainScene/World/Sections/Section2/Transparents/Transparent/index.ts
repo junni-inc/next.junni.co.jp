@@ -80,8 +80,8 @@ export class Transparent {
 			new THREE.Quaternion().setFromEuler(
 				new THREE.Euler(
 					this.velocity.y * 3.0,
-					this.velocity.x * 3.0,
-					0.0
+					this.velocity.x * 3.0 + 0.004,
+					deltaTime * 0.2,
 				) )
 		);
 
@@ -95,7 +95,7 @@ export class Transparent {
 		let d = args.screenPosition.distanceTo( new THREE.Vector2( screenPos.x, screenPos.y ) );
 
 		// this.velocity.add( new THREE.Vector3( args.delta.x, - args.delta.y ).multiplyScalar( 0.001 * Math.max( 0.0, 1.0 - d * 2.0 ) ) );
-		this.velocity.add( new THREE.Vector3( args.delta.x, args.delta.y, 0.0 ).multiplyScalar( 0.0005 * Math.max( 0.0, 1.0 - d * 2.0 ) ) );
+		this.velocity.add( new THREE.Vector3( args.delta.x, args.delta.y, 0.0 ).multiplyScalar( 0.0003 * Math.max( 0.0, 1.0 - d * 2.0 ) ) );
 
 
 	}

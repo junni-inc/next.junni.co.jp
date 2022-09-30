@@ -36,6 +36,7 @@ uniform vec2 winResolution;
 uniform float uTransparent;
 uniform float uLine;
 uniform float uRimLight;
+uniform samplerCube uEnvMap;
 
 /*-------------------------------
 	Textures
@@ -457,13 +458,13 @@ void main( void ) {
 	vec2 refractUvR;
 	vec2 refractUvG;
 	vec2 refractUvB;
-	float refractPower = 0.2 * sin( time + geo.normal.x * 3.0 );
+	float refractPower = 0.3 * sin( time + geo.normal.x * 3.0 );
 	vec2 refractNormal = geo.normal.xy * ( 1.0 - geo.normal.z * 0.85 );
 
 	#pragma unroll_loop_start
 	for ( int i = 0; i < 16; i ++ ) {
 		
-		slide = float( UNROLLED_LOOP_INDEX ) / 16.0 * 0.05 + random( screenUv ) * 0.011;
+		slide = float( UNROLLED_LOOP_INDEX ) / 16.0 * 0.1 + random( screenUv ) * 0.011;
 
 		refractUvR = refractUv - refractNormal * ( refractPower + slide * 1.0 ) * uTransparent;
 		refractUvG = refractUv - refractNormal * ( refractPower + slide * 1.5 ) * uTransparent;
@@ -548,6 +549,12 @@ void main( void ) {
 	float EF = mix( fresnel( dNV ), 1.0, mat.metalness );
 	outColor += EF * ( 0.5 +  uRimLight * 0.3 );
 	
+	vec3 refDir = reflect( geo.viewDirWorld, geo.normalWorld );
+	refDir.x *= -1.0;
+
+	vec3 envMapColor = textureCube( uEnvMap, refDir ).xyz;
+	outColor += envMapColor * EF * uTransparent;
+
 	/*-------------------------------
 		Emission
 	-------------------------------*/

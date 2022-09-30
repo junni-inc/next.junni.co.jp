@@ -261,13 +261,13 @@ void main( void ) {
 	vec2 refractUvR;
 	vec2 refractUvG;
 	vec2 refractUvB;
-	float refractPower = 0.1;
+	float refractPower = 0.02;
 	vec2 refractNormal = geo.normal.xy * ( 1.0 - geo.normal.z * 0.7 );
 	
 	#pragma unroll_loop_start
 	for ( int i = 0; i < 16; i ++ ) {
 		
-		slide = float( UNROLLED_LOOP_INDEX ) / 16.0 * 0.1 + random( screenUv ) * 0.007;
+		slide = float( UNROLLED_LOOP_INDEX ) / 16.0 * 0.03 + random( screenUv ) * 0.007;
 
 		refractUvR = refractUv - refractNormal * ( refractPower + slide * 1.0 );
 		refractUvG = refractUv - refractNormal * ( refractPower + slide * 2.0 );
@@ -309,7 +309,7 @@ void main( void ) {
 	vec3 envMapColor = textureCube( uEnvMap, refDir ).xyz;
 
 	// outColor += envMapColor * hsv2rgb( vec3( dNV * 2.0 + sin( time ) * 0.1 + 0.2, 1.0, 1.0 ) ) * EF;
-	outColor += envMapColor * hsv2rgb( vec3( dNV * 2.0 + sin( time ) * 0.1 + 0.2, 1.0, 1.0 ) ) * EF;
+	outColor = mix( outColor, envMapColor * hsv2rgb( vec3( dNV * 2.0 + sin( time ) * 0.1 + 0.2, 1.0, 1.0 ) ), EF * 0.3 );
 
 	gl_FragColor = vec4( outColor, 1.0 );
 

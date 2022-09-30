@@ -213,6 +213,13 @@ export class Baku extends THREE.Object3D {
 				this.animationClipNameList.push( clip.name );
 
 				let action = this.animationMixer.clipAction( this.animations[ i ] );
+
+				if ( clip.name == 'section_2' ) {
+
+					action.timeScale = 0.2;
+
+				}
+
 				this.animationActions[ clip.name ] = action;
 
 			}

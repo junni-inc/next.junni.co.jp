@@ -31,7 +31,7 @@ export class Section2 extends Section {
 
 		this.ppParam.bloomBrightness = 0;
 		this.ppParam.vignet = 1.5;
-		// this.bakuParam.rotateSpeed = - 0.3;
+		this.bakuParam.rotateSpeed = - 0.05;
 
 		this.bakuParam.materialType = 'glass';
 
