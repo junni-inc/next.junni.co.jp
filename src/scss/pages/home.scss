@@ -1,10 +1,11 @@
 @use "../global/" as *;
-@import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Noto+Sans&family=Noto+Sans+JP&family=Jura&family=Noto+Serif&family=Comfortaa&family=Roboto+Serif:ital,opsz,wght@1,8..144,100&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Noto+Sans&family=Noto+Sans+JP&family=Jura&family=Noto+Serif&family=Comfortaa&family=Roboto+Serif:ital,opsz,wght@1,8..144,100&family=Roboto&display=swap');
 
 $notosans: 'Noto Sans JP', 'Noto Sans', sans-serif;
 $notoserif: 'Noto Serif', serif;
 $bebas: 'Bebas Neue', cursive;
 $jura: 'Jura', sans-serif;
+$roboto: 'Roboto', sans-serif;;
 $robotoSerif: 'Roboto Serif', serif;
 $comfortaa: 'Comfortaa', cursive;
 
@@ -114,7 +115,8 @@ body {
 	}
 
 	&-timeline {
-		position: absolute;
+		
+		position: relative;
 		left: 3%;
 
 		display: flex;
@@ -186,17 +188,18 @@ body {
 	}
 
 	&-copyright {
-		position: absolute;
-		left: 50%;
-		transform: translateX(-50%);
+		position: relative;
+		right: 3%;
+
+		// left: 50%;
+		// transform: translateX(-50%);
 		opacity: 0;
 		transition: opacity 2s;
 		
-		font-family: $notosans;	
-		font-size: 0.5vw;
-		font-weight: lighter;
+		font-family: $roboto;	
+		font-size: 8px;
 		letter-spacing: 0.2em;
-		color: #eee;
+		color: #777;
 
 		&[data-visible="true"] {
 			opacity: 1;
@@ -230,7 +233,7 @@ body {
 
 	&-text {
 		display: inline-block;
-		background-color: rgba($color: #000000, $alpha: 0.7);
+		background-color: rgba($color: #000000, $alpha: 0.9);
 		padding: 5px 10px;
 		text-align: center;
 		font-family: $notosans;
@@ -342,14 +345,13 @@ body {
 	flex-direction: column;
 	align-items: center;
 	justify-content: center;
+	z-index: 0;
 	
 	opacity: 0;
 	transition: opacity 1.0s;
-	background: rgba($color: #000000, $alpha: 0.6);
 	
 	&[data-visible="true"] {
 		opacity: 1;
-		transition-delay: 1s;
 	}
 	
 	&-content {
@@ -363,24 +365,13 @@ body {
 	}
 	
 	&-text {
-
+		position: relative;
 		height: 50vh;
 		max-height: 100%;
 		writing-mode: vertical-rl;
 		display: inline-block;
-		color: #fff;
-		font-family: $notosans;
 		padding: 0 10px;
-		font-size: 17px;
-		letter-spacing: 0.35em;
-
-		opacity: 0;
-		transition: opacity .5s;
-		
-		&[data-visible="true"] {
-			opacity: 1;
-		}
-		
+		z-index: 0;
 		
 		@include sp {
 			padding: 0 3px;		
@@ -388,11 +379,61 @@ body {
 			letter-spacing: 0.2em;
 			height: 50vh;
 		}
+
+		@for $i from 0 through 30 {
+			&:nth-child(#{$i}) {
+				z-index: #{-$i};
+			}
+		}
 		
-		span {
+		&-inner {
+			position: relative;
 			display: inline-block;
-			background-color: rgba($color: #000000, $alpha: 0.4);
 			padding: 10px 0px;
+			// backface-visibility: hidden;
+
+			span {
+				position: relative;
+				display: inline-block;
+				font-family: $notosans;
+				font-size: 17px;
+				letter-spacing: 0.35em;
+				color: rgba($color: #fff, $alpha: 0.0);
+
+				right: 15px;
+				transition: color 2.0s, right 1.0s;
+				
+				[data-visible5line="true"] &{
+					color: rgba($color: #fff, $alpha: 1.0);
+					right: 0px;
+					
+					@for $i from 0 through 30 {
+						&:nth-child(#{$i}) {
+							transition-delay: #{0.2 + $i * 0.06}s;
+						}
+					}
+				}
+			}
+
+			&::before {
+				content: "";
+				position: absolute;
+				width: 100%;
+				height: 100%;
+				left: 0;
+				top: 0;
+				background-color: rgba($color: #000000, $alpha: 0.4);
+				// z-index: 0;
+
+				transform-origin: top;
+				transform: scaleY( 0.0 );
+				transition: transform 1.5s;
+
+				[data-visible5line="true"] & {
+					transform: scaleY( 1.0 );
+				}
+				
+			}
 		}
 
 		&-wrap {

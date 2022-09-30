@@ -7,7 +7,7 @@ import bakuFrag from './shaders/baku.fs';
 import bakuVert from './shaders/baku.vs';
 import passThroughFrag from './shaders/passThrough.fs';
 
-export type BakuMaterialType = 'normal' | 'glass' | 'line'
+export type BakuMaterialType = 'normal' | 'glass' | 'line' | 'dark'
 
 export class Baku extends THREE.Object3D {
 
@@ -70,6 +70,17 @@ export class Baku extends THREE.Object3D {
 		this.commonUniforms.uLine = this.animator.add( {
 			name: 'bakuLine',
 			initValue: 0,
+			easing: ORE.Easings.easeOutCubic,
+			userData: {
+				pane: {
+					min: 0, max: 1
+				}
+			}
+		} );
+
+		this.commonUniforms.uRimLight = this.animator.add( {
+			name: 'bakuRimLight',
+			initValue: 1,
 			easing: ORE.Easings.easeOutCubic,
 			userData: {
 				pane: {
@@ -226,6 +237,8 @@ export class Baku extends THREE.Object3D {
 
 		this.animator.animate( 'bakuTransparent', type == 'glass' ? 1 : 0, 1 );
 		this.animator.animate( 'bakuLine', type == 'line' ? 1 : 0, 1 );
+		this.animator.animate( 'bakuLine', type == 'line' ? 1 : 0, 1 );
+		this.animator.animate( 'bakuRimLight', type == 'dark' ? 0.0 : 1.0 );
 
 	}
 

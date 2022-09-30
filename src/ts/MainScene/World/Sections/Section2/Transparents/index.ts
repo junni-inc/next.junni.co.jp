@@ -8,8 +8,18 @@ export class Transparents {
 
 	private root: THREE.Object3D;
 
+
+	// position
+
+	private basePosition: THREE.Vector3;
+	private transformedPosition: THREE.Vector3;
+	private transformedWorldPosition: THREE.Vector3;
+
 	private commonUniforms: ORE.Uniforms;
 	private animator: ORE.Animator;
+
+	private velocity: THREE.Vector3;
+
 
 	constructor( root: THREE.Object3D, parentUniforms: ORE.Uniforms ) {
 
@@ -48,6 +58,11 @@ export class Transparents {
 
 		} );
 
+		this.basePosition = this.root.position.clone();
+		this.transformedPosition = this.basePosition.clone();
+		this.transformedWorldPosition = this.root.getWorldPosition( new THREE.Vector3() );
+		this.velocity = new THREE.Vector3();
+
 	}
 
 	public switchVisibility( visible: boolean ) {
@@ -62,5 +77,15 @@ export class Transparents {
 
 	}
 
+	public hover( args: ORE.TouchEventArgs, camera: THREE.PerspectiveCamera ) {
+
+		let screenPos = this.transformedWorldPosition.clone().applyMatrix4( camera.matrixWorldInverse ).applyMatrix4( camera.projectionMatrix );
+
+		// @ts-ignore
+		let d = args.screenPosition.distanceTo( new THREE.Vector2( screenPos.x, screenPos.y ) );
+
+		this.velocity.add( new THREE.Vector3( args.delta.x, - args.delta.y ).multiplyScalar( 0.001 * Math.max( 0.0, 1.0 - d * 2.0 ) ) );
+
+	}
 
 }

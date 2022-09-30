@@ -7,7 +7,7 @@ import { Lights } from './Lights';
 import { BackText } from './BackText';
 import { CursorLight } from './CursorLight';
 import { Wire } from './Wire';
-import { DrawTrail } from './DrawTrail';
+import { Sec3Particle } from './Sec3Particle';
 
 export class Section3 extends Section {
 
@@ -17,8 +17,10 @@ export class Section3 extends Section {
 	private directionLightList: THREE.DirectionalLight[] = [];
 	private backText?: BackText;
 	private cursorLight: CursorLight;
-	private drawTrail?: DrawTrail;
 	private renderer: THREE.WebGLRenderer;
+	private particle?: Sec3Particle;
+
+	private info?: ORE.LayerInfo;
 
 	constructor( manager: THREE.LoadingManager, parentUniforms: ORE.Uniforms, renderer: THREE.WebGLRenderer ) {
 
@@ -85,15 +87,23 @@ export class Section3 extends Section {
 		this.backText.switchVisibility( this.sectionVisibility );
 
 		/*-------------------------------
-			DrawTrail
+			Particle
 		-------------------------------*/
 
-		let baku = this.getObjectByName( 'Baku' ) as THREE.Object3D;
+		let baku = this.getObjectByName( 'Baku' )!;
 
-		this.drawTrail = new DrawTrail( this.renderer, this.commonUniforms );
-		this.drawTrail.position.copy( baku.position );
-		this.drawTrail.frustumCulled = false;
-		this.add( this.drawTrail );
+		this.particle = new Sec3Particle( this.commonUniforms );
+		this.particle.switchVisibility( this.sectionVisibility );
+		this.particle.position.copy( baku.position );
+		this.particle.position.y += 2.8;
+
+		this.add( this.particle );
+
+		if ( this.info ) {
+
+			this.resize( this.info );
+
+		}
 
 	}
 
@@ -104,13 +114,13 @@ export class Section3 extends Section {
 		this.cursorLight.update( deltaTime );
 		this.cursorLight.intensity = this.animator.get( 'sectionVisibility' + this.sectionName ) || 0;
 
-		if ( this.drawTrail ) this.drawTrail.update( deltaTime );
-
 	}
 
 	public resize( info: ORE.LayerInfo ) {
 
 		super.resize( info );
+
+		this.info = info;
 
 	}
 
@@ -122,31 +132,19 @@ export class Section3 extends Section {
 
 		window.cameraController.switchCameraMove( this.sectionVisibility );
 
-		if ( this.lights ) {
+		if ( this.lights ) this.lights.switchVisibility( this.sectionVisibility );
 
-			this.lights.switchVisibility( this.sectionVisibility );
+		if ( this.wire ) this.wire.switchVisibility( this.sectionVisibility );
 
-		}
+		if ( this.displays ) this.displays.switchVisibility( this.sectionVisibility );
 
-		if ( this.wire ) {
-
-			this.wire.switchVisibility( this.sectionVisibility );
-
-		}
-
-		if ( this.displays ) {
-
-			this.displays.switchVisibility( this.sectionVisibility );
-
-		}
+		if ( this.particle ) this.particle.switchVisibility( this.sectionVisibility );
 
 	}
 
-	public hover( args: ORE.TouchEventArgs, worldPos: THREE.Vector3 ) {
+	public hover( args: ORE.TouchEventArgs ) {
 
 		this.cursorLight.hover( args );
-
-		if ( this.drawTrail ) this.drawTrail.updateCursorPos( worldPos );
 
 	}
 

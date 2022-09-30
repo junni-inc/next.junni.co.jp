@@ -22,7 +22,8 @@ void main( void ) {
 	-------------------------------*/
 
 	vec3 pos = position;
-	pos.xy *= rotate( ( 1.0 - uSectionViewing ) * 5.0 );
+	mat2 rot = rotate( ( 1.0 - uSectionViewing ) * 5.0 );
+	pos.xy *= rot;
 	pos *= uVisibility;
 
 	vec4 worldPos = modelMatrix * vec4( pos, 1.0 );
@@ -35,6 +36,7 @@ void main( void ) {
 	-------------------------------*/
 
 	vec3 transformedNormal = normalMatrix * normal;
+	transformedNormal.xy *= rot;
 	vec3 normal = normalize( transformedNormal );
 
 	/*-------------------------------

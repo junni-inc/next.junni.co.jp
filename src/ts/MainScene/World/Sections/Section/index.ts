@@ -63,6 +63,7 @@ export class Section extends THREE.Object3D {
 
 	public sectionVisibility: boolean = false;
 	protected viewing: ViewingState = 'ready';
+	public trailDepth = 0.97;
 
 	// pp param
 

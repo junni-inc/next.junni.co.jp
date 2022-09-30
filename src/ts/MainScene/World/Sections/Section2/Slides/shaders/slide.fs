@@ -7,7 +7,7 @@ varying vec2 vRnd;
 
 void main( void ) {
 
-	vec4 col = vec4( 0.0, 0.0, 0.0, 1.0 );
+	vec4 col = vec4( vec3( 0.7), 1.0 );
 
 	vec2 uv = vUv;
 	

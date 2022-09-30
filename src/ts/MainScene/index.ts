@@ -16,9 +16,12 @@ import { Lethargy } from 'lethargy';
 export class MainScene extends ORE.BaseLayer {
 
 	private gManager?: GlobalManager;
+	private animator?: ORE.Animator;
 	private renderPipeline?: RenderPipeline;
 	private cameraController?: CameraController;
 	private scroller: Scroller;
+
+	// content
 
 	private world?: World;
 	private subtitles: Subtitles;
@@ -32,9 +35,13 @@ export class MainScene extends ORE.BaseLayer {
 	private memDelta: number = 0.0;
 	private riseDelta: boolean = false;
 
-	// content wrapper
+	// wrapper
 
 	private contentWrapperElm: HTMLElement;
+
+	// state
+
+	private raycasterWorldPos: THREE.Vector3 = new THREE.Vector3();
 
 	constructor() {
 
@@ -69,6 +76,8 @@ export class MainScene extends ORE.BaseLayer {
 				if ( this.cameraController ) this.cameraController.changeRange( section.cameraRange );
 
 				if ( this.renderPipeline ) this.renderPipeline.updateParam( section.ppParam );
+
+				if ( this.animator ) this.animator.animate( 'trailCursorDepth', section.trailDepth );
 
 				this.footer.changeTimelineSection( sectionIndex + 1 );
 
@@ -178,6 +187,8 @@ export class MainScene extends ORE.BaseLayer {
 				tex.wrapT = THREE.RepeatWrapping;
 
 			} },
+			{ name: 'signpen', path: './assets/textures/signpen.png', type: 'tex', timing: 'sub' },
+			{ name: 'sec3Particle', path: './assets/textures/pattern.jpg', type: 'tex', timing: 'sub' },
 		] } );
 
 		this.gManager.assetManager.addEventListener( 'loadMustAssets', ( e ) => {
@@ -198,11 +209,32 @@ export class MainScene extends ORE.BaseLayer {
 		} );
 
 		/*-------------------------------
+			Animator
+		-------------------------------*/
+
+		this.animator = this.gManager.animator;
+
+		this.animator.add( {
+			name: 'trailCursorDepth',
+			initValue: 0.97
+		} );
+
+		/*-------------------------------
 			CameraController
 		-------------------------------*/
 
 		this.cameraController = new CameraController( this.camera );
 		window.cameraController = this.cameraController;
+
+		/*-------------------------------
+			Raycaster
+		-------------------------------*/
+
+		this.gManager.eRay.addEventListener( 'hover', ( e ) => {
+
+			this.raycasterWorldPos.copy( e.intersection.point );
+
+		} );
 
 	}
 
@@ -418,13 +450,19 @@ export class MainScene extends ORE.BaseLayer {
 
 		if ( this.world ) {
 
-			let worldPos = new THREE.Vector3( args.screenPosition.x, args.screenPosition.y, 0.95 ).unproject( this.camera );
+			let depth = 0.97;
+
+			if ( this.animator ) depth = this.animator.get( 'trailCursorDepth' )!;
+
+			let cursorWorldPos = new THREE.Vector3( args.screenPosition.x, args.screenPosition.y, depth ).unproject( this.camera );
+
+			if ( cursorWorldPos.x != cursorWorldPos.x ) return;
 
 			this.world.intro.hover( args );
 			this.world.section1.hover( args, this.camera );
+			this.world.section3.hover( args );
 
-
-			this.world.section3.hover( args, worldPos );
+			if ( this.world.trail ) this.world.trail.updateCursorPos( cursorWorldPos, this.raycasterWorldPos );
 
 		}
 

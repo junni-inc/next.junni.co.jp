@@ -20,14 +20,16 @@ void main( void ) {
 
 	#ifdef IS_LINE
 
-		pos.x -= 0.0;
-		pos.x *= easeInOutQuad( linearstep( 0.0, 0.6, uIsVisibility ) );
-		pos.x += 0.0;
+		pos.x += 0.08;
+		pos.x *= easeInOutQuad( linearstep( 0.0, 1.0, uIsVisibility ) );
+		pos.x -= 0.08;
+		
+		pos.x += easeInOutQuad( 1.0 - uIsVisibility ) * 0.12;
 		
 		vAlpha = 1.0;
 	#else
-		float v = easeInOutQuad( linearstep( 0.4, 1.0, uIsVisibility ) );
-		pos.x -= ( 1.0 - v ) * 0.05;
+		float v = easeInOutQuad( linearstep( 0.0, 1.0, uIsVisibility ) );
+		pos.x -= ( 1.0 - v ) * 0.07;
 		vAlpha = v;
 	#endif
 

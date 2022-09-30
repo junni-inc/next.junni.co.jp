@@ -31,6 +31,7 @@ export class Section2 extends Section {
 
 		this.ppParam.bloomBrightness = 0;
 		this.ppParam.vignet = 1.5;
+		this.bakuParam.rotateSpeed = - 0.3;
 
 		this.bakuParam.materialType = 'glass';
 
@@ -73,6 +74,13 @@ export class Section2 extends Section {
 		this.transparents = new Transparents( scene.getObjectByName( 'Transparents' ) as THREE.Object3D, this.commonUniforms );
 		this.transparents.switchVisibility( this.sectionVisibility );
 
+		/*-------------------------------
+			Flexible
+		-------------------------------*/
+
+		this.flexible = new Flexible( scene.getObjectByName( 'Flexible' ) as THREE.Mesh, this.commonUniforms );
+		this.flexible.switchVisibility( this.sectionVisibility );
+
 	}
 
 	public setSceneTex( tex: THREE.Texture ) {
@@ -102,6 +110,7 @@ export class Section2 extends Section {
 		if ( this.slides ) this.slides.switchVisibility( viewing );
 		if ( this.title ) this.title.switchVisibility( this.sectionVisibility );
 		if ( this.transparents ) this.transparents.switchVisibility( this.sectionVisibility );
+		if ( this.flexible ) this.flexible.switchVisibility( this.sectionVisibility );
 
 	}
 

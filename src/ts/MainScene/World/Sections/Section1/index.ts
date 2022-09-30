@@ -49,6 +49,7 @@ export class Section1 extends Section {
 		this.cameraRange.set( 0.01, 0.01 );
 		this.elm = document.querySelector( '.section1' ) as HTMLElement;
 		this.ppParam.vignet = 0.7;
+		this.trailDepth = 0.95;
 
 		// baku
 
