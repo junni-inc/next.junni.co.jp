@@ -10,7 +10,9 @@ export class Flexible {
 
 	private animator: ORE.Animator;
 
-	private mesh: THREE.Mesh;
+	public mesh: THREE.Mesh;
+
+	private layoutControllerList: ORE.LayoutController[] = [];
 
 	constructor( mesh: THREE.Mesh, parentUniforms: ORE.Uniforms ) {
 
@@ -33,7 +35,6 @@ export class Flexible {
 		-------------------------------*/
 
 		this.mesh = mesh;
-
 
 		this.mesh.traverse( obj => {
 
@@ -61,6 +62,15 @@ export class Flexible {
 
 		} );
 
+		this.layoutControllerList.push( new ORE.LayoutController( this.mesh.getObjectByName( 'text01' )!, {
+			position: new THREE.Vector3( 0.0, 1.2, 0.0 ),
+			scale: 1.3
+		} ) );
+
+		this.layoutControllerList.push( new ORE.LayoutController( this.mesh.getObjectByName( 'text02' )!, {
+			position: new THREE.Vector3( 0.0, - 1.2, 0.0 ),
+			scale: 1.3
+		} ) );
 
 	}
 
@@ -71,6 +81,16 @@ export class Flexible {
 		this.animator.animate( 'flexibleVisibility', visible ? 1 : 0, duration, () => {
 
 			if ( ! visible ) this.mesh.visible = false;
+
+		} );
+
+	}
+
+	public resize( info: ORE.LayerInfo ) {
+
+		this.layoutControllerList.forEach( item => {
+
+			item.updateTransform( info.size.portraitWeight );
 
 		} );
 

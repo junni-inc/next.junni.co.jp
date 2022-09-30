@@ -13,6 +13,8 @@ export class Section2 extends Section {
 	private transparents?: Transparents;
 	private flexible?: Flexible;
 	private title?: Section2Title;
+	private info?: ORE.LayerInfo;
+	private layoutControllerList: ORE.LayoutController[] = [];
 
 	constructor( manager: THREE.LoadingManager, parentUniforms: ORE.Uniforms ) {
 
@@ -81,6 +83,17 @@ export class Section2 extends Section {
 		this.flexible = new Flexible( scene.getObjectByName( 'Flexible' ) as THREE.Mesh, this.commonUniforms );
 		this.flexible.switchVisibility( this.sectionVisibility );
 
+		this.layoutControllerList.push( new ORE.LayoutController( this.flexible.mesh, {
+			scale: 0.45,
+			rotation: new THREE.Quaternion().setFromEuler( new THREE.Euler( 0.0, 0.0, 0.0 ) )
+		} ) );
+
+		if ( this.info ) {
+
+			this.resize( this.info );
+
+		}
+
 	}
 
 	public setSceneTex( tex: THREE.Texture ) {
@@ -106,7 +119,23 @@ export class Section2 extends Section {
 
 		super.resize( info );
 
+		this.info = info;
+
 		this.commonUniforms.winResolution.value.copy( info.size.canvasPixelSize );
+
+		if ( this.transparents ) {
+
+			this.transparents.resize( info );
+
+		}
+
+		this.layoutControllerList.forEach( item => {
+
+			item.updateTransform( info.size.portraitWeight );
+
+		} );
+
+		if ( this.flexible ) this.flexible.resize( this.info );
 
 	}
 
