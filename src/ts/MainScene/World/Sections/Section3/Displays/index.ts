@@ -72,11 +72,11 @@ export class Displays extends EventEmitter {
 
 			if ( display.name.indexOf( 'Raymarching' ) > - 1 ) {
 
-				defines.IS_RAYMARCH = '';
+				defines[ "IS_RAYMARCH" ] = '';
+				defines[ "IS_RAYMARCH_" + display.name.split( "_" )[ 1 ] ] = '';
 				uniforms.uRaymarchEffect = this.animator.getVariableObject( 'raymarchEffect' )!;
 
 			}
-
 
 			display.material = new THREE.ShaderMaterial( {
 				vertexShader: displayVert,

@@ -26,6 +26,15 @@ uniform float uSectionVisibility;
 		return length(max(q,0.0)) + min(max(q.x,max(q.y,q.z)),0.0);
 	}
 
+	float sdSphere( vec3 p, float s )
+	{
+		return length(p)-s;
+	}
+
+#endif
+
+#ifdef IS_RAYMARCH_1
+
 	float SDF( vec3 p ){
 
 		p.xy *= rotate( p.z * 0.05 + uRaymarchEffect * 5.0 );
@@ -42,6 +51,25 @@ uniform float uSectionVisibility;
 		
 		return d;
 	}
+
+#endif
+
+#ifdef IS_RAYMARCH_2
+
+	float SDF( vec3 p ){
+
+		vec3 p1 = p + vec3( sin( time ) * 0.1, cos( time ) * 0.1, 0.0 );
+
+		float sph = sdSphere( p1, 1.0 );
+
+		float d = min( sph, 999.0 );
+		
+		return d;
+	}
+
+#endif
+
+#ifdef IS_RAYMARCH 
 
 	vec3 getNormal( vec3 p ){
 
@@ -76,10 +104,21 @@ void main( void ) {
 	
 		float fov = 50.0;
 	
-		vec3 cPos = vec3( 0.0, 0.0, -time * 10.0 );
-		cPos.x = cos(time * 0.5) * 1.0;
-		cPos.y = sin(time) * 1.2;
-		cPos.z -= n.y * 3.0;
+
+		#ifdef IS_RAYMARCH_1
+		
+			vec3 cPos = vec3( 0.0, 0.0, -time * 10.0 );
+			cPos.x = cos(time * 0.5) * 1.0;
+			cPos.y = sin(time) * 1.2;
+			cPos.z -= n.y * 3.0;
+
+		#endif
+
+		#ifdef IS_RAYMARCH_2
+		
+			vec3 cPos = vec3( 0.0, 0.0, 0.0 );
+
+		#endif
 
 		vec2 pos = vUv.xy * 2.0 - 1.0;
 		pos.x += n.y * 2.0;
