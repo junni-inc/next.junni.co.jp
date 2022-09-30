@@ -31,7 +31,7 @@ export class Section2 extends Section {
 
 		this.ppParam.bloomBrightness = 0;
 		this.ppParam.vignet = 1.5;
-		this.bakuParam.rotateSpeed = - 0.3;
+		this.bakuParam.rotateSpeed = - 0.05;
 
 		this.bakuParam.materialType = 'glass';
 
@@ -92,6 +92,13 @@ export class Section2 extends Section {
 	public update( deltaTime: number ) {
 
 		if ( this.title ) this.title.update( deltaTime );
+		if ( this.transparents ) this.transparents.update( deltaTime );
+
+	}
+
+	public hover( args: ORE.TouchEventArgs, camera: THREE.PerspectiveCamera ) {
+
+		if ( this.transparents ) this.transparents.hover( args, camera );
 
 	}
 
