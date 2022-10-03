@@ -464,7 +464,7 @@ void main( void ) {
 	#pragma unroll_loop_start
 	for ( int i = 0; i < 16; i ++ ) {
 		
-		slide = float( UNROLLED_LOOP_INDEX ) / 16.0 * 0.1 + random( screenUv ) * 0.011;
+		slide = float( UNROLLED_LOOP_INDEX ) / 16.0 * 0.1 + random( screenUv ) * 0.03;
 
 		refractUvR = refractUv - refractNormal * ( refractPower + slide * 1.0 ) * uTransparent;
 		refractUvG = refractUv - refractNormal * ( refractPower + slide * 1.5 ) * uTransparent;
