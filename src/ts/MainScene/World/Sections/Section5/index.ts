@@ -130,7 +130,7 @@ export class Section5 extends Section {
 			this.outro.switchVisibility( this.sectionVisibility );
 			this.outroTextTimer = null;
 
-		}, this.sectionVisibility ? 1000 : 0 );
+		}, this.sectionVisibility ? 100 : 0 );
 
 	}
 

@@ -32,7 +32,8 @@ export class Wall extends THREE.Object3D {
 		this.commonUniforms = ORE.UniformsLib.mergeUniforms( parentUniforms, {
 			tex: {
 				value: null
-			}
+			},
+			uNoiseTex: window.gManager.assetManager.getTex( 'noise' )
 		} );
 
 		/*-------------------------------

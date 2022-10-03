@@ -177,14 +177,18 @@ export class World extends THREE.Object3D {
 			Trail
 		-------------------------------*/
 
-		if ( ! window.isSP ) {
+		let trailAssets = this.scene.getObjectByName( 'TrailAssets' ) as THREE.Object3D;
 
-			let trailAssets = this.scene.getObjectByName( 'TrailAssets' ) as THREE.Object3D;
+		if ( ! window.isSP ) {
 
 			this.trail = new DrawTrail( renderer, trailAssets, this.commonUniforms );
 			this.trail.position.set( 0, 0, 0 );
 			this.trail.frustumCulled = false;
 			this.add( this.trail );
+
+		} else {
+
+			trailAssets.visible = false;
 
 		}
 
