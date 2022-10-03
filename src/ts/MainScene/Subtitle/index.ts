@@ -35,9 +35,12 @@ export class Subtitles {
 
 		let textElm = document.createElement( 'p' );
 		textElm.classList.add( "subtitles-text" );
+
+		let span = document.createElement( 'span' );
+		textElm.appendChild( span );
 		this.elm.appendChild( textElm );
 
-		let noiseText = new NoiseText( textElm );
+		let noiseText = new NoiseText( span );
 		noiseText.noise = "このサイト作るの意外と大変なんですよこれが";
 		noiseText.show( text, duration, 40 );
 

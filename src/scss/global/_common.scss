@@ -20,12 +20,12 @@ html,body{
 
 [data-media="pc"] {
 	@include sp {
-		display: none;
+		display: none !important;
 	}
 }
 
 [data-media="sp"] {
 	@include pc {
-		display: none;
+		display: none !important;
 	}
 }

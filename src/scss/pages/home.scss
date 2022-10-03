@@ -233,23 +233,28 @@ body {
 
 	&-text {
 		display: inline-block;
-		background-color: rgba($color: #000000, $alpha: 0.9);
-		padding: 5px 10px;
 		text-align: center;
-		font-family: $notosans;
-		font-size: 15px;
 		user-select: none;
 
-		&[data-visible="false"] {
-			opacity: 0;
-			transition: opacity .5s;
-		}
 
-
-		@include sp {
-			font-size: 3vw;
+		span {
+			background-color: rgba($color: #000000, $alpha: 0.9);
+			padding: 5px 10px;
+			font-family: $notosans;
+			line-height: 2.0em;
+			font-size: min( 15px, 2vw );
+			box-decoration-break: clone;
 			
+			&[data-visible="false"] {
+				opacity: 0;
+				transition: opacity .5s;
+			}
+			
+			@include sp {
+				font-size: 2.8vw;
+			}
 		}
+		
 	}
 }
 
@@ -352,6 +357,7 @@ body {
 	
 	&[data-visible="true"] {
 		opacity: 1;
+		transition-delay: .5s;
 	}
 	
 	&-content {
@@ -362,6 +368,13 @@ body {
 		flex-direction: row-reverse;
 		justify-content: space-around;
 
+		&-sp {
+			width: 100%;
+			max-width: 600px;
+			img {
+				width: 100%;
+			}
+		}
 	}
 	
 	&-text {
@@ -390,7 +403,6 @@ body {
 			position: relative;
 			display: inline-block;
 			padding: 10px 0px;
-			// backface-visibility: hidden;
 
 			span {
 				position: relative;
@@ -545,8 +557,12 @@ body {
 		}
 		
 		&-item {
-			padding: 0 10px;
+			padding: 0 5px;
 
+			&:nth-child(2) {
+				padding: 0px;
+			}
+			
 			a {
 				display: block;
 				
