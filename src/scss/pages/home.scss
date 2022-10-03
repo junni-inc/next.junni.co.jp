@@ -102,7 +102,7 @@ body {
 	height: 60px;
 	background-color: #000;
 	color: #fff;
-	padding: 0 3%;
+	padding: 0 6%;
 
 	display: flex;
 	align-items: center;
@@ -115,9 +115,8 @@ body {
 	}
 
 	&-timeline {
-		
+	
 		position: relative;
-		left: 3%;
 
 		display: flex;
 		justify-content: space-around;
@@ -189,13 +188,9 @@ body {
 
 	&-copyright {
 		position: relative;
-		right: 3%;
-
-		// left: 50%;
-		// transform: translateX(-50%);
 		opacity: 0;
 		transition: opacity 2s;
-		
+		text-align: right;
 		font-family: $roboto;	
 		font-size: 8px;
 		letter-spacing: 0.2em;
@@ -207,11 +202,10 @@ body {
 
 		@include sp {
 			position: relative;
-			left:  unset;
-			transform: translateX(0);
-			font-size: 9px;
-			letter-spacing: 0.05em ;
+			font-size: 8px;
+			letter-spacing: 0.01em;
 			padding-left: 2vw;
+			right: 0%;
 		}
 	}
 }
@@ -606,11 +600,11 @@ body {
 	&-logo {
 		width: 30%;
 		max-width: 200px;
-		opacity: 0;
-		 pointer-events: none;
+		opacity: 1;
+		pointer-events: none;
 		transition: opacity .5s;
 		
-		&[data-visible="true"] {
+		&[data-visible="false"] {
 			opacity: 1;
 		}
 

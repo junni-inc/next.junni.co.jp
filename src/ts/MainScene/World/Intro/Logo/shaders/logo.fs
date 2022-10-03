@@ -7,8 +7,6 @@ void main( void ) {
 
 	vec4 col = vec4( 1.0, 1.0, 1.0, 1.0 );
 
-	// col *= step( vUv.y - loaded, 0.0 );
-
 	col.w = loaded * uIntroLogoVisibility;
 
 	gl_FragColor = col;
