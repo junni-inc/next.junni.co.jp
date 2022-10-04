@@ -815,8 +815,8 @@ body {
 	}
 
 	@include sp {
-		width: 100px;
-		height: 100px;
+		width: 72px;
+		height: 72px;
 		bottom: 20px;
 		left: 50%;
 		transform: translateX(-50%);
@@ -877,7 +877,7 @@ body {
 		z-index: 1;
 		
 		@include sp {
-			font-size: 15px;	
+			font-size: 9px;	
 		}
 	}
 }
