@@ -52,7 +52,7 @@ export class GlobalManager extends EventEmitter {
 
 			if ( e.key == 'n' ) {
 
-				this.pane.hidden = ! this.pane.hidden;
+				// this.pane.hidden = ! this.pane.hidden;
 
 			}
 

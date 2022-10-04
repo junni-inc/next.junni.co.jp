@@ -78,7 +78,34 @@
 					</svg>
 				</div>
 			</div>
-			<div class="section-wrap">
+			<div class="section-wrap" data-visible="false">
+				<div class="scroll">
+					<svg
+						class="scroll-circle"
+						xmlns="http://www.w3.org/2000/svg"
+						width="200"
+						height="200"
+						viewBox="0 0 200 200"
+						fill="none"
+						color="#fff"
+						>
+						<defs>
+							<linearGradient id="spinner-gradient">
+							<stop offset="0%" stop-opacity="0" stop-color="currentColor" />
+							<stop offset="100%" stop-opacity="1" stop-color="currentColor" />
+							</linearGradient>
+						</defs>
+						<circle
+							cx="100"
+							cy="100"
+							r="96"
+							fill="none"
+							stroke="url(#spinner-gradient)"
+							stroke-width="2"
+						/>
+					</svg>
+					<button class="scroll-btn">SCROLL</button>
+				</div>
 				<canvas id="canvas"></canvas>
 				<div class="intro">
 					<div class="intro-inner">

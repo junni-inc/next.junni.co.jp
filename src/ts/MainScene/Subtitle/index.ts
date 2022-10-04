@@ -50,7 +50,7 @@ export class Subtitles {
 
 				noiseText.hide();
 
-			}, 2000 );
+			}, 3500 );
 
 		};
 

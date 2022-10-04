@@ -50,6 +50,7 @@ export class Section1 extends Section {
 		this.elm = document.querySelector( '.section1' ) as HTMLElement;
 		this.ppParam.vignet = 0.7;
 		this.trailDepth = 0.95;
+		this.cameraSPFovWeight = 25;
 
 		// baku
 
@@ -276,6 +277,8 @@ export class Section1 extends Section {
 
 
 	public resize( info: ORE.LayerInfo ) {
+
+		super.resize( info );
 
 		this.layerInfo = info;
 
