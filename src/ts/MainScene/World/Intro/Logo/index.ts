@@ -173,6 +173,7 @@ export class Logo extends EventEmitter {
 	public cancel() {
 
 		this.canceled = true;
+		window.subtitles.hideAll();
 
 	}
 

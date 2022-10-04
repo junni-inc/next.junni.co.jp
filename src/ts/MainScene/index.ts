@@ -109,6 +109,7 @@ export class MainScene extends ORE.BaseLayer {
 
 		this.scroll.addListener( 'click', () => {
 
+			this.scroll.switchVisible( false );
 			this.scroller.move( 1 );
 
 		} );
@@ -578,7 +579,12 @@ export class MainScene extends ORE.BaseLayer {
 		}
 
 		this.showHeaderFooter();
-		this.scroll.switchVisible( true );
+
+		setTimeout( () => {
+
+			this.scroll.switchVisible( true );
+
+		}, 1000 );
 
 	}
 
