@@ -373,7 +373,7 @@ void main( void ) {
 	mat.roughness = 0.1;
 	mat.metalness = 0.0;
 
-	vec3 gradation = hsv2rgb( vec3( time * 0.1 + vUv.y * 0.1 + 0.1, 1.0 - uMaterial[2] * 0.5, 1.0 ) ) * (uMaterial[0] + uMaterial[2] + uMaterial[3]) * 0.9;
+	vec3 gradation = hsv2rgb( vec3( time * (0.1 + step(0.1, uMaterial[5] ) * 1.0) + ( -vUv.x ) * (0.1 + uMaterial[5] * 3.0) + 0.3, 1.0 - uMaterial[2] * 0.5 - uMaterial[5] * 0.4, 1.0 ) ) * (uMaterial[0] + uMaterial[2] + uMaterial[3] + uMaterial[5]) * 0.9;
 
 	// albedo
 
@@ -387,7 +387,7 @@ void main( void ) {
 	mat.emission += gradation * uMaterial[3];
 	mat.emission += vec3( 0.1, 0.0, 0.0 ) * uMaterial[3];
 	mat.emission += vec3( 0.5 ) * uMaterial[4];
-	mat.emission += vec3( 1.0 ) * uMaterial[5];
+	mat.emission += gradation * uMaterial[5];
 
 	
 	mat.diffuseColor = mix( mat.albedo, vec3( 0.0, 0.0, 0.0 ), mat.metalness );

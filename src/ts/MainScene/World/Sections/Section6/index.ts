@@ -8,6 +8,7 @@ import { Comrades } from './Comrades';
 import { Wind } from './Wind';
 import { Particle } from './Particle';
 import { Road } from './Road';
+import { Next } from './Next';
 
 export class Section6 extends Section {
 
@@ -21,8 +22,11 @@ export class Section6 extends Section {
 	// sp
 
 	private cameraBasePos: THREE.Vector3 | null = null;
-
 	private layoutControllerList: ORE.LayoutController[] = [];
+
+	// next
+
+	private next: Next;
 
 	constructor( manager: THREE.LoadingManager, parentUniforms: ORE.Uniforms ) {
 
@@ -59,6 +63,12 @@ export class Section6 extends Section {
 			targetPosition: new THREE.Vector3( - 1.7, - 6.7, 12 ),
 			intensity: 0,
 		};
+
+		/*-------------------------------
+			Next
+		-------------------------------*/
+
+		this.next = new Next();
 
 	}
 
@@ -162,6 +172,8 @@ export class Section6 extends Section {
 	}
 
 	public update( deltaTime: number ): void {
+
+		this.next.update( deltaTime );
 
 		if ( this.comrades ) this.comrades.update( deltaTime );
 

@@ -133,7 +133,7 @@ void main( void ) {
 		Varying
 	-------------------------------*/
 	
-	vUv = uv;
+	vUv = computeUV;
 	vNormal = normal;
 	vTangent = tangent;
 	vBitangent = biTangent;
