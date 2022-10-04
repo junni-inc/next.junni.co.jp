@@ -17,8 +17,8 @@ export class Pencil extends THREE.Mesh {
 		let height = 3.0;
 
 		let size = new THREE.Vector2( 147 / 1024 * height * 1.3, height );
-		let geo = new THREE.PlaneBufferGeometry( size.x, size.y );
-		// geo = new THREE.BoxBufferGeometry( size.x, size.y, 1.0 );
+		let geo = new THREE.PlaneGeometry( size.x, size.y );
+		// geo = new THREE.BoxGeometry( size.x, size.y, 1.0 );
 		geo.getAttribute( 'position' ).applyMatrix4( new THREE.Matrix4().makeTranslation( 0.05, size.y / 2.0 - 0.1, 0.0 ) );
 		geo.getAttribute( 'position' ).applyMatrix4( new THREE.Matrix4().makeRotationFromEuler( new THREE.Euler( 0.0, 0.7, - 0.2, 'YZX' ) ) );
 

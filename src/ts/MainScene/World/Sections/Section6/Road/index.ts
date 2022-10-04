@@ -13,7 +13,7 @@ export class Road extends THREE.Mesh {
 
 		let size = new THREE.Vector2( 100.0, 4.0 );
 
-		let geo = new THREE.PlaneBufferGeometry( size.x, size.y, 50.0, 1.0 );
+		let geo = new THREE.PlaneGeometry( size.x, size.y, 50.0, 1.0 );
 		geo.getAttribute( 'position' ).applyMatrix4( new THREE.Matrix4().makeRotationX( - Math.PI / 2.0 ) );
 		geo.getAttribute( 'position' ).applyMatrix4( new THREE.Matrix4().makeTranslation( - size.x / 2.5, - 3.0, 0.0 ) );
 

@@ -52,7 +52,7 @@ export class TileTextMesh extends THREE.Mesh<THREE.BufferGeometry, THREE.ShaderM
 		-------------------------------*/
 
 		let size = new THREE.Vector2( height, height );
-		let geo = new THREE.PlaneBufferGeometry( size.x, size.y );
+		let geo = new THREE.PlaneGeometry( size.x, size.y );
 
 		let mat = new THREE.ShaderMaterial( {
 			vertexShader: tileTextVert,

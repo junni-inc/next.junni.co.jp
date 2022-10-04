@@ -66,7 +66,7 @@ export class Wall extends THREE.Object3D {
 		let cameraWorldPos = camera.getWorldPosition( new THREE.Vector3() );
 		let position = parent.worldToLocal( cameraWorldPos.clone().add( camera.getWorldDirection( new THREE.Vector3() ).normalize().multiplyScalar( distance ) ) );
 
-		let mesh = new THREE.Mesh( new THREE.PlaneBufferGeometry( width, height ), new THREE.MeshNormalMaterial( { wireframe: true } ) );
+		let mesh = new THREE.Mesh( new THREE.PlaneGeometry( width, height ), new THREE.MeshNormalMaterial( { wireframe: true } ) );
 		mesh.position.copy( position );
 		mesh.lookAt( parent.worldToLocal( cameraWorldPos ) );
 
@@ -82,7 +82,7 @@ export class Wall extends THREE.Object3D {
 
 			for ( let j = 0; j < res.y; j ++ ) {
 
-				let geo = new THREE.BoxBufferGeometry( size.x, size.y, globalSize.z );
+				let geo = new THREE.BoxGeometry( size.x, size.y, globalSize.z );
 
 				let uv = geo.getAttribute( 'uv' );
 				uv.applyMatrix4( new THREE.Matrix4().makeScale( 1.0 / res.x, 1.0 / res.y, 1 ) );

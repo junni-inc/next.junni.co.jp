@@ -10,7 +10,7 @@ export class IntroGrid extends THREE.Mesh {
 
 	constructor( parentUniforms: ORE.Uniforms ) {
 
-		let geo = new THREE.PlaneBufferGeometry( 10, 10 );
+		let geo = new THREE.PlaneGeometry( 10, 10 );
 
 		let uni = ORE.UniformsLib.mergeUniforms( parentUniforms, {} );
 
