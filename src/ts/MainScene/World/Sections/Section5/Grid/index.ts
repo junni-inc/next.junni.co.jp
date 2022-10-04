@@ -41,7 +41,7 @@ export class Grid extends THREE.LineSegments {
 
 		}
 
-		// let originGeo = new THREE.BoxBufferGeometry( 0.01, 0.01, 0.01 );
+		// let originGeo = new THREE.BoxGeometry( 0.01, 0.01, 0.01 );
 
 		let geo = new THREE.InstancedBufferGeometry();
 

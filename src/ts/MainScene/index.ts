@@ -48,9 +48,9 @@ export class MainScene extends ORE.BaseLayer {
 
 	private raycasterWorldPos: THREE.Vector3 = new THREE.Vector3();
 
-	constructor() {
+	constructor( param: ORE.LayerParam ) {
 
-		super();
+		super( param );
 
 		this.commonUniforms = ORE.UniformsLib.mergeUniforms( this.commonUniforms, {
 			uTimeMod: {
@@ -147,9 +147,9 @@ export class MainScene extends ORE.BaseLayer {
 
 	}
 
-	onBind( info: ORE.LayerInfo ) {
+	onBind() {
 
-		super.onBind( info );
+		super.onBind( );
 
 		this.gManager = new GlobalManager();
 

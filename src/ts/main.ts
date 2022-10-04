@@ -47,12 +47,12 @@ class APP {
 		}
 
 		this.controller = new ORE.Controller();
-		this.controller.addLayer( new MainScene(), {
+		this.controller.addLayer( new MainScene( {
 			name: 'Main',
 			canvas: this.canvas || undefined,
 			pixelRatio: Math.max( 1.0, window.devicePixelRatio * 0.5 ),
 			wrapperElement: wrap
-		} );
+		} ), );
 
 	}
 

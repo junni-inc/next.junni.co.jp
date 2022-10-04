@@ -76,7 +76,7 @@ export class Peoples extends THREE.Mesh {
 		// let size = 0.7;
 		let size = 1.3;
 
-		let originGeo = new THREE.PlaneBufferGeometry( size, size );
+		let originGeo = new THREE.PlaneGeometry( size, size );
 		originGeo.getAttribute( 'position' ).applyMatrix4( new THREE.Matrix4().makeTranslation( 0.0, size / 2, 0.0 ) );
 		originGeo.getAttribute( 'position' ).applyMatrix4( new THREE.Matrix4().makeScale( 1.0 * 0.5, 1.0, 1.0 ) );
 

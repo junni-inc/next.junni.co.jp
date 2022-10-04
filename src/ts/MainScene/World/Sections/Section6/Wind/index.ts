@@ -32,7 +32,7 @@ export class Wind extends THREE.Mesh {
 
 		}
 
-		let originGeo = new THREE.PlaneBufferGeometry( 5.0, 0.01, 10.0, 1.0 );
+		let originGeo = new THREE.PlaneGeometry( 5.0, 0.01, 10.0, 1.0 );
 
 		let geo = new THREE.InstancedBufferGeometry();
 		geo.setAttribute( 'position', originGeo.getAttribute( 'position' ) );

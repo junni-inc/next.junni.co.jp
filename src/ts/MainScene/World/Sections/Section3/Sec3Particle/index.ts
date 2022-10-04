@@ -30,7 +30,7 @@ export class Sec3Particle extends THREE.Mesh {
 		}
 
 		let size = 0.2;
-		let originGeo = new THREE.PlaneBufferGeometry( size, size );
+		let originGeo = new THREE.PlaneGeometry( size, size );
 
 		let geo = new THREE.InstancedBufferGeometry();
 		geo.setAttribute( 'position', originGeo.getAttribute( 'position' ) );

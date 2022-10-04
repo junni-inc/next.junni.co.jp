@@ -42,7 +42,7 @@ export class BakuCollision extends THREE.Object3D {
 		-------------------------------*/
 
 		let radius = 0.35;
-		this.mesh = new THREE.Mesh( new THREE.SphereBufferGeometry( radius ), new THREE.MeshNormalMaterial() );
+		this.mesh = new THREE.Mesh( new THREE.SphereGeometry( radius ), new THREE.MeshNormalMaterial() );
 		this.mesh.visible = false;
 		this.add( this.mesh );
 

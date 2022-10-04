@@ -29,7 +29,7 @@ export class BG extends THREE.Mesh {
 			Mesh
 		-------------------------------*/
 
-		let geo = new THREE.SphereBufferGeometry( 100.0 );
+		let geo = new THREE.SphereGeometry( 100.0 );
 		geo.getAttribute( 'position' ).applyMatrix4( new THREE.Matrix4().makeRotationFromEuler( new THREE.Euler( - 0.7, - 0.12, 1.095 ) ) );
 
 		let mat = new THREE.ShaderMaterial( {

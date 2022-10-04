@@ -78,7 +78,7 @@ export class DrawTrail extends THREE.Mesh {
 
 		let radius = 0.05;
 
-		let geo = new THREE.CylinderBufferGeometry( radius, radius, 1.0, radialSegments, heightSegments, true );
+		let geo = new THREE.CylinderGeometry( radius, radius, 1.0, radialSegments, heightSegments, true );
 		let mat = new THREE.ShaderMaterial( {
 			vertexShader: drawTrailVert,
 			fragmentShader: drawTrailFrag,
