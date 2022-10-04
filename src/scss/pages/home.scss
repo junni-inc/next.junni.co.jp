@@ -492,6 +492,21 @@ body {
 				font-size: 7.0vw;
 				line-height: 1.8em;
 			}
+
+			#next {
+				display: inline;
+				opacity: 0;
+				transition: opacity 1s;
+				transition-delay: 1.5s;
+
+				[data-visible="true"] &{
+					opacity: 1;
+				}
+				span {
+					display: inline-block;
+				}
+			}
+			
 		}
 
 		&-link {
