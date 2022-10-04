@@ -1,5 +1,5 @@
 {
-  "name": "",
+  "name": "next.junni.co.jp",
   "version": "0.0.1",
   "description": "",
   "repository": {
@@ -20,6 +20,7 @@
     "@babel/register": "^7.16.9",
     "@tweakpane/core": "^1.1.0",
     "@types/cannon": "^0.1.8",
+    "@types/three": "^0.144.0",
     "@typescript-eslint/eslint-plugin": "^5.10.1",
     "@typescript-eslint/parser": "^5.10.1",
     "browser-sync": "^2.27.7",
@@ -46,7 +47,6 @@
     "webpack-stream": "^7.0.0"
   },
   "dependencies": {
-    "@types/three": "^0.142.0",
     "cannon": "^0.6.2",
     "lethargy": "^1.0.9",
     "three": "^0.142.0",
