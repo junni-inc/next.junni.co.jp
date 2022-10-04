@@ -51,6 +51,7 @@ export class Section extends THREE.Object3D {
 		position: new THREE.Vector3(),
 		targetPosition: new THREE.Vector3(),
 		fov: 50,
+		fovCalculated: 50,
 	};
 
 	public bakuTransform: BakuTransform = {
@@ -85,6 +86,7 @@ export class Section extends THREE.Object3D {
 
 	// camera weight
 
+	public cameraSPFovWeight: number = 30;
 	public cameraRange: THREE.Vector2 = new THREE.Vector2( 0.1, 0.1 );
 
 	constructor( manager: THREE.LoadingManager, sectionName: string, parentUniforms: ORE.Uniforms ) {
@@ -262,6 +264,9 @@ export class Section extends THREE.Object3D {
 	}
 
 	public resize( info: LayerInfo ) {
+
+		this.cameraTransform.fovCalculated = this.cameraTransform.fov + this.cameraSPFovWeight * info.size.portraitWeight;
+
 	}
 
 }

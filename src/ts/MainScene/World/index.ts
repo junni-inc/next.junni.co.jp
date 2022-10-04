@@ -13,6 +13,7 @@ import { BG } from './BG';
 import { Ground } from './Ground';
 import { Lights } from './Lights';
 import { DrawTrail } from './DrawTrail';
+import { CameraTransform } from '../CameraController';
 
 export class World extends THREE.Object3D {
 
@@ -327,10 +328,11 @@ export class World extends THREE.Object3D {
 
 		//  cameraTransform
 
-		let cameraTransform = {
+		let cameraTransform: CameraTransform = {
 			position: from.cameraTransform.position.clone().lerp( to.cameraTransform.position, t ),
 			targetPosition: from.cameraTransform.targetPosition.clone().lerp( to.cameraTransform.targetPosition, t ),
-			fov: from.cameraTransform.fov + ( to.cameraTransform.fov - from.cameraTransform.fov ) * t
+			fov: 0,
+			fovCalculated: from.cameraTransform.fovCalculated + ( to.cameraTransform.fovCalculated - from.cameraTransform.fovCalculated ) * t,
 		};
 
 		// bakuTransform

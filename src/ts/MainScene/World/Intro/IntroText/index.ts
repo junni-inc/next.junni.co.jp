@@ -76,7 +76,7 @@ export class IntroText {
 
 		setTimeout( () => {
 
-			window.subtitles.show( this.text );
+			window.subtitles.show( this.text, 1, 2.0 );
 
 		}, 500 );
 

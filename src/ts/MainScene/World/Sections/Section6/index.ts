@@ -21,7 +21,6 @@ export class Section6 extends Section {
 	// sp
 
 	private cameraBasePos: THREE.Vector3 | null = null;
-	private cameraBaseFov: number | null = null;
 
 	private layoutControllerList: ORE.LayoutController[] = [];
 
@@ -139,7 +138,6 @@ export class Section6 extends Section {
 		-------------------------------*/
 
 		this.cameraBasePos = this.cameraTransform.position.clone();
-		this.cameraBaseFov = this.cameraTransform.fov;
 
 		// resize
 
@@ -199,6 +197,8 @@ export class Section6 extends Section {
 
 	public resize( info: ORE.LayerInfo ) {
 
+		super.resize( info );
+
 		this.info = info;
 
 		if ( this.particle ) {
@@ -210,12 +210,6 @@ export class Section6 extends Section {
 		if ( this.cameraBasePos ) {
 
 			this.cameraTransform.position.copy( this.cameraBasePos.clone().add( new THREE.Vector3( info.size.portraitWeight * 1.0, 0.0, 0.0 ) ) );
-
-		}
-
-		if ( this.cameraBaseFov ) {
-
-			this.cameraTransform.fov = this.cameraBaseFov + info.size.portraitWeight * 20;
 
 		}
 

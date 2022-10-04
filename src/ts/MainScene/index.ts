@@ -12,6 +12,7 @@ import { Footer } from './Footer';
 import { Loading } from './Loading';
 
 import { Lethargy } from 'lethargy';
+import { Scroll } from './Scroll';
 
 export class MainScene extends ORE.BaseLayer {
 
@@ -38,6 +39,10 @@ export class MainScene extends ORE.BaseLayer {
 	// wrapper
 
 	private contentWrapperElm: HTMLElement;
+
+	// scroll
+
+	private scroll: Scroll;
 
 	// state
 
@@ -87,9 +92,27 @@ export class MainScene extends ORE.BaseLayer {
 
 			}
 
+			if ( sectionIndex > 0 ) {
+
+				this.scroll.switchVisible( false );
+
+			}
+
+
 		} );
 
 		this.lethargy = new Lethargy();
+
+		//  scroll button
+
+		this.scroll = new Scroll();
+
+		this.scroll.addListener( 'click', () => {
+
+			this.scroll.switchVisible( false );
+			this.scroller.move( 1 );
+
+		} );
 
 		/*-------------------------------
 			Subtitles
@@ -556,6 +579,12 @@ export class MainScene extends ORE.BaseLayer {
 		}
 
 		this.showHeaderFooter();
+
+		setTimeout( () => {
+
+			this.scroll.switchVisible( true );
+
+		}, 1000 );
 
 	}
 

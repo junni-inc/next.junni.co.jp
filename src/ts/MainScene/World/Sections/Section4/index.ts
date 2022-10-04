@@ -32,7 +32,6 @@ export class Section4 extends Section {
 
 	// layout
 
-	private baseFov: number = 0.0;
 	private baseCameraTarget: THREE.Vector3 = new THREE.Vector3();
 	private layoutContorllerList: ORE.LayoutController[] = [];
 	private info: ORE.LayerInfo | null = null;
@@ -46,12 +45,11 @@ export class Section4 extends Section {
 		this.bakuParam.materialType = 'line';
 		this.ppParam.vignet = 1.5;
 		this.ppParam.filmNoise = 1.0;
+		this.cameraSPFovWeight = 12;
 
 		// params
 
 		this.elm = document.querySelector( '.section4' ) as HTMLElement;
-
-
 
 		this.commonUniforms.uTextSwitch = this.animator.add( {
 			name: 'sec4TextSwtich',
@@ -211,8 +209,6 @@ export class Section4 extends Section {
 			Layout
 		-------------------------------*/
 
-		this.baseFov = this.cameraTransform.fov;
-
 		this.baseCameraTarget.copy( this.cameraTransform.targetPosition );
 
 		// resize
@@ -227,9 +223,9 @@ export class Section4 extends Section {
 
 	public resize( info: ORE.LayerInfo ): void {
 
-		this.info = info;
+		super.resize( info );
 
-		this.cameraTransform.fov = this.baseFov - info.size.portraitWeight * 20.0;
+		this.info = info;
 
 		this.cameraTransform.targetPosition.copy( this.baseCameraTarget.clone().add( new THREE.Vector3( - 0.2, 0.0, 1.0 ).multiplyScalar( info.size.portraitWeight ) ) );
 

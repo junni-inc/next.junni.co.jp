@@ -27,7 +27,7 @@ export class Subtitles {
 
 	}
 
-	public show( text: string, duration: number = 1.0 ) {
+	public show( text: string, duration: number = 1.0, textHideDuration: number = 3.5 ) {
 
 		this.hideAll();
 
@@ -50,7 +50,7 @@ export class Subtitles {
 
 				noiseText.hide();
 
-			}, 2000 );
+			}, textHideDuration * 1000 );
 
 		};
 

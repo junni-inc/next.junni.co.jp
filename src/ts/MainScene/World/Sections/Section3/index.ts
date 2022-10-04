@@ -36,6 +36,7 @@ export class Section3 extends Section {
 		this.elm = document.querySelector( '.section3' ) as HTMLElement;
 		this.ppParam.bloomBrightness = 1.5;
 		this.bakuParam.rotateSpeed = 0.0;
+		this.cameraSPFovWeight = 18;
 
 		/*-------------------------------
 			Light

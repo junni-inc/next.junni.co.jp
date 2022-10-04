@@ -478,7 +478,7 @@ void main( void ) {
 	#pragma unroll_loop_end
 	refractCol /= float( 16 );
 
-	outColor += refractCol * mix( vec3( 1.0 ), mat.diffuseColor, length( mat.diffuseColor ) ) * uTransparent;
+	outColor += refractCol * mix( vec3( 0.8 ), mat.diffuseColor, length( mat.diffuseColor ) ) * uTransparent;
 
 	/*-------------------------------
 		Lighting
