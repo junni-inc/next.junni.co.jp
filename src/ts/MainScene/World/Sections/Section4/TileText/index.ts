@@ -51,6 +51,7 @@ export class TileText extends THREE.Object3D {
 		} );
 
 		this.meshList.length = 0;
+		this.totalTextMeshWidth = 0;
 
 		/*-------------------------------
 			Create MSDF Mesh
@@ -85,7 +86,7 @@ export class TileText extends THREE.Object3D {
 
 			offset += size / 2;
 
-			textMesh.position.x = offset;// - this.totalTextMeshWidth / 2;
+			textMesh.position.x = offset - this.totalTextMeshWidth / 2;
 
 			offset += size / 2;
 
