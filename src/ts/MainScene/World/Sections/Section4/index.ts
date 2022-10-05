@@ -162,7 +162,7 @@ export class Section4 extends Section {
 			Peoples
 		-------------------------------*/
 
-		this.peoples = new Peoples( this.renderer, 26, this.commonUniforms, ground.getObjectByName( 'Avoids' ) as THREE.Object3D, [] );
+		this.peoples = new Peoples( this.renderer, 26, this.commonUniforms, ground.getObjectByName( 'Avoids' ) as THREE.Object3D );
 		this.peoples.switchVisibility( this.sectionVisibility, 2 );
 		this.peoples.position.y += 0.5;
 		ground.add( this.peoples );
