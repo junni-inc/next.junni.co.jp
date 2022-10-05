@@ -1,5 +1,5 @@
 /*
-https://github.com/Jam3/glsl-fast-gaussian-blur/blob/master/
+https://github.com/Jam3/glsl-fast-gaussian-blur
 
 The MIT License (MIT) Copyright (c) 2015 Jam3
 

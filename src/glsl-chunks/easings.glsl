@@ -1,4 +1,6 @@
+//  ------
 
+// https://easings.net/
 
 float easeInQuart( float t ) {
 
@@ -24,6 +26,8 @@ float easeInOutQuart( float t ) {
 	return t < 0.5 ? 8.0 * t * t * t * t : 1.0 -8.0 * ( --t ) * t * t * t;
 
 }
+
+// ------
 
 float sigmoid( float x ) {
 		
