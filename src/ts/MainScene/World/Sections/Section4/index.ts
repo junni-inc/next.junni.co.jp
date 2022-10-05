@@ -44,7 +44,6 @@ export class Section4 extends Section {
 
 		this.bakuParam.materialType = 'line';
 		this.ppParam.vignet = 1.5;
-		this.ppParam.filmNoise = 1.0;
 		this.cameraSPFovWeight = 5;
 
 		// params
@@ -87,8 +86,6 @@ export class Section4 extends Section {
 		/*-------------------------------
 			Shadow
 		-------------------------------*/
-
-		// new Shadow( scene.getObjectByName( 'Shadow' ) as THREE.Mesh, this.commonUniforms );
 
 		let text = scene.getObjectByName( 'Making' ) as THREE.Object3D;
 		text.children.forEach( item => {

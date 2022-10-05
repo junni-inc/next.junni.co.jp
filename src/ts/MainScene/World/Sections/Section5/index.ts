@@ -3,14 +3,12 @@ import * as ORE from 'ore-three';
 
 import { Section, ViewingState } from '../Section';
 import { GLTF } from 'three/examples/jsm/loaders/GLTFLoader';
-import { Objects } from './Objects';
 import { TextRing } from './TextRing';
 import { Grid } from './Grid';
 import { Outro } from './Outro';
 
 export class Section5 extends Section {
 
-	private objects?: Objects;
 	private textring: TextRing;
 	private grid: Grid;
 	private outro: Outro;

@@ -11,13 +11,9 @@ uniform vec2 uBloomMipmapResolution;
 
 uniform float uVignet;
 uniform float uBrightness;
-uniform float uGlitch;
-
-uniform float uFilmNoise;
 
 uniform sampler2D uNoiseTex;
 uniform sampler2D uLensDirtTex;
-uniform sampler2D uFilmNoiseTex;
 
 #pragma glslify: random = require( './random.glsl' );
 
@@ -89,28 +85,11 @@ vec4 textureBicubic(sampler2D t, vec2 texCoords, vec2 textureSize) {
 
 void main(){
 
-	vec3 color = vec3( 0.0 );
-
 	vec2 uv = vUv;
 	vec2 cuv = vUv * 2.0 - 1.0;
 	float w = max( .0, length( cuv ) ) * 0.02;
 
-	if( uGlitch > 0.5 ) {
-
-		vec2 n = vec2( ( texture2D( uNoiseTex, vec2( uv.y * .04, time * 3.0 ) ).x - 0.5 ) * 0.5, 0.0 ) * 0.6;
-		vec2 texUvR = uv + n;
-		vec2 texUvG = uv + n * 0.9;
-		vec2 texUvB = uv + n * 0.8;
-
-		color.x += texture2D( uSceneTex, texUvR ).x;
-		color.y += texture2D( uSceneTex, texUvG ).y;
-		color.z += texture2D( uSceneTex, texUvB ).z;
-
-	} else {
-
-		color = texture2D( uSceneTex, uv ).xyz;
-
-	}
+	vec3 color = texture2D( uSceneTex, uv ).xyz;
 
 	vec4 lensDirt = texture2D( uLensDirtTex, vUv );
 
@@ -132,8 +111,6 @@ void main(){
 	#pragma unroll_loop_end
 
 	color *= mix( 1.0, smoothstep( 2.0, 0.8, length( cuv ) ), uVignet );
-
-	// color *= mix( 1.0, texture2D( uFilmNoiseTex, spriteUVSelector( vUv, vec2( 2.0, 4.0 ), 8.0, time * 2.0 ) ).x * 0.9, uFilmNoise );
 
 	gl_FragColor = vec4( color, 1.0 );
 

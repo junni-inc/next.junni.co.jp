@@ -1,10 +1,10 @@
 {
   "name": "next.junni.co.jp",
-  "version": "0.0.1",
+  "version": "1.0.0",
   "description": "",
   "repository": {
     "type": "git",
-    "url": ""
+    "url": "https://github.com/junni-inc/next.junni.co.jp"
   },
   "scripts": {
     "dev": "npx gulp",
@@ -18,7 +18,6 @@
     "@babel/core": "^7.16.12",
     "@babel/preset-env": "^7.16.11",
     "@babel/register": "^7.16.9",
-    "@tweakpane/core": "^1.1.0",
     "@types/cannon": "^0.1.8",
     "@types/three": "^0.144.0",
     "@typescript-eslint/eslint-plugin": "^5.10.1",
@@ -47,6 +46,7 @@
     "webpack-stream": "^7.0.0"
   },
   "dependencies": {
+    "@tweakpane/core": "^1.1.0",
     "cannon": "^0.6.2",
     "lethargy": "^1.0.9",
     "three": "^0.145.0",

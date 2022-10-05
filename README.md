@@ -2,10 +2,12 @@
 ![]("./../screenshot/screenshot.jpg)
 ## Install
 
+packages
 ```
 npm install
 ```
 
+submodules
 ```
 git submodule init
 git submodule update

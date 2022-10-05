@@ -204,12 +204,6 @@ export class MainScene extends ORE.BaseLayer {
 				tex.magFilter = THREE.NearestFilter;
 
 			} },
-			{ name: 'filmNoise', path: './assets/textures/film-noise.jpg', type: 'tex', timing: 'sub', onLoad: ( tex: THREE.Texture ) => {
-
-				tex.wrapS = THREE.RepeatWrapping;
-				tex.wrapT = THREE.RepeatWrapping;
-
-			} },
 			{ name: 'signpen', path: './assets/textures/signpen.png', type: 'tex', timing: 'sub' },
 			{ name: 'sec3Particle', path: './assets/textures/pattern.jpg', type: 'tex', timing: 'sub' },
 		] } );
