@@ -180,14 +180,14 @@ export class Section4 extends Section {
 			vertexShader: makingVert
 		} );
 
-		this.title.position.set( - 2.8, 3.5, 0.5 );
-		this.title.scale.setScalar( 1.0 );
+		this.title.position.set( - 2.8, 3.5, - 0.7 );
+		this.title.scale.setScalar( 0.9 );
 		this.title.setText( 'making' );
 		this.title.switchVisiblity( this.sectionVisibility );
 		ground.add( this.title );
 
 		this.layoutContorllerList.push( new ORE.LayoutController( this.title, {
-			position: new THREE.Vector3( 4.0, 0.0, - 3.0 ),
+			position: new THREE.Vector3( 3.4, 0.0, - 0.8 ),
 			scale: 1.0
 		} ) );
 
