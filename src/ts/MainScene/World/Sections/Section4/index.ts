@@ -44,8 +44,7 @@ export class Section4 extends Section {
 
 		this.bakuParam.materialType = 'line';
 		this.ppParam.vignet = 1.5;
-		this.ppParam.filmNoise = 1.0;
-		this.cameraSPFovWeight = 12;
+		this.cameraSPFovWeight = 5;
 
 		// params
 
@@ -87,8 +86,6 @@ export class Section4 extends Section {
 		/*-------------------------------
 			Shadow
 		-------------------------------*/
-
-		// new Shadow( scene.getObjectByName( 'Shadow' ) as THREE.Mesh, this.commonUniforms );
 
 		let text = scene.getObjectByName( 'Making' ) as THREE.Object3D;
 		text.children.forEach( item => {
@@ -165,7 +162,7 @@ export class Section4 extends Section {
 			Peoples
 		-------------------------------*/
 
-		this.peoples = new Peoples( this.renderer, 26, this.commonUniforms, ground.getObjectByName( 'Avoids' ) as THREE.Object3D, [] );
+		this.peoples = new Peoples( this.renderer, 26, this.commonUniforms, ground.getObjectByName( 'Avoids' ) as THREE.Object3D );
 		this.peoples.switchVisibility( this.sectionVisibility, 2 );
 		this.peoples.position.y += 0.5;
 		ground.add( this.peoples );
@@ -180,29 +177,30 @@ export class Section4 extends Section {
 			vertexShader: makingVert
 		} );
 
-		this.title.position.set( - 4.8, 3.5, - 0.7 );
-		this.title.scale.setScalar( 1.0 );
+		this.title.position.set( - 2.8, 3.5, - 0.7 );
+		this.title.scale.setScalar( 0.9 );
 		this.title.setText( 'making' );
 		this.title.switchVisiblity( this.sectionVisibility );
 		ground.add( this.title );
 
 		this.layoutContorllerList.push( new ORE.LayoutController( this.title, {
-			position: new THREE.Vector3( 3.5, 0.0, - 3.0 ),
-			scale: 1.3
+			position: new THREE.Vector3( 3.4, 0.0, - 0.8 ),
+			scale: 1.0
 		} ) );
 
 		// words
 
 		this.word = new TileText( this.commonUniforms );
-		this.word.position.set( 0.0, 3.0, 3.5 );
-		this.word.scale.setScalar( 1.0 );
+		this.word.position.set( 2.0, 3.0, 3.5 );
+		this.word.scale.setScalar( 0.9 );
 		this.word.switchVisiblity( this.sectionVisibility );
 		this.word.setText( this.textList[ 0 ] );
 		this.textIndex = 1;
 		ground.add( this.word );
 
 		this.layoutContorllerList.push( new ORE.LayoutController( this.word, {
-			position: new THREE.Vector3( - 5.0, 0.0, 3.0 )
+			position: new THREE.Vector3( - 4.2, 0.0, 1.9 ),
+			scale: 0.9
 		} ) );
 
 		/*-------------------------------

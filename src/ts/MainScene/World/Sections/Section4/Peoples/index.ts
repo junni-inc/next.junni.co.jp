@@ -6,7 +6,6 @@ import comVelocity from './shaders/computeVelocity.glsl';
 
 import peopleVert from './shaders/people.vs';
 import peopleFrag from './shaders/people.fs';
-import { FallText } from '../FallText';
 
 declare interface Kernels{
     velocity: ORE.GPUComputationKernel,
@@ -35,7 +34,7 @@ export class Peoples extends THREE.Mesh {
 	private avoidRoot: THREE.Object3D;
 	private styleIndex: number = 0.0;
 
-	constructor( renderer: THREE.WebGLRenderer, num: number, parentUniforms: ORE.Uniforms, avoidRoot: THREE.Object3D, textMeshList: FallText[] ) {
+	constructor( renderer: THREE.WebGLRenderer, num: number, parentUniforms: ORE.Uniforms, avoidRoot: THREE.Object3D ) {
 
 		let commonUniforms = ORE.UniformsLib.mergeUniforms( parentUniforms, {
 			deltaTime: {
@@ -166,17 +165,6 @@ export class Peoples extends THREE.Mesh {
 			avoidList.push( {
 				position: item.position,
 				scale: item.scale,
-			} );
-
-		} );
-
-		textMeshList.forEach( item => {
-
-			let mesh = item.root;
-
-			avoidList.push( {
-				position: mesh.position,
-				scale: new THREE.Vector3( 2.0, 1.0, 4.0 ),
 			} );
 
 		} );

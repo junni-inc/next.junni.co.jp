@@ -3,7 +3,6 @@ import * as ORE from 'ore-three';
 
 import { Section, ViewingState } from '../Section';
 import { GLTF } from 'three/examples/jsm/loaders/GLTFLoader';
-import { Objects } from './Objects';
 import { Comrades } from './Comrades';
 import { Wind } from './Wind';
 import { Particle } from './Particle';
@@ -13,7 +12,6 @@ import { Next } from './Next';
 export class Section6 extends Section {
 
 	private info: ORE.LayerInfo | null = null;
-	private objects?: Objects;
 	private comrades?: Comrades;
 	private wind?: Wind;
 	private particle?: Particle;

@@ -204,12 +204,6 @@ export class MainScene extends ORE.BaseLayer {
 				tex.magFilter = THREE.NearestFilter;
 
 			} },
-			{ name: 'filmNoise', path: './assets/textures/film-noise.jpg', type: 'tex', timing: 'sub', onLoad: ( tex: THREE.Texture ) => {
-
-				tex.wrapS = THREE.RepeatWrapping;
-				tex.wrapT = THREE.RepeatWrapping;
-
-			} },
 			{ name: 'signpen', path: './assets/textures/signpen.png', type: 'tex', timing: 'sub' },
 			{ name: 'sec3Particle', path: './assets/textures/pattern.jpg', type: 'tex', timing: 'sub' },
 		] } );
@@ -306,77 +300,6 @@ export class MainScene extends ORE.BaseLayer {
 			this.scroller.changeSectionNum( this.world.sections.length );
 
 		}
-
-		/*-------------------------------
-			HashChange
-		-------------------------------*/
-
-		const onSectionChange = ( secName: string ) => {
-
-			window.removeEventListener( 'hashchange', onChangeHash );
-
-			if ( secName ) {
-
-				window.location.hash = secName;
-
-			}
-
-			setTimeout( () => {
-
-				window.addEventListener( 'hashchange', onChangeHash );
-
-			}, 50 );
-
-		};
-
-		const onChangeHash = () => {
-
-			let hash = window.location.hash;
-
-			if ( ! this.world ) return;
-
-			for ( let i = 0; i < this.world.sections.length; i ++ ) {
-
-				let sec = this.world.sections[ i ];
-
-				if ( sec && "#" + sec.sectionName == hash ) {
-
-					window.gManager.removeListener( 'sectionChange', onSectionChange );
-
-					this.scroller.move( i, 0.1, () => {
-
-						window.gManager.addListener( 'sectionChange', onSectionChange );
-
-					} );
-
-					if ( ! this.world.splashed ) {
-
-						if ( i == 0 ) {
-
-							this.loading.switchVisibility( false );
-
-						} else {
-
-							this.showHeaderFooter();
-							this.world.cancelIntro();
-							this.loading.switchLogoVisibility( true );
-
-						}
-
-					}
-
-					break;
-
-				}
-
-			}
-
-		};
-
-		window.gManager.addListener( 'sectionChange', onSectionChange );
-		window.addEventListener( 'hashchange', onChangeHash );
-
-		onChangeHash();
 
 	}
 
