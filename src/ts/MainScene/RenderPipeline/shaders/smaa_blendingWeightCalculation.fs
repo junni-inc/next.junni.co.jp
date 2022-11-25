@@ -9,14 +9,6 @@ uniform sampler2D backbuffer;
 uniform sampler2D areaTex;
 uniform sampler2D searchTex;
 
-float round(float x) {
-    return sign(x) * floor(abs(x) + 0.5);
-}
-
-vec2 round(vec2 value) {
-    return vec2(round(value.x), round(value.y));
-}
-
 vec4 texture2DOffset(sampler2D tex, vec2 uv, vec2 offset) {
     return texture2D(tex, uv + offset * SMAA_RT_METRICS.xy);
 }
