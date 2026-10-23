@@ -85,10 +85,15 @@ body {
 		}
 		
 		svg {
-			width: 180px;
+			display: block;
+			width: 179px;
+			height: auto;
+
+			// 下部のコピーを除いたロゴが縦中央寄りに見えるよう下げる
+			transform: translateY( 10% );
 			
 			@include sp {
-				width: 135px;
+				width: 127px;
 			}
 
 		}
@@ -625,7 +630,9 @@ body {
 		}
 
 		svg {
+			display: block;
 			width: 100%;
+			height: auto;
 		}
 	}
 }

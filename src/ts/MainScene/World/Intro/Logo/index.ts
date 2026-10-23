@@ -23,6 +23,12 @@ export class Logo extends EventEmitter {
 
 	private canceled: boolean = false;
 
+	// イントロロゴ全体(JUNNI・_is・Imaging)の表示倍率
+	private logoScale: number = 1.3;
+
+	// ロゴ画像の中心を画面中央(ローディングロゴの位置)に合わせるための縦オフセット
+	private logoOffsetY: number = 0;
+
 	constructor( logoMesh: THREE.Mesh, parentUniforms: ORE.Uniforms ) {
 
 		super();
@@ -60,11 +66,21 @@ export class Logo extends EventEmitter {
 		// logo
 
 		this.logoMesh = logoMesh;
+		this.logoMesh.scale.setScalar( this.logoScale );
+
+		this.logoMesh.geometry.dispose();
+		this.logoMesh.geometry = this.createLogoGeometry();
+
+		// メッシュローカルの +Z がワールドの -Y に向くため、画像中心の Z 分だけ持ち上げる
+		this.logoMesh.geometry.computeBoundingBox();
+		this.logoOffsetY = this.logoMesh.geometry.boundingBox!.getCenter( new THREE.Vector3() ).z * this.logoScale;
 
 		this.logoMesh.material = new THREE.ShaderMaterial( {
 			fragmentShader: logoFrag,
 			vertexShader: logoVert,
-			uniforms: this.commonUniforms,
+			uniforms: ORE.UniformsLib.mergeUniforms( this.commonUniforms, {
+				uTex: window.gManager.assetManager.getTex( 'logo' ),
+			} ),
 			transparent: true
 		} );
 
@@ -125,10 +141,40 @@ export class Logo extends EventEmitter {
 
 	}
 
+	/*-------------------------------
+		Logo Geometry
+	-------------------------------*/
+
+	private createLogoGeometry() {
+
+		// ロゴ画像(junni_logo.png)のサイズ(SVG 単位)と、そのうち「JUNNI」部分の高さ
+		const imageWidth = 811.17;
+		const imageHeight = 301.43;
+		const textHeight = 183.23;
+
+		// 「JUNNI」部分の表示高さを基準にサイズを決める
+		const scale = 0.17 / textHeight;
+		const width = imageWidth * scale;
+		const height = imageHeight * scale;
+
+		// 右端と「JUNNI」の下端を「_is」の位置に合わせる(メッシュのローカル座標)
+		const right = 0.249;
+		const top = 0.0975 - textHeight * scale;
+
+		// メッシュは X 軸 90° 回転しているため XZ 平面上に配置する
+		let geo = new THREE.PlaneGeometry( width, height );
+		geo.rotateX( - Math.PI / 2 );
+		geo.translate( right - width / 2, 0, top + height / 2 );
+
+		return geo;
+
+	}
+
 	public update( deltaTime: number ) {
 
 		// this.layoutController.updateTransform( this.animator.get( 'introLogoVisibility' ) || 0 );
-		this.logoMesh.position.x = - ( this.animator.get<number>( 'introLogoImaging' ) || 0 ) * 0.4;
+		this.logoMesh.position.x = - ( this.animator.get<number>( 'introLogoImaging' ) || 0 ) * 0.4 * this.logoScale;
+		this.logoMesh.position.y = this.logoOffsetY;
 
 	}
 
