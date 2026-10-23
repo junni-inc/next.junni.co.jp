@@ -23,6 +23,12 @@ export class Logo extends EventEmitter {
 
 	private canceled: boolean = false;
 
+	// イントロロゴ全体(JUNNI・_is・Imaging)の表示倍率
+	private logoScale: number = 1.3;
+
+	// ロゴ画像の中心を画面中央(ローディングロゴの位置)に合わせるための縦オフセット
+	private logoOffsetY: number = 0;
+
 	constructor( logoMesh: THREE.Mesh, parentUniforms: ORE.Uniforms ) {
 
 		super();
@@ -60,9 +66,14 @@ export class Logo extends EventEmitter {
 		// logo
 
 		this.logoMesh = logoMesh;
+		this.logoMesh.scale.setScalar( this.logoScale );
 
 		this.logoMesh.geometry.dispose();
 		this.logoMesh.geometry = this.createLogoGeometry();
+
+		// メッシュローカルの +Z がワールドの -Y に向くため、画像中心の Z 分だけ持ち上げる
+		this.logoMesh.geometry.computeBoundingBox();
+		this.logoOffsetY = this.logoMesh.geometry.boundingBox!.getCenter( new THREE.Vector3() ).z * this.logoScale;
 
 		this.logoMesh.material = new THREE.ShaderMaterial( {
 			fragmentShader: logoFrag,
@@ -162,7 +173,8 @@ export class Logo extends EventEmitter {
 	public update( deltaTime: number ) {
 
 		// this.layoutController.updateTransform( this.animator.get( 'introLogoVisibility' ) || 0 );
-		this.logoMesh.position.x = - ( this.animator.get<number>( 'introLogoImaging' ) || 0 ) * 0.4;
+		this.logoMesh.position.x = - ( this.animator.get<number>( 'introLogoImaging' ) || 0 ) * 0.4 * this.logoScale;
+		this.logoMesh.position.y = this.logoOffsetY;
 
 	}
 
