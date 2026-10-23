@@ -85,10 +85,12 @@ body {
 		}
 		
 		svg {
-			width: 180px;
+			display: block;
+			width: 124px;
+			height: auto;
 			
 			@include sp {
-				width: 135px;
+				width: 92px;
 			}
 
 		}
@@ -625,7 +627,9 @@ body {
 		}
 
 		svg {
+			display: block;
 			width: 100%;
+			height: auto;
 		}
 	}
 }

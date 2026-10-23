@@ -61,10 +61,15 @@ export class Logo extends EventEmitter {
 
 		this.logoMesh = logoMesh;
 
+		this.logoMesh.geometry.dispose();
+		this.logoMesh.geometry = this.createLogoGeometry();
+
 		this.logoMesh.material = new THREE.ShaderMaterial( {
 			fragmentShader: logoFrag,
 			vertexShader: logoVert,
-			uniforms: this.commonUniforms,
+			uniforms: ORE.UniformsLib.mergeUniforms( this.commonUniforms, {
+				uTex: window.gManager.assetManager.getTex( 'logo' ),
+			} ),
 			transparent: true
 		} );
 
@@ -122,6 +127,35 @@ export class Logo extends EventEmitter {
 		this.layoutController = new ORE.LayoutController( this.logoMesh, {
 			position: new THREE.Vector3( 0.0, 0.0, 0.0 ),
 		}, true );
+
+	}
+
+	/*-------------------------------
+		Logo Geometry
+	-------------------------------*/
+
+	private createLogoGeometry() {
+
+		// ロゴ画像(junni_logo.png)のサイズ(SVG 単位)と、そのうち「JUNNI」部分の高さ
+		const imageWidth = 811.17;
+		const imageHeight = 301.43;
+		const textHeight = 183.23;
+
+		// 「JUNNI」部分の表示高さを基準にサイズを決める
+		const scale = 0.17 / textHeight;
+		const width = imageWidth * scale;
+		const height = imageHeight * scale;
+
+		// 右端と「JUNNI」の下端を「_is」の位置に合わせる(メッシュのローカル座標)
+		const right = 0.249;
+		const top = 0.0975 - textHeight * scale;
+
+		// メッシュは X 軸 90° 回転しているため XZ 平面上に配置する
+		let geo = new THREE.PlaneGeometry( width, height );
+		geo.rotateX( - Math.PI / 2 );
+		geo.translate( right - width / 2, 0, top + height / 2 );
+
+		return geo;
 
 	}
 
